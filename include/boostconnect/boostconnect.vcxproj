@@ -5,14 +5,22 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Main|Win32">
+      <Configuration>Main</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="None|Win32">
+      <Configuration>None</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2D83DD32-F52C-4826-B02A-FD482EBC6BB9}</ProjectGuid>
-    <RootNamespace>boostconnect</RootNamespace>
+    <ProjectGuid>{EF7D8F71-F251-4F94-99CB-D9BE0EBEDBA9}</ProjectGuid>
+    <RootNamespace>twitlibrary</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -38,6 +46,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\OpenSSL-Win32\include;C:\boost\include\boost-1_48;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>C:\OpenSSL-Win32\lib\VC\static;C:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -63,11 +73,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="application_layer\connector.hpp" />
-    <ClInclude Include="application_layer\layer_base.hpp" />
-    <ClInclude Include="application_layer\ssl_layer.hpp" />
-    <ClInclude Include="application_layer\tcp_layer.hpp" />
-    <ClInclude Include="client.hpp" />
+    <ClInclude Include="protocol.hpp" />
+    <ClInclude Include="protocol\application_layer\layer_base.hpp" />
+    <ClInclude Include="protocol\application_layer\ssl_layer.hpp" />
+    <ClInclude Include="protocol\application_layer\tcp_layer.hpp" />
+    <ClInclude Include="protocol\client.hpp" />
+    <ClInclude Include="protocol\connection_type\async_connection.hpp" />
+    <ClInclude Include="protocol\connection_type\connection_base.hpp" />
+    <ClInclude Include="protocol\connection_type\sync_connection.hpp" />
+    <ClInclude Include="protocol\response_reader\response_container.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

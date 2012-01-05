@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\protocol">
+      <UniqueIdentifier>{c45ca82d-fa56-49cc-a0e1-2e2e39c6be45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\protocol\application_layer">
+      <UniqueIdentifier>{3e8519f4-a4ba-44ac-9bdb-bbae283e5f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\protocol\connection_type">
+      <UniqueIdentifier>{9906c22f-60f5-4b57-bdc7-97c71a6f229d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\protocol\response_reader">
+      <UniqueIdentifier>{773b9e72-c7d5-439e-8e70-c190fe376043}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="protocol.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\application_layer\layer_base.hpp">
+      <Filter>ヘッダー ファイル\protocol\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\application_layer\ssl_layer.hpp">
+      <Filter>ヘッダー ファイル\protocol\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\application_layer\tcp_layer.hpp">
+      <Filter>ヘッダー ファイル\protocol\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\client.hpp">
+      <Filter>ヘッダー ファイル\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\connection_type\connection_base.hpp">
+      <Filter>ヘッダー ファイル\protocol\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\connection_type\sync_connection.hpp">
+      <Filter>ヘッダー ファイル\protocol\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\response_reader\response_container.hpp">
+      <Filter>ヘッダー ファイル\protocol\response_reader</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\connection_type\async_connection.hpp">
+      <Filter>ヘッダー ファイル\protocol\connection_type</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
