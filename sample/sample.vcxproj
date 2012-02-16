@@ -5,22 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Main|Win32">
-      <Configuration>Main</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="None|Win32">
-      <Configuration>None</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9091E13C-4F08-4201-81BC-2AB849AFA050}</ProjectGuid>
-    <RootNamespace>sample</RootNamespace>
+    <ProjectGuid>{EE6486AA-E297-45E8-BBEB-D54B5FD990DE}</ProjectGuid>
+    <RootNamespace>Samples</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -45,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)include;C:\OpenSSL-Win32\include;C:\boost\include\boost-1_48;$(IncludePath)</IncludePath>
+    <IncludePath>C:\OpenSSL-Win32\include;C:\boost\include\boost-1_48;$(SolutionDIr)include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\OpenSSL-Win32\lib\VC\static;C:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

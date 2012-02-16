@@ -60,56 +60,92 @@ public:
 	template<class Socket>
 	error_code& read_starter(Socket& socket,error_code& ec)
 	{
+		//ヘッダーのみ
+		boost::asio::read_until(socket,read_buf,"\r\n\r\n",ec);
+		read_buf.consume(
+			read_header((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()))
+		);
+		
+		if(is_chunked())
+		{
+			//syncなchunked
+			read_chunk_size(socket,ec);
+			return ec;
+		}
+		
+		if(header_.find("Content-Length")==header_.end())
+		{
+			while(boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec));
+			body_ +=  boost::asio::buffer_cast<const char*>(read_buf.data());
+			read_buf.consume(read_buf.size());
+		}
+		else
+		{
+			//ここにきたなら"Content-Length"がありますよね
+			const int content_length = boost::lexical_cast<size_t>(header_.at("Content-Length"));
+			boost::asio::read(socket,read_buf,
+				boost::asio::transfer_at_least(content_length-boost::asio::buffer_size(read_buf.data())),
+				ec
+				);
+			body_ += ((std::string)boost::asio::buffer_cast<const char*>(read_buf.data())).substr(0,content_length);
+			read_buf.consume(content_length);
+		}
+
+
+
 		//とりあえず全部読み込み		
-		while(boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec));
-		if(ec && ec != boost::asio::error::eof) return ec;
+		//while(boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec));
+		//if(ec && ec != boost::asio::error::eof) return ec;
 
 		//全部std::stringへ
-		std::string response = boost::asio::buffer_cast<const char*>(read_buf.data());
-		read_buf.consume(read_buf.size());
+		//std::string response = boost::asio::buffer_cast<const char*>(read_buf.data());
+		//read_buf.consume(read_buf.size());
 
 		//さてヘッダーを読み込みつつ不要を消す
-		response.erase(0,read_header(response));
+		//response.erase(0,read_header(response));
 
 		//で，ボディっと
-		body_.append(response);
+		//body_.append(response);
 
 		return ec;
 	}
-/*
-protected:
-	//少なくとも\r\n\r\nまで収納されていると仮定
-	bool read_head(boost::asio::streambuf& buf)
+	
+	template<class Socket>
+	error_code& read_chunk_size(Socket& socket,error_code& ec)
 	{
-		//ヘッダ抜き出し
-		std::string header = boost::asio::buffer_cast<const char*>(buf.data());
-		header.erase(header.find("\r\n\r\n")+4);
-		buf.consume(header.size()); //ヘッダ部切り捨て(レスポンスボディが短すぎると被っちゃうよ？)
+		boost::asio::read_until(socket,read_buf,"\r\n",ec);
 
-		//パース
-		namespace qi = boost::spirit::qi;
-
-		const auto header_rule = 
-			"HTTP/" >> +(qi::char_ - " ") >> " " >> qi::int_ >> " " >> +(qi::char_ - "\r\n") >> ("\r\n") //一行目
-			>> *(+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n") //二行目をmapに
-			>> *("\r\n") >> *qi::eol; //改行が残ってたら全部スルー
+		std::size_t chunk;
+		read_buf.consume(chunk_parser((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()),chunk));
+		//chunk量+"\r\n"まで，read_bufを消し去った
 		
-		std::string::const_iterator it = header.cbegin();
-		bool r = qi::parse(it,header.cend(),header_rule,http_version_,status_code_,status_message_,header_);
-		if (it != header.end()) return false;
-		return r;
+		if(chunk == 0) return read_end(socket,ec);
+		return read_chunk_body(socket,chunk,ec);
+	}
+	
+	template<class Socket>
+	error_code& read_chunk_body(Socket& socket,const std::size_t chunk,error_code& ec)
+	{
+		boost::asio::read(socket,read_buf,
+			boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf.data())),
+			ec
+			);
+		
+		if(boost::asio::buffer_size(read_buf.data()) < chunk + 2) return ec;
+		body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()),chunk+2);
+		read_buf.consume(chunk+2); //流す
+
+		return read_chunk_size(socket,ec);
+	}
+	template<class Socket>
+	error_code& read_end(Socket& socket,error_code &ec)
+	{
+		boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec);
+		if(ec == boost::asio::error::eof) return ec;
+		if(read_buf.size() == 0) return ec; //空なら終わりだ．
+		return ec;
 	}
 
-	void read_body(boost::asio::streambuf& buf)
-	{
-		body_ += boost::asio::buffer_cast<const char*>(buf.data());
-		//bufの賞味期限切れかと・・・美味しくないよ？
-
-		bool cutable = header_.find("Content-Length")!=header_.end();
-		if(cutable) body_.erase(boost::lexical_cast<int>(header_.at("Content-Length")));
-
-		return;
-	}*/
 
 	//
 	// 非同期
@@ -130,11 +166,19 @@ public:
 		return;
 	}
 
+	int status_code_;
+	std::string http_version_;
+	std::string status_message_;
+	header_type header_;
+	body_type body_;
+
 protected:
+
 	template<class Socket>
 	void async_read_header(Socket& socket,const error_code& ec,const std::size_t)
 	{
 		if(read_buf.size()==0) return; //きっとレスポンス無いタイプ
+
 		read_buf.consume(
 			read_header((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()))
 		);
@@ -145,26 +189,62 @@ protected:
 			boost::asio::async_read_until(socket,
 				read_buf,
 				"\r\n",
-				boost::bind(&response_container::read_chunk_size<Socket>,this,
+				boost::bind(&response_container::async_read_chunk_size<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred));
 
 			return;
 		}
+		if(header_.find("Content-Length")==header_.end())
+		{
+			boost::asio::async_read(socket,
+				read_buf,
+				boost::bind(&response_container::async_read_all<Socket>,this,
+					boost::ref(socket),
+					boost::asio::placeholders::error,
+					boost::asio::placeholders::bytes_transferred));
 
-		//ここにきたなら"Content-Length"がありますよね
-		boost::asio::async_read(socket,
-			read_buf,
-			boost::asio::transfer_at_least(boost::lexical_cast<size_t>(header_.at("Content-Length"))-boost::asio::buffer_size(read_buf.data())),
-			boost::bind(&response_container::async_read_body<Socket>,this,
-				boost::ref(socket),
-				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+			return;
+		}
+		else
+		{
+			//ここにきたなら"Content-Length"がありますよね
+			boost::asio::async_read(socket,
+				read_buf,
+				boost::asio::transfer_at_least(boost::lexical_cast<size_t>(header_.at("Content-Length"))-boost::asio::buffer_size(read_buf.data())),
+				boost::bind(&response_container::async_read_all<Socket>,this,
+					boost::ref(socket),
+					boost::asio::placeholders::error,
+					boost::asio::placeholders::bytes_transferred));
+		}
 				
 		return;
 	}
-	
+		
+	template<class Socket>
+	void async_read_all(Socket& socket,const error_code& ec,const std::size_t size)
+	{
+		if(read_buf.size()==0) 
+		{
+			async_read_starter(socket);
+		}
+		else
+		{
+			body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()));
+			read_buf.consume(read_buf.size());
+
+			boost::asio::async_read(socket,
+				read_buf,
+				boost::bind(&response_container::async_read_all<Socket>,this,
+					boost::ref(socket),
+					boost::asio::placeholders::error,
+					boost::asio::placeholders::bytes_transferred));
+		}
+				
+		return;
+	}
+		
 	template<class Socket>
 	void async_read_body(Socket& socket,const error_code& ec,const std::size_t)
 	{
@@ -182,7 +262,7 @@ protected:
 
 	//なんか魔導書と似ちゃってるような
 	template<class Socket>
-	void read_chunk_size(Socket& socket,const error_code& ec,const std::size_t)
+	void async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t)
 	{
 		if(read_buf.size()==0) return; //ヘッダー読み込んだから半端は有るはず
 		if(read_buf.size()<=2) //chunk量+"\r\n"ない．
@@ -191,7 +271,7 @@ protected:
 			boost::asio::async_read_until(socket,
 				read_buf,
 				"\r\n",
-				boost::bind(&response_container::read_chunk_size<Socket>,this,
+				boost::bind(&response_container::async_read_chunk_size<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred));
@@ -206,7 +286,7 @@ protected:
 			boost::asio::async_read(socket,
 				read_buf,
 				boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf.data())),
-				boost::bind(&response_container::read_chunk_body<Socket>,this,
+				boost::bind(&response_container::async_read_chunk_body<Socket>,this,
 					boost::ref(socket),
 					chunk,
 					boost::asio::placeholders::error,
@@ -216,7 +296,7 @@ protected:
 		return;
 	}
 	template<class Socket>
-	void read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t)
+	void async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t)
 	{
 		if(read_buf.size()==0) return; //ないんだけど？
 		if(chunk == 0) //終わったけど
@@ -241,7 +321,7 @@ protected:
 			boost::asio::async_read_until(socket,
 				read_buf,
 				"\r\n\r\n",
-				boost::bind(&response_container::read_chunk_size<Socket>,this,
+				boost::bind(&response_container::async_read_chunk_size<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred));
@@ -268,19 +348,13 @@ private:
 	const int chunk_parser(const T& source,std::size_t& chunk)
 	{
 		namespace qi = boost::spirit::qi;
-		const auto header_rule = (qi::hex[boost::phoenix::ref(chunk) = qi::_1] - "\r\n") >> ("\r\n");
+		const auto header_rule = (qi::hex[boost::phoenix::ref(chunk) = qi::_1] - "\r\n") >> *(qi::char_ - "\r\n") >> ("\r\n");
 
 		T::const_iterator it = source.cbegin();
 		qi::parse(it,source.cend(),header_rule,chunk);
 
 		return it-source.cbegin();
 	}
-
-	int status_code_;
-	std::string http_version_;
-	std::string status_message_;
-	header_type header_;
-	body_type body_;
 	boost::asio::streambuf read_buf;
 };
 

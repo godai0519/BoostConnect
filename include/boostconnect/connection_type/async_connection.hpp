@@ -34,9 +34,11 @@ public:
 		)
 	{
 		buf_ = &buf;
-		boost::asio::ip::tcp::resolver resolver(socket_layer_->get_io_service());
+		resolver_ = std::shared_ptr<boost::asio::ip::tcp::resolver>(new boost::asio::ip::tcp::resolver(socket_layer_->get_io_service()));
+		//boost::asio::ip::tcp::resolver resolver(socket_layer_->get_io_service());
+		//query_ = std::shared_ptr<boost::asio::ip::tcp::resolver::query>(new boost::asio::ip::tcp::resolver::query(host,socket_layer_->service_protocol()));
 		boost::asio::ip::tcp::resolver::query query(host,socket_layer_->service_protocol());
-		resolver.async_resolve(query,
+		resolver_->async_resolve(query,
 			boost::bind(&async_connection::handle_resolve,this,
 			boost::asio::placeholders::iterator,
 			boost::asio::placeholders::error)); //handle_resolve‚Ö
@@ -62,6 +64,8 @@ public:
 	}
 
 private:
+	std::shared_ptr<boost::asio::ip::tcp::resolver> resolver_;
+	std::shared_ptr<boost::asio::ip::tcp::resolver::query> query_;
 	boost::asio::streambuf *buf_;
 	void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator,const boost::system::error_code& ec)
 	{

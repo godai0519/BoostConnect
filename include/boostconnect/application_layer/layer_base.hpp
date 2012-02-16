@@ -32,7 +32,10 @@ namespace application_layer{
 //socketを包み込む、applicationlayerを主に見分けるために
 class layer_base : boost::noncopyable{
 public:
-	layer_base(){} //一応ほかを追加して消す
+	layer_base()
+	{
+		reset_response();
+	}
 	virtual ~layer_base(){}
 	
 	typedef boost::asio::io_service io_service;
@@ -62,8 +65,12 @@ public:
 	virtual void async_read() = 0;
 /*	virtual void async_read_header(boost::asio::streambuf&,ReadHandler) = 0;
 	virtual void async_read_body(boost::asio::streambuf&,ReadHandler) = 0;*/
+	
+	std::shared_ptr<oauth::protocol::response_reader::response_container> get_response(){return response_;}
+	void reset_response(){response_.reset(new oauth::protocol::response_reader::response_container());}
+
 protected:
-	oauth::protocol::response_reader::response_container response_;
+	std::shared_ptr<oauth::protocol::response_reader::response_container> response_;
 };
 
 /*class layer_base : boost::noncopyable{ //最基底クラス？

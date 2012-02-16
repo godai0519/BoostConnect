@@ -87,8 +87,13 @@ public:
 		return connection_type_->operator()(ep_iterator,buf,ec);
 	}
 
-private:
+	const std::string service_protocol() const {return socket_layer_->service_protocol();}
 
+	//response Service
+	std::shared_ptr<oauth::protocol::response_reader::response_container> get_response(){return socket_layer_->get_response();}
+	void reset_response(){socket_layer_->reset_response();}
+
+private:
 	std::shared_ptr<application_layer::layer_base> socket_layer_;
 	std::shared_ptr<connection_type::connection_base> connection_type_;
 	context *ctx_;

@@ -1,67 +1,38 @@
-#include <twit-library/protocol.hpp>
-#include <map>
+#include <iostream>
+#include <boostconnect/application_layer/tcp_layer.hpp>
+#include <boostconnect/application_layer/ssl_layer.hpp>
+#include <boostconnect/connection_type/async_connection.hpp>
+#include <boostconnect/connection_type/sync_connection.hpp>
+#include <boostconnect/response_reader/response_container.hpp>
+#include <boostconnect/client.hpp>
+
 #include <boost/thread.hpp>
-#include <boost/property_tree/ptree.hpp>
 
 int main()
 {
-	//ただの準備です
 	boost::asio::io_service io_service;
-	boost::asio::ssl::context ctx(io_service,boost::asio::ssl::context_base::sslv3_client); //SSL用
+	boost::asio::ssl::context ctx(io_service,boost::asio::ssl::context_base::sslv3_client);
+
+	oauth::protocol::client client(
+		io_service,
+		ctx,
+		oauth::protocol::connection_type::async
+		);
+
+	std::string host = "www.google.co.jp";
 	boost::system::error_code ec;
-	const std::string host("www.hatena.ne.jp");
 	boost::asio::streambuf buf;
 	std::ostream os(&buf);
-	os << "GET / HTTP/1.1\r\nHost: " << host << "\r\nConnection: close\r\n\r\n"; //ただのリクエスト
-	
-	////
-	//// 同期・HTTP通信
-	////
-	//{
-	//	oauth::protocol::client client(io_service/*,oauth::protocol::connection_type::sync*/);
-	//	client(host,buf,ec);
-	//	
-	//	//終了
-	//}
-
-	////
-	//// 同期・SSL通信
-	////
-	//{
-	//	oauth::protocol::client client(io_service,ctx/*,oauth::protocol::connection_type::sync*/);
-	//	client(host,buf,ec);
-
-	//	//終了
-	//}
-	
-	////
-	//// 非同期・HTTP通信
-	////
-	//{
-	//	oauth::protocol::client client(io_service,oauth::protocol::connection_type::async);
-	//	client(host,buf,ec);
-
-	//	//何か
-
-	//	io_service.run(); //通信を走らせる
-
-	//	//終了
-	//	return 0;
-	//}
-
-	//
-	// 非同期・SSL通信
-	//
 	{
-		oauth::protocol::client client(io_service,ctx,oauth::protocol::connection_type::async);
-		client(host,buf,ec);
-
-		//何か
-
-		io_service.run(); //通信を走らせる
-
-		//終了
+		os << "GET / HTTP/1.1\r\n";
+		os << "Host: "+host+"\r\n";
+		os << "Connection: close\r\n";
+		os << "\r\n";
 	}
+
+	client(host,buf,ec);
+	io_service.run();
+	auto response = client.get_response();
 	
 	return 0;
 }

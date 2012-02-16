@@ -35,7 +35,7 @@ public:
 	}
 	error_code& read(error_code& ec)
 	{
-		return response_.read_starter(socket_,ec);
+		return response_->read_starter(socket_,ec);
 	}
 	void async_connect(boost::asio::ip::tcp::resolver::iterator& ep_iterator,ConnectHandler handler)
 	{
@@ -53,23 +53,9 @@ public:
 	}
 	void async_read()
 	{
-		response_.async_read_starter(socket_);
+		response_->async_read_starter(socket_);
 	}
-
-/*	void async_read_header(boost::asio::streambuf& buf,ReadHandler handler)
-	{
-		boost::asio::async_read_until(socket_,
-			buf,
-			"\r\n\r\n",
-			handler);
-	}
-	void async_read_body(boost::asio::streambuf&,ReadHandler)
-	{
-		//ƒwƒbƒ_[‚Ì“Ç‚Ýž‚Ý
-		socket_layer_->response_.read_head(*response_buf_);
-
-	}*/
-
+	
 private:
 	tcp_socket socket_;
 

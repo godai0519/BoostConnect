@@ -13,46 +13,45 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル\protocol">
-      <UniqueIdentifier>{c45ca82d-fa56-49cc-a0e1-2e2e39c6be45}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\response_reader">
+      <UniqueIdentifier>{e4cf55ef-b221-493d-84b1-020c67d19edf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\protocol\application_layer">
-      <UniqueIdentifier>{3e8519f4-a4ba-44ac-9bdb-bbae283e5f54}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\application_layer">
+      <UniqueIdentifier>{7b9a71b7-9318-4417-b3d8-3e2f7022e8e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\protocol\connection_type">
-      <UniqueIdentifier>{9906c22f-60f5-4b57-bdc7-97c71a6f229d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\protocol\response_reader">
-      <UniqueIdentifier>{773b9e72-c7d5-439e-8e70-c190fe376043}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\connection_type">
+      <UniqueIdentifier>{d36f7781-c3cc-47ed-81c6-ddfc5f0bafe5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="protocol.hpp">
+    <ClInclude Include="client.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\application_layer\layer_base.hpp">
-      <Filter>ヘッダー ファイル\protocol\application_layer</Filter>
+    <ClInclude Include="response_reader\response_container.hpp">
+      <Filter>ヘッダー ファイル\response_reader</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\application_layer\ssl_layer.hpp">
-      <Filter>ヘッダー ファイル\protocol\application_layer</Filter>
+    <ClInclude Include="connection_type\async_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\application_layer\tcp_layer.hpp">
-      <Filter>ヘッダー ファイル\protocol\application_layer</Filter>
+    <ClInclude Include="connection_type\connection_base.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\client.hpp">
-      <Filter>ヘッダー ファイル\protocol</Filter>
+    <ClInclude Include="connection_type\sync_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\connection_type\connection_base.hpp">
-      <Filter>ヘッダー ファイル\protocol\connection_type</Filter>
+    <ClInclude Include="application_layer\layer_base.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\connection_type\sync_connection.hpp">
-      <Filter>ヘッダー ファイル\protocol\connection_type</Filter>
+    <ClInclude Include="application_layer\ssl_layer.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\response_reader\response_container.hpp">
-      <Filter>ヘッダー ファイル\protocol\response_reader</Filter>
+    <ClInclude Include="application_layer\tcp_layer.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\connection_type\async_connection.hpp">
-      <Filter>ヘッダー ファイル\protocol\connection_type</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.jpg">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>
