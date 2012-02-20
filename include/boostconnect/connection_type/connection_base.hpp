@@ -20,17 +20,14 @@ namespace connection_type{
 class connection_base : boost::noncopyable{
 public:
 	typedef boost::system::error_code error_code;
+	typedef boost::function<void (const error_code&)> ReadHandler;
 
 	connection_base(){}
 	virtual ~connection_base(){}
 
-	//追加	
-	virtual error_code& operator() (const std::string&,boost::asio::streambuf&,error_code&) = 0;
-	virtual error_code& operator() (
-		boost::asio::ip::tcp::resolver::iterator ep_iterator,
-		boost::asio::streambuf& buf,
-		error_code& ec
-		) = 0;
+	//通信開始(オーバーライド必須)
+	virtual error_code& operator() (const std::string&,boost::asio::streambuf&,error_code&,ReadHandler handler = [](const error_code&)->void{}) = 0;
+
 protected:
 	std::shared_ptr<application_layer::layer_base> socket_layer_;
 };

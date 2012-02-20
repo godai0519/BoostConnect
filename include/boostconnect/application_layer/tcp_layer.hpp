@@ -33,9 +33,9 @@ public:
 		boost::asio::write(socket_,buf,ec);
 		return ec;
 	}
-	error_code& read(error_code& ec)
+	error_code& read(error_code& ec,ReadHandler handler)
 	{
-		return response_->read_starter(socket_,ec);
+		return response_->read_starter(socket_,ec,handler);
 	}
 	void async_connect(boost::asio::ip::tcp::resolver::iterator& ep_iterator,ConnectHandler handler)
 	{
@@ -51,9 +51,9 @@ public:
 			boost::bind(handler,
 				boost::asio::placeholders::error));
 	}
-	void async_read()
+	void async_read(ReadHandler handler)
 	{
-		response_->async_read_starter(socket_);
+		response_->async_read_starter(socket_,handler);
 	}
 	
 private:

@@ -27,6 +27,7 @@ class client : boost::noncopyable{
 public:
 	typedef boost::asio::io_service io_service;
 	typedef boost::system::error_code error_code;
+	typedef std::shared_ptr<oauth::protocol::response_reader::response_container> response_type;
 #ifdef TWIT_LIB_PROTOCOL_APPLAYER_SSL_LAYER
 	typedef boost::asio::ssl::context context;
 #endif
@@ -69,29 +70,23 @@ public:
 		}
 	}
 #endif
-	
-	error_code& operator() (
+
+	response_type operator() (
 		const std::string& host,
 		boost::asio::streambuf& buf,
-		error_code& ec
+		error_code& ec,
+		application_layer::layer_base::ReadHandler handler = [](const error_code&)->void{}
 		)
 	{
-		return connection_type_->operator()(host,buf,ec);
+		socket_layer_->reset_response();
+		connection_type_->operator()(host,buf,ec,handler);
+		return socket_layer_->get_response();
 	}
-	error_code& operator() (
-		boost::asio::ip::tcp::resolver::iterator ep_iterator,
-		boost::asio::streambuf& buf,
-		error_code& ec
-		)
-	{
-		return connection_type_->operator()(ep_iterator,buf,ec);
-	}
-
 	const std::string service_protocol() const {return socket_layer_->service_protocol();}
 
 	//response Service
-	std::shared_ptr<oauth::protocol::response_reader::response_container> get_response(){return socket_layer_->get_response();}
-	void reset_response(){socket_layer_->reset_response();}
+	response_type get_response(){return socket_layer_->get_response();}
+	//void reset_response(){socket_layer_->reset_response();}
 
 private:
 	std::shared_ptr<application_layer::layer_base> socket_layer_;

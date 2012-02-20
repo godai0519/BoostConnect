@@ -23,6 +23,8 @@ public:
 	async_connection(std::shared_ptr<application_layer::layer_base>& socket_layer)
 	{
 		socket_layer_ = socket_layer;
+		resolver_ = new boost::asio::ip::tcp::resolver(socket_layer_->get_io_service());
+		busy = false;
 	}
 	virtual ~async_connection(){}
 	
@@ -30,11 +32,20 @@ public:
 	error_code& operator() (
 		const std::string& host,
 		boost::asio::streambuf& buf,
-		error_code& ec
+		error_code& ec,
+		ReadHandler handler
 		)
 	{
+		if(busy)
+		{
+			std::cout << "\n\nTHIS CLIENT is busy\n\n";
+			return ec;
+		}
+		busy = true;
+
 		buf_ = &buf;
-		resolver_ = std::shared_ptr<boost::asio::ip::tcp::resolver>(new boost::asio::ip::tcp::resolver(socket_layer_->get_io_service()));
+		handler_ = handler;
+		//resolver_ = std::shared_ptr<boost::asio::ip::tcp::resolver>(new boost::asio::ip::tcp::resolver(socket_layer_->get_io_service()));
 		//boost::asio::ip::tcp::resolver resolver(socket_layer_->get_io_service());
 		//query_ = std::shared_ptr<boost::asio::ip::tcp::resolver::query>(new boost::asio::ip::tcp::resolver::query(host,socket_layer_->service_protocol()));
 		boost::asio::ip::tcp::resolver::query query(host,socket_layer_->service_protocol());
@@ -46,7 +57,7 @@ public:
 		//”ñ“¯ŠúŽÀ‘•
 		return ec;
 	}
-
+	/*
 	//’Ç‰Á	
 	error_code& operator() (
 		boost::asio::ip::tcp::resolver::iterator ep_iterator,
@@ -61,11 +72,13 @@ public:
 		
 		//”ñ“¯ŠúŽÀ‘•
 		return ec;
-	}
+	}*/
 
 private:
-	std::shared_ptr<boost::asio::ip::tcp::resolver> resolver_;
-	std::shared_ptr<boost::asio::ip::tcp::resolver::query> query_;
+	ReadHandler handler_;
+	bool busy;
+
+	boost::asio::ip::tcp::resolver* resolver_;
 	boost::asio::streambuf *buf_;
 	void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator,const boost::system::error_code& ec)
 	{
@@ -91,9 +104,18 @@ private:
 	{
 		if(!ec)
 		{
-			socket_layer_->async_read();
+			socket_layer_->async_read(
+				boost::bind(&async_connection::handle_read,this,boost::asio::placeholders::error)
+				);
 		}
 		else std::cout << "Error Write!?" << std::endl;
+	}
+	void handle_read(const error_code& ec)
+	{
+		std::cout << "ASYNC";
+		handler_(ec);
+		std::cout << "END";
+		busy = false;
 	}
 };
 

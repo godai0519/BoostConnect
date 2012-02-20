@@ -26,6 +26,7 @@ public:
 	typedef std::string body_type;
 	
 	typedef boost::system::error_code error_code;
+	typedef boost::function<void (const error_code&)> ReadHandler;
 
 	response_container(){}
 	virtual ~response_container(){}
@@ -58,7 +59,7 @@ public:
 	//
 public:
 	template<class Socket>
-	error_code& read_starter(Socket& socket,error_code& ec)
+	error_code& read_starter(Socket& socket,error_code& ec,ReadHandler handler)
 	{
 		//ヘッダーのみ
 		boost::asio::read_until(socket,read_buf,"\r\n\r\n",ec);
@@ -69,7 +70,7 @@ public:
 		if(is_chunked())
 		{
 			//syncなchunked
-			read_chunk_size(socket,ec);
+			read_chunk_size(socket,ec,handler);
 			return ec;
 		}
 		
@@ -106,12 +107,12 @@ public:
 
 		//で，ボディっと
 		//body_.append(response);
-
+		handler(ec);
 		return ec;
 	}
 	
 	template<class Socket>
-	error_code& read_chunk_size(Socket& socket,error_code& ec)
+	error_code& read_chunk_size(Socket& socket,error_code& ec,ReadHandler handler)
 	{
 		boost::asio::read_until(socket,read_buf,"\r\n",ec);
 
@@ -119,12 +120,12 @@ public:
 		read_buf.consume(chunk_parser((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()),chunk));
 		//chunk量+"\r\n"まで，read_bufを消し去った
 		
-		if(chunk == 0) return read_end(socket,ec);
-		return read_chunk_body(socket,chunk,ec);
+		if(chunk == 0) return read_end(socket,ec,handler);
+		return read_chunk_body(socket,chunk,ec,handler);
 	}
 	
 	template<class Socket>
-	error_code& read_chunk_body(Socket& socket,const std::size_t chunk,error_code& ec)
+	error_code& read_chunk_body(Socket& socket,const std::size_t chunk,error_code& ec,ReadHandler handler)
 	{
 		boost::asio::read(socket,read_buf,
 			boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf.data())),
@@ -135,15 +136,18 @@ public:
 		body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()),chunk+2);
 		read_buf.consume(chunk+2); //流す
 
-		return read_chunk_size(socket,ec);
+		return read_chunk_size(socket,ec,handler);
 	}
 	template<class Socket>
-	error_code& read_end(Socket& socket,error_code &ec)
+	error_code& read_end(Socket& socket,error_code &ec,ReadHandler handler)
 	{
 		boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec);
-		if(ec == boost::asio::error::eof) return ec;
-		if(read_buf.size() == 0) return ec; //空なら終わりだ．
-		return ec;
+		if(ec == boost::asio::error::eof || read_buf.size() == 0)
+		{
+			handler(ec);
+			return ec; //空なら終わりだ．
+		}
+		return ec; //ここはエラー
 	}
 
 
@@ -152,7 +156,7 @@ public:
 	//
 public:
 	template<class Socket>
-	void async_read_starter(Socket& socket)
+	void async_read_starter(Socket& socket,ReadHandler handler)
 	{
 		//ただわかりやすくしただけ．渡し逃げ．
 		boost::asio::async_read_until(socket,
@@ -161,7 +165,8 @@ public:
 			boost::bind(&response_container::async_read_header<Socket>,this,
 				boost::ref(socket),
 				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+				boost::asio::placeholders::bytes_transferred,
+				handler));
 
 		return;
 	}
@@ -175,7 +180,7 @@ public:
 protected:
 
 	template<class Socket>
-	void async_read_header(Socket& socket,const error_code& ec,const std::size_t)
+	void async_read_header(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler)
 	{
 		if(read_buf.size()==0) return; //きっとレスポンス無いタイプ
 
@@ -192,7 +197,8 @@ protected:
 				boost::bind(&response_container::async_read_chunk_size<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 
 			return;
 		}
@@ -203,7 +209,8 @@ protected:
 				boost::bind(&response_container::async_read_all<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 
 			return;
 		}
@@ -216,18 +223,19 @@ protected:
 				boost::bind(&response_container::async_read_all<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 		}
 				
 		return;
 	}
 		
 	template<class Socket>
-	void async_read_all(Socket& socket,const error_code& ec,const std::size_t size)
+	void async_read_all(Socket& socket,const error_code& ec,const std::size_t size,ReadHandler handler)
 	{
 		if(read_buf.size()==0) 
 		{
-			async_read_starter(socket);
+			handler(ec);
 		}
 		else
 		{
@@ -239,14 +247,15 @@ protected:
 				boost::bind(&response_container::async_read_all<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 		}
 				
 		return;
 	}
 		
-	template<class Socket>
-	void async_read_body(Socket& socket,const error_code& ec,const std::size_t)
+	/*template<class Socket>
+	void async_read_body(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler)
 	{
 		if(read_buf.size()==0) return; //空？
 		else
@@ -259,10 +268,10 @@ protected:
 		
 		return;
 	}
-
+	*/
 	//なんか魔導書と似ちゃってるような
 	template<class Socket>
-	void async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t)
+	void async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler)
 	{
 		if(read_buf.size()==0) return; //ヘッダー読み込んだから半端は有るはず
 		if(read_buf.size()<=2) //chunk量+"\r\n"ない．
@@ -274,7 +283,8 @@ protected:
 				boost::bind(&response_container::async_read_chunk_size<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 		}
 		else //chunkが入ってる
 		{
@@ -290,13 +300,14 @@ protected:
 					boost::ref(socket),
 					chunk,
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 		}
 
 		return;
 	}
 	template<class Socket>
-	void async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t)
+	void async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t,ReadHandler handler)
 	{
 		if(read_buf.size()==0) return; //ないんだけど？
 		if(chunk == 0) //終わったけど
@@ -307,7 +318,8 @@ protected:
 				boost::bind(&response_container::async_read_end<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 		}
 		else //さて本体
 		{
@@ -324,13 +336,18 @@ protected:
 				boost::bind(&response_container::async_read_chunk_size<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
-					boost::asio::placeholders::bytes_transferred));
+					boost::asio::placeholders::bytes_transferred,
+					handler));
 		}
 	}
 	template<class Socket>
-	void async_read_end(Socket& socket,const error_code &ec,const std::size_t)
+	void async_read_end(Socket& socket,const error_code &ec,const std::size_t,ReadHandler handler)
 	{
-		if(read_buf.size() == 0) return; //空なら終わりだ．
+		if(read_buf.size() == 0)
+		{
+			handler(ec);
+			return; //空なら終わりだ．
+		}
 
 		//ヘッダーから呼び出し始める
 		boost::asio::async_read_until(socket,
@@ -339,7 +356,8 @@ protected:
 			boost::bind(&response_container::async_read_header<Socket>,this,
 				boost::ref(socket),
 				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+				boost::asio::placeholders::bytes_transferred,
+				handler));
 	}
 
 private:

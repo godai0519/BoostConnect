@@ -50,7 +50,7 @@ public:
 	
 	typedef boost::function<void (const error_code&)> ConnectHandler;
 	typedef boost::function<void (const error_code&)> WriteHandler;
-	//typedef boost::function<void (const error_code&)> ReadHandler;
+	typedef boost::function<void (const error_code&)> ReadHandler;
 	
 	//’Ç‰Á
 	virtual io_service& get_io_service() = 0;
@@ -58,11 +58,11 @@ public:
 
 	virtual error_code& connect(boost::asio::ip::tcp::resolver::iterator&,error_code&) = 0;
 	virtual error_code& write(boost::asio::streambuf&,error_code&) = 0;
-	virtual error_code& read(error_code&) = 0;
+	virtual error_code& read(error_code&,ReadHandler) = 0;
 	
 	virtual void async_connect(boost::asio::ip::tcp::resolver::iterator&,ConnectHandler) = 0;
 	virtual void async_write(boost::asio::streambuf&,WriteHandler) = 0;
-	virtual void async_read() = 0;
+	virtual void async_read(ReadHandler) = 0;
 /*	virtual void async_read_header(boost::asio::streambuf&,ReadHandler) = 0;
 	virtual void async_read_body(boost::asio::streambuf&,ReadHandler) = 0;*/
 	
