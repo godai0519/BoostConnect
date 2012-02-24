@@ -29,17 +29,18 @@ public:
 	virtual ~async_connection(){}
 	
 	//’Ç‰Á	
-	error_code& operator() (
+	void operator() (
 		const std::string& host,
 		boost::asio::streambuf& buf,
-		error_code& ec,
 		ReadHandler handler
 		)
 	{
+		error_code ec;
 		if(busy)
 		{
 			std::cout << "\n\nTHIS CLIENT is busy\n\n";
-			return ec;
+			//—áŠOII
+			//(–¢ŽÀ‘•)
 		}
 		busy = true;
 
@@ -55,7 +56,7 @@ public:
 			boost::asio::placeholders::error)); //handle_resolve‚Ö
 
 		//”ñ“¯ŠúŽÀ‘•
-		return ec;
+		//return ec;
 	}
 	/*
 	//’Ç‰Á	

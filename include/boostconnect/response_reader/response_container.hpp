@@ -11,6 +11,7 @@
 #include <map>
 #include <memory>
 #include <boost/asio.hpp>
+#include <boost/asio/detail/throw_error.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/fusion/include/std_pair.hpp>
@@ -59,10 +60,10 @@ public:
 	//
 public:
 	template<class Socket>
-	error_code& read_starter(Socket& socket,error_code& ec,ReadHandler handler)
+	void read_starter(Socket& socket,/*error_code& ec,*/ReadHandler handler)
 	{
 		//ヘッダーのみ
-		boost::asio::read_until(socket,read_buf,"\r\n\r\n",ec);
+		boost::asio::read_until(socket,read_buf,"\r\n\r\n"/*,ec*/);
 		read_buf.consume(
 			read_header((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()))
 		);
@@ -70,20 +71,25 @@ public:
 		if(is_chunked())
 		{
 			//syncなchunked
-			read_chunk_size(socket,ec,handler);
-			return ec;
+			read_chunk_size(socket,handler);
+			return;
 		}
 		
+		//読み込みを試行
+		//読み込めたらそれをbodyに追加して，エラーコードがどうであれhandlerを呼び出す
+		//エラーコードがeof以外だったらthrowする
+		error_code ec;
 		if(header_.find("Content-Length")==header_.end())
 		{
 			while(boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec));
+			std::cout << ec.message();
 			body_ +=  boost::asio::buffer_cast<const char*>(read_buf.data());
 			read_buf.consume(read_buf.size());
 		}
 		else
 		{
 			//ここにきたなら"Content-Length"がありますよね
-			const int content_length = boost::lexical_cast<size_t>(header_.at("Content-Length"));
+			const size_t content_length = boost::lexical_cast<size_t>(header_.at("Content-Length"));
 			boost::asio::read(socket,read_buf,
 				boost::asio::transfer_at_least(content_length-boost::asio::buffer_size(read_buf.data())),
 				ec
@@ -92,6 +98,12 @@ public:
 			read_buf.consume(content_length);
 		}
 
+		handler(ec);
+		if(ec && ec!=boost::asio::error::eof)
+		{
+			boost::asio::detail::throw_error(ec,"read_starter");
+		}
+		return;
 
 
 		//とりあえず全部読み込み		
@@ -107,47 +119,57 @@ public:
 
 		//で，ボディっと
 		//body_.append(response);
-		handler(ec);
-		return ec;
+		
+		//error_code ec;
+		//handler(ec);
+		//return/* ec*/;
 	}
 	
 	template<class Socket>
-	error_code& read_chunk_size(Socket& socket,error_code& ec,ReadHandler handler)
+	void read_chunk_size(Socket& socket/*,error_code& ec*/,ReadHandler handler)
 	{
-		boost::asio::read_until(socket,read_buf,"\r\n",ec);
+		boost::asio::read_until(socket,read_buf,"\r\n"/*,ec*/);
 
 		std::size_t chunk;
 		read_buf.consume(chunk_parser((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()),chunk));
 		//chunk量+"\r\n"まで，read_bufを消し去った
 		
-		if(chunk == 0) return read_end(socket,ec,handler);
-		return read_chunk_body(socket,chunk,ec,handler);
+		if(chunk == 0)
+		{
+			read_end(socket/*,ec*/,handler);
+			return;
+		}
+
+		read_chunk_body(socket,chunk,/*ec,*/handler);
+		return;
 	}
 	
 	template<class Socket>
-	error_code& read_chunk_body(Socket& socket,const std::size_t chunk,error_code& ec,ReadHandler handler)
+	void read_chunk_body(Socket& socket,const std::size_t chunk,/*error_code& ec,*/ReadHandler handler)
 	{
 		boost::asio::read(socket,read_buf,
-			boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf.data())),
-			ec
+			boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf.data()))/*,
+			ec*/
 			);
 		
-		if(boost::asio::buffer_size(read_buf.data()) < chunk + 2) return ec;
+		if(boost::asio::buffer_size(read_buf.data()) < chunk + 2) return/* ec*/;
 		body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()),chunk+2);
 		read_buf.consume(chunk+2); //流す
 
-		return read_chunk_size(socket,ec,handler);
+		read_chunk_size(socket,/*ec,*/handler);
+		return;
 	}
 	template<class Socket>
-	error_code& read_end(Socket& socket,error_code &ec,ReadHandler handler)
+	void read_end(Socket& socket,/*error_code &ec,*/ReadHandler handler)
 	{
-		boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec);
-		if(ec == boost::asio::error::eof || read_buf.size() == 0)
-		{
+		//boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1)/*,ec*/);
+		//if(ec == boost::asio::error::eof || read_buf.size() == 0)
+		//{
+			error_code ec;
 			handler(ec);
-			return ec; //空なら終わりだ．
-		}
-		return ec; //ここはエラー
+			return/* ec*/; //空なら終わりだ．
+		//}
+		//return/* ec*/; //ここはエラー
 	}
 
 

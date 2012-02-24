@@ -27,24 +27,22 @@ public:
 	io_service& get_io_service(){return socket_.get_io_service();}
 	const std::string service_protocol() const {return std::string("https");}
 	
-	error_code& connect(boost::asio::ip::tcp::resolver::iterator& ep_iterator,error_code& ec)
+	void connect(boost::asio::ip::tcp::resolver::iterator& ep_iterator)
 	{
-		boost::asio::connect(socket_.lowest_layer(),ep_iterator,ec);
-		if(!ec) socket_.handshake(ssl_socket::client,ec);
+		boost::asio::connect(socket_.lowest_layer(),ep_iterator);
+		socket_.handshake(ssl_socket::client);
 		
 		//connect‚Å‚«‚Ä‚½‚çhandshake‚ÌŒ‹‰Ê
 		//‚Å‚«‚Ä‚È‚©‚Á‚½‚çhandshake‚¹‚¸‚É•Ô‚·
-		return ec; 
 	}
-	error_code& write(boost::asio::streambuf& buf,error_code& ec)
+	void write(boost::asio::streambuf& buf)
 	{
-		boost::asio::write(socket_,buf,ec);
-		return ec;
+		boost::asio::write(socket_,buf);
 	}
 	
-	error_code& read(error_code& ec,ReadHandler handler)
+	void read(ReadHandler handler)
 	{
-		return response_->read_starter(socket_,ec,handler);
+		response_->read_starter(socket_,handler);
 	}
 	void async_connect(boost::asio::ip::tcp::resolver::iterator& ep_iterator,ConnectHandler handler)
 	{

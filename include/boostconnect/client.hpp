@@ -70,7 +70,18 @@ public:
 		}
 	}
 #endif
-
+	
+	response_type operator() (
+		const std::string& host,
+		boost::asio::streambuf& buf,
+	//	error_code& ec,
+		application_layer::layer_base::ReadHandler handler = [](const error_code&)->void{}
+		)
+	{
+		socket_layer_->reset_response();
+		connection_type_->operator()(host,buf,/*ec,*/handler);
+		return socket_layer_->get_response();
+	}
 	response_type operator() (
 		const std::string& host,
 		boost::asio::streambuf& buf,
@@ -78,10 +89,24 @@ public:
 		application_layer::layer_base::ReadHandler handler = [](const error_code&)->void{}
 		)
 	{
-		socket_layer_->reset_response();
-		connection_type_->operator()(host,buf,ec,handler);
-		return socket_layer_->get_response();
+		response_type res;
+		try
+		{
+			res = (*this)(host,buf,handler);
+		}
+		catch(const boost::system::system_error &e)
+		{
+			ec = e.code(); //例外からerror_codeを抜き取る
+			res = socket_layer_->get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+		}
+//  boost::throw_exception(e);
+
+		//error_code ec;
+		//response_type res = (*this)(host,buf,ec,handler);
+		//boost::asio::detail::throw_error(ec);
+		return res;
 	}
+
 	const std::string service_protocol() const {return socket_layer_->service_protocol();}
 
 	//response Service

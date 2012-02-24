@@ -26,7 +26,7 @@ public:
 	virtual ~connection_base(){}
 
 	//通信開始(オーバーライド必須)
-	virtual error_code& operator() (const std::string&,boost::asio::streambuf&,error_code&,ReadHandler handler = [](const error_code&)->void{}) = 0;
+	virtual void operator() (const std::string&,boost::asio::streambuf&,/*error_code&,*/ReadHandler handler = [](const error_code&)->void{}) = 0;
 
 protected:
 	std::shared_ptr<application_layer::layer_base> socket_layer_;

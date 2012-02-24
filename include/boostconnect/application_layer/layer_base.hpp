@@ -56,9 +56,9 @@ public:
 	virtual io_service& get_io_service() = 0;
 	virtual const std::string service_protocol() const = 0;
 
-	virtual error_code& connect(boost::asio::ip::tcp::resolver::iterator&,error_code&) = 0;
-	virtual error_code& write(boost::asio::streambuf&,error_code&) = 0;
-	virtual error_code& read(error_code&,ReadHandler) = 0;
+	virtual void connect(boost::asio::ip::tcp::resolver::iterator&) = 0;
+	virtual void write(boost::asio::streambuf&) = 0;
+	virtual void read(ReadHandler) = 0;
 	
 	virtual void async_connect(boost::asio::ip::tcp::resolver::iterator&,ConnectHandler) = 0;
 	virtual void async_write(boost::asio::streambuf&,WriteHandler) = 0;
