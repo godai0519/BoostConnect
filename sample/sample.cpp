@@ -15,7 +15,7 @@ int main()
 	oauth::protocol::client client(
 		io_service,
 		ctx,
-		oauth::protocol::connection_type::/*a*/sync
+		oauth::protocol::connection_type::async
 		);
 
 	std::string host = "www.google.co.jp";

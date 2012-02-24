@@ -81,7 +81,7 @@ public:
 		error_code ec;
 		if(header_.find("Content-Length")==header_.end())
 		{
-			while(boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1),ec));
+			while(boost::asio::read(socket,read_buf,/*boost::asio::transfer_at_least(1)*/boost::asio::transfer_all(),ec));
 			std::cout << ec.message();
 			body_ +=  boost::asio::buffer_cast<const char*>(read_buf.data());
 			read_buf.consume(read_buf.size());
@@ -99,7 +99,7 @@ public:
 		}
 
 		handler(ec);
-		if(ec && ec!=boost::asio::error::eof)
+		if(ec && ec!=boost::asio::error::eof && ec.value()!=0x140000DB)
 		{
 			boost::asio::detail::throw_error(ec,"read_starter");
 		}
