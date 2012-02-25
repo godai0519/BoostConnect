@@ -37,7 +37,14 @@ public:
 	//
 	// 共通
 	//
+public:
+	int status_code_;
+	std::string http_version_;
+	std::string status_message_;
+	header_type header_;
+	body_type body_;
 
+protected:
 	//少なくとも\r\n\r\nまで収納されていると仮定
 	template<class T>
 	const int read_header(const T& source)
@@ -71,6 +78,7 @@ public:
 		if(is_chunked())
 		{
 			//syncなchunked
+			//処理をチャンク用の関数に投げるから適当
 			read_chunk_size(socket,handler);
 			return;
 		}
@@ -82,7 +90,7 @@ public:
 		if(header_.find("Content-Length")==header_.end())
 		{
 			while(boost::asio::read(socket,read_buf,/*boost::asio::transfer_at_least(1)*/boost::asio::transfer_all(),ec));
-			std::cout << ec.message();
+			//std::cout << ec.message();
 			body_ +=  boost::asio::buffer_cast<const char*>(read_buf.data());
 			read_buf.consume(read_buf.size());
 		}
@@ -124,53 +132,70 @@ public:
 		//handler(ec);
 		//return/* ec*/;
 	}
-	
+
+protected:	
 	template<class Socket>
-	void read_chunk_size(Socket& socket/*,error_code& ec*/,ReadHandler handler)
+	void read_chunk_size(Socket& socket,ReadHandler handler)
 	{
-		boost::asio::read_until(socket,read_buf,"\r\n"/*,ec*/);
+		error_code ec;
+		boost::asio::read_until(socket,read_buf,"\r\n",ec);
+		if(ec && ec!=boost::asio::error::eof)
+		{
+			handler(ec);
+			boost::asio::detail::throw_error(ec,"sync_chunk_read");
+			//例外！
+		}
 
 		std::size_t chunk;
 		read_buf.consume(chunk_parser((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()),chunk));
 		//chunk量+"\r\n"まで，read_bufを消し去った
 		
+		//chunkが0 => bodyの終了
 		if(chunk == 0)
 		{
-			read_end(socket/*,ec*/,handler);
+			handler(ec);
 			return;
 		}
 
-		read_chunk_body(socket,chunk,/*ec,*/handler);
+		//そのチャンク表示でbodyのreadを試みる．
+		read_chunk_body(socket,chunk,handler);
 		return;
 	}
 	
 	template<class Socket>
-	void read_chunk_body(Socket& socket,const std::size_t chunk,/*error_code& ec,*/ReadHandler handler)
+	void read_chunk_body(Socket& socket,const std::size_t chunk,ReadHandler handler)
 	{
+		error_code ec;
 		boost::asio::read(socket,read_buf,
-			boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf.data()))/*,
-			ec*/
+			boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf.data())),
+			ec
 			);
 		
-		if(boost::asio::buffer_size(read_buf.data()) < chunk + 2) return/* ec*/;
-		body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()),chunk+2);
+		//読み込んだところに chunk量+"\r\n" がない場合はエラとして排除
+		if(boost::asio::buffer_size(read_buf.data()) < chunk + 2)
+		{
+			handler(ec);
+			boost::asio::detail::throw_error(ec,"sync_chunk_less");
+			//例外！
+		}
+
+		body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()),chunk/*+2*/);
 		read_buf.consume(chunk+2); //流す
 
-		read_chunk_size(socket,/*ec,*/handler);
+		read_chunk_size(socket,handler);
 		return;
 	}
-	template<class Socket>
-	void read_end(Socket& socket,/*error_code &ec,*/ReadHandler handler)
+/*	template<class Socket>
+	void read_end(Socket& socket,error_code &ec,ReadHandler handler)
 	{
-		//boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1)/*,ec*/);
+		//boost::asio::read(socket,read_buf,boost::asio::transfer_at_least(1)/*,ec*//*);
 		//if(ec == boost::asio::error::eof || read_buf.size() == 0)
 		//{
-			error_code ec;
 			handler(ec);
-			return/* ec*/; //空なら終わりだ．
+			return/* ec*//*; //空なら終わりだ．
 		//}
-		//return/* ec*/; //ここはエラー
-	}
+		//return/* ec*//*; //ここはエラー
+	}*/
 
 
 	//
@@ -193,18 +218,17 @@ public:
 		return;
 	}
 
-	int status_code_;
-	std::string http_version_;
-	std::string status_message_;
-	header_type header_;
-	body_type body_;
-
 protected:
-
 	template<class Socket>
 	void async_read_header(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler)
 	{
-		if(read_buf.size()==0) return; //きっとレスポンス無いタイプ
+		//レスポンスが帰ってこない？
+		if(read_buf.size()==0)
+		{
+			handler(ec);
+			boost::asio::detail::throw_error(ec,"async_not_response");
+			//例外！
+		}
 
 		read_buf.consume(
 			read_header((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()))
@@ -212,7 +236,7 @@ protected:
 
 		if(is_chunked())
 		{
-			//asyncなchunked
+			//chunkedなasync通信
 			boost::asio::async_read_until(socket,
 				read_buf,
 				"\r\n",
@@ -221,11 +245,11 @@ protected:
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred,
 					handler));
-
-			return;
 		}
-		if(header_.find("Content-Length")==header_.end())
+		else if(header_.find("Content-Length")==header_.end())
 		{
+			//Content-Lengthが見つからないasync通信
+			//終了条件は暗示的にtransfer_all()
 			boost::asio::async_read(socket,
 				read_buf,
 				boost::bind(&response_container::async_read_all<Socket>,this,
@@ -233,11 +257,10 @@ protected:
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred,
 					handler));
-
-			return;
 		}
 		else
 		{
+			//Content-LengthをもとにReadを行う，async通信
 			//ここにきたなら"Content-Length"がありますよね
 			boost::asio::async_read(socket,
 				read_buf,
@@ -251,19 +274,25 @@ protected:
 				
 		return;
 	}
-		
+	
+	//読めるだけ読み込む
 	template<class Socket>
 	void async_read_all(Socket& socket,const error_code& ec,const std::size_t size,ReadHandler handler)
 	{
 		if(read_buf.size()==0) 
 		{
 			handler(ec);
+			boost::asio::detail::throw_error(ec,"async_not_response");
 		}
 		else
 		{
 			body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()));
 			read_buf.consume(read_buf.size());
 
+			handler(ec);
+
+			/*
+			//とりあえず最後まで読み込むのです
 			boost::asio::async_read(socket,
 				read_buf,
 				boost::bind(&response_container::async_read_all<Socket>,this,
@@ -271,6 +300,7 @@ protected:
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred,
 					handler));
+			*/
 		}
 				
 		return;
@@ -295,10 +325,16 @@ protected:
 	template<class Socket>
 	void async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler)
 	{
-		if(read_buf.size()==0) return; //ヘッダー読み込んだから半端は有るはず
-		if(read_buf.size()<=2) //chunk量+"\r\n"ない．
+		if(read_buf.size()==0)
 		{
-			//チャンク量
+			//ヘッダー読み込んだから半端は有るはず
+			//ということは，ここに来るとマズい
+			handler(ec);
+			boost::asio::detail::throw_error(ec,"async_read_chunk");
+		}
+		else if(read_buf.size()<=2)
+		{
+			//chunk量+"\r\n"ないからもう一回Readしてみようか
 			boost::asio::async_read_until(socket,
 				read_buf,
 				"\r\n",
@@ -308,11 +344,12 @@ protected:
 					boost::asio::placeholders::bytes_transferred,
 					handler));
 		}
-		else //chunkが入ってる
+		else
 		{
+			//chunk入ってるので，chunkを読み込もう
+			//chunk量+"\r\n"まで，read_bufも消し去る
 			std::size_t chunk;
 			read_buf.consume(chunk_parser((std::string)boost::asio::buffer_cast<const char*>(read_buf.data()),chunk));
-			//chunk量+"\r\n"まで，read_bufを消し去った
 
 			//chunk量読み出し
 			boost::asio::async_read(socket,
@@ -331,30 +368,35 @@ protected:
 	template<class Socket>
 	void async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t,ReadHandler handler)
 	{
-		if(read_buf.size()==0) return; //ないんだけど？
-		if(chunk == 0) //終わったけど
+		if(read_buf.size()==0)
 		{
-			boost::asio::async_read_until(socket,
+			//ないんだけど？
+			handler(ec);
+			boost::asio::detail::throw_error(ec,"async_read_body");
+		}
+		else if(chunk == 0) //終わったけど
+		{
+			boost::asio::async_read(socket,
 				read_buf,
-				"\r\n\r\n",
 				boost::bind(&response_container::async_read_end<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred,
 					handler));
 		}
-		else //さて本体
+		else
 		{
+			//さて本体
 			if(boost::asio::buffer_size(read_buf.data()) < chunk + 2) return;
 
 			//後ろに追加
-			body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()),chunk+2);
+			body_.append(boost::asio::buffer_cast<const char*>(read_buf.data()),chunk);
 			read_buf.consume(chunk+2); //流す
 
 			//chunk取得にもどるよ
 			boost::asio::async_read_until(socket,
 				read_buf,
-				"\r\n\r\n",
+				"\r\n",
 				boost::bind(&response_container::async_read_chunk_size<Socket>,this,
 					boost::ref(socket),
 					boost::asio::placeholders::error,
@@ -365,12 +407,16 @@ protected:
 	template<class Socket>
 	void async_read_end(Socket& socket,const error_code &ec,const std::size_t,ReadHandler handler)
 	{
-		if(read_buf.size() == 0)
+		if(read_buf.size() != 0)
 		{
+			//終わってない…だと？
 			handler(ec);
-			return; //空なら終わりだ．
+			boost::asio::detail::throw_error(ec,"async_not_end");
 		}
 
+		handler(ec);
+		return; //空なら終わりだ
+		/*
 		//ヘッダーから呼び出し始める
 		boost::asio::async_read_until(socket,
 			read_buf,
@@ -379,7 +425,7 @@ protected:
 				boost::ref(socket),
 				boost::asio::placeholders::error,
 				boost::asio::placeholders::bytes_transferred,
-				handler));
+				handler));*/
 	}
 
 private:

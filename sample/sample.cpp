@@ -1,3 +1,5 @@
+#define _WIN32_WINNT 0x0501
+
 #include <iostream>
 #include <boostconnect/application_layer/tcp_layer.hpp>
 #include <boostconnect/application_layer/ssl_layer.hpp>
@@ -28,7 +30,6 @@ int main()
 		os << "Connection: close\r\n";
 		os << "\r\n";
 	}
-
 	auto response = client(host,buf,/*ec,*/[&host](const error_code&)->void{std::cout << "\n\n\nTHIS is Handler"+host+"\n\n\n";});
 	
 	//std::string host2 = "www.hatena.ne.jp";
