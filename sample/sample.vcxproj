@@ -37,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\OpenSSL-Win32\include;C:\boost\include\boost-1_48;$(SolutionDIr)include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\OpenSSL-Win32\include;C:\boost\include\boost-1_49;$(SolutionDIr)include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\OpenSSL-Win32\lib\VC\static;C:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

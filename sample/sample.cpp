@@ -1,5 +1,3 @@
-#define _WIN32_WINNT 0x0501
-
 #include <iostream>
 #include <boostconnect/application_layer/tcp_layer.hpp>
 #include <boostconnect/application_layer/ssl_layer.hpp>
@@ -32,17 +30,17 @@ int main()
 	}
 	auto response = client(host,buf,/*ec,*/[&host](const error_code&)->void{std::cout << "\n\n\nTHIS is Handler"+host+"\n\n\n";});
 	
-	//std::string host2 = "www.hatena.ne.jp";
-	//boost::system::error_code ec2;
-	//boost::asio::streambuf buf2;
-	//std::ostream os2(&buf2);
-	//{
-	//	os2 << "GET / HTTP/1.1\r\n";
-	//	os2 << "Host: "+host2+"\r\n";
-	//	os2 << "Connection: close\r\n";
-	//	os2 << "\r\n";
-	//}
-	//auto response2 = client(host2,buf2,/*ec2,*/[&host2](const error_code&)->void{std::cout << "\n\n\nTHIS is Handler"+host2+"\n\n\n";});
+	std::string host2 = "www.hatena.ne.jp";
+	boost::system::error_code ec2;
+	boost::asio::streambuf buf2;
+	std::ostream os2(&buf2);
+	{
+		os2 << "GET / HTTP/1.1\r\n";
+		os2 << "Host: "+host2+"\r\n";
+		os2 << "Connection: close\r\n";
+		os2 << "\r\n";
+	}
+	auto response2 = client(host2,buf2,/*ec2,*/[&host2](const error_code&)->void{std::cout << "\n\n\nTHIS is Handler"+host2+"\n\n\n";});
 	io_service.run();
 
 	//auto response = client.get_response();
