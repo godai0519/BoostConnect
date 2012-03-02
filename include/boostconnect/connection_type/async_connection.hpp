@@ -38,9 +38,8 @@ public:
 		error_code ec;
 		if(busy)
 		{
-			std::cout << "\n\nTHIS CLIENT is busy\n\n";
+			throw std::runtime_error("SOCKET_BUSY");
 			//—áŠOII
-			//(–¢ŽÀ‘•)
 		}
 		busy = true;
 
@@ -113,9 +112,9 @@ private:
 	}
 	void handle_read(const error_code& ec)
 	{
-		std::cout << "ASYNC";
+		//std::cout << "ASYNC";
 		handler_(ec);
-		std::cout << "END";
+		//std::cout << "END";
 		busy = false;
 	}
 };

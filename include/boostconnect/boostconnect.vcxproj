@@ -18,7 +18,12 @@
     <ClInclude Include="connection_type\async_connection.hpp" />
     <ClInclude Include="connection_type\connection_base.hpp" />
     <ClInclude Include="connection_type\sync_connection.hpp" />
-    <ClInclude Include="response_reader\response_container.hpp" />
+    <ClInclude Include="exception.hpp" />
+    <ClInclude Include="exception\error_code.hpp" />
+    <ClInclude Include="exception\exception_base.hpp" />
+    <ClInclude Include="exception\socket_error.hpp" />
+    <ClInclude Include="reader.hpp" />
+    <ClInclude Include="response.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.jpg" />

@@ -23,7 +23,8 @@
 #pragma comment(lib, "ssleay32MDd.lib")
 #endif
 
-#include "../response_reader/response_container.hpp"
+#include "../reader.hpp"
+#include "../response.hpp"
 
 namespace oauth{
 namespace protocol{
@@ -32,10 +33,9 @@ namespace application_layer{
 //socketを包み込む、applicationlayerを主に見分けるために
 class layer_base : boost::noncopyable{
 public:
+//	layer_base(){}
 	layer_base()
-	{
-		reset_response();
-	}
+		: reader_(new oauth::protocol::reader()) { }
 	virtual ~layer_base(){}
 	
 	typedef boost::asio::io_service io_service;
@@ -51,26 +51,32 @@ public:
 	typedef boost::function<void (const error_code&)> ConnectHandler;
 	typedef boost::function<void (const error_code&)> WriteHandler;
 	typedef boost::function<void (const error_code&)> ReadHandler;
-	
-	//追加
+		
 	virtual io_service& get_io_service() = 0;
 	virtual const std::string service_protocol() const = 0;
 
+	//共通
+	virtual void close() = 0;
+
+	//同期通信
 	virtual void connect(boost::asio::ip::tcp::resolver::iterator&) = 0;
 	virtual void write(boost::asio::streambuf&) = 0;
 	virtual void read(ReadHandler) = 0;
 	
+	//非同期通信
 	virtual void async_connect(boost::asio::ip::tcp::resolver::iterator&,ConnectHandler) = 0;
 	virtual void async_write(boost::asio::streambuf&,WriteHandler) = 0;
 	virtual void async_read(ReadHandler) = 0;
+
 /*	virtual void async_read_header(boost::asio::streambuf&,ReadHandler) = 0;
 	virtual void async_read_body(boost::asio::streambuf&,ReadHandler) = 0;*/
 	
-	std::shared_ptr<oauth::protocol::response_reader::response_container> get_response(){return response_;}
-	void reset_response(){response_.reset(new oauth::protocol::response_reader::response_container());}
+	inline const std::shared_ptr<oauth::protocol::response>& get_response() const {return reader_->get_response();}
+	inline const std::shared_ptr<oauth::protocol::response>& reset_response() const {return reader_->reset_response();}
 
 protected:
-	std::shared_ptr<oauth::protocol::response_reader::response_container> response_;
+	std::shared_ptr<oauth::protocol::reader> reader_;
+	//std::shared_ptr<oauth::protocol::response_reader::response_container> response_;
 };
 
 /*class layer_base : boost::noncopyable{ //最基底クラス？

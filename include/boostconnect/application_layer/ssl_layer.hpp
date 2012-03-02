@@ -13,7 +13,6 @@
 #include <boost/asio/ssl.hpp>
 #include <boost/bind.hpp>
 #include "layer_base.hpp"
-#include "../response_reader/response_container.hpp"
 
 namespace oauth{
 namespace protocol{
@@ -26,7 +25,8 @@ public:
 	
 	io_service& get_io_service(){return socket_.get_io_service();}
 	const std::string service_protocol() const {return std::string("https");}
-	
+	void close(){socket_.lowest_layer().close();}
+
 	void connect(boost::asio::ip::tcp::resolver::iterator& ep_iterator)
 	{
 		boost::asio::connect(socket_.lowest_layer(),ep_iterator);
@@ -42,7 +42,7 @@ public:
 	
 	void read(ReadHandler handler)
 	{
-		response_->read_starter(socket_,handler);
+		reader_->read_starter(socket_,handler);
 	}
 	void async_connect(boost::asio::ip::tcp::resolver::iterator& ep_iterator,ConnectHandler handler)
 	{
@@ -61,7 +61,7 @@ public:
 	}
 	void async_read(ReadHandler handler)
 	{
-		response_->async_read_starter(socket_,handler);
+		reader_->async_read_starter(socket_,handler);
 	}
 
 private:

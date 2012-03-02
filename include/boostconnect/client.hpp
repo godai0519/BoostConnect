@@ -27,7 +27,7 @@ class client : boost::noncopyable{
 public:
 	typedef boost::asio::io_service io_service;
 	typedef boost::system::error_code error_code;
-	typedef std::shared_ptr<oauth::protocol::response_reader::response_container> response_type;
+	typedef std::shared_ptr<oauth::protocol::response> response_type;
 #ifdef TWIT_LIB_PROTOCOL_APPLAYER_SSL_LAYER
 	typedef boost::asio::ssl::context context;
 #endif
@@ -71,46 +71,47 @@ public:
 	}
 #endif
 	
-	response_type operator() (
+	const response_type& operator() (
 		const std::string& host,
 		boost::asio::streambuf& buf,
 	//	error_code& ec,
 		application_layer::layer_base::ReadHandler handler = [](const error_code&)->void{}
 		)
 	{
-		socket_layer_->reset_response();
+		const response_type& response = socket_layer_->reset_response();
 		connection_type_->operator()(host,buf,/*ec,*/handler);
-		return socket_layer_->get_response();
+		return response;
 	}
-	response_type operator() (
+	const response_type& operator() (
 		const std::string& host,
 		boost::asio::streambuf& buf,
 		error_code& ec,
 		application_layer::layer_base::ReadHandler handler = [](const error_code&)->void{}
 		)
 	{
-		response_type res;
 		try
 		{
-			res = (*this)(host,buf,handler);
+			const response_type& response = (*this)(host,buf,handler);
+			return response;
 		}
 		catch(const boost::system::system_error &e)
 		{
 			ec = e.code(); //例外からerror_codeを抜き取る
-			res = socket_layer_->get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+			const response_type& response = socket_layer_->get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+			return response;
 		}
-//  boost::throw_exception(e);
+	}
 
-		//error_code ec;
-		//response_type res = (*this)(host,buf,ec,handler);
-		//boost::asio::detail::throw_error(ec);
-		return res;
+	void close()
+	{
+		socket_layer_->close();
+		return;
 	}
 
 	const std::string service_protocol() const {return socket_layer_->service_protocol();}
 
 	//response Service
-	response_type get_response(){return socket_layer_->get_response();}
+	inline const response_type& get_response(){return socket_layer_->get_response();}
 	//void reset_response(){socket_layer_->reset_response();}
 
 private:

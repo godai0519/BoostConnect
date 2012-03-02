@@ -36,9 +36,8 @@ public:
 	{
 		if(busy)
 		{
-			std::cout << "\n\nTHIS CLIENT is busy\n\n";
+			throw std::runtime_error("SOCKET_BUSY");
 			//—áŠOII
-			//(–¢À‘•)
 		}
 		busy = true;
 		handler_ = handler;
@@ -58,9 +57,9 @@ public:
 private:
 	void handle_read(const error_code& ec)
 	{
-		std::cout << "SYNC";
+		//std::cout << "SYNC";
 		handler_(ec);
-		std::cout << "END";
+		//std::cout << "END";
 	}
 	
 	ReadHandler handler_;

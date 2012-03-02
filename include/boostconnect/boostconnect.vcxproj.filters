@@ -13,22 +13,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル\response_reader">
-      <UniqueIdentifier>{e4cf55ef-b221-493d-84b1-020c67d19edf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\application_layer">
       <UniqueIdentifier>{7b9a71b7-9318-4417-b3d8-3e2f7022e8e0}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\connection_type">
       <UniqueIdentifier>{d36f7781-c3cc-47ed-81c6-ddfc5f0bafe5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\exception">
+      <UniqueIdentifier>{27a004b8-8a8e-4f00-9ad9-7d2d94ad7342}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.hpp">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="response_reader\response_container.hpp">
-      <Filter>ヘッダー ファイル\response_reader</Filter>
     </ClInclude>
     <ClInclude Include="connection_type\async_connection.hpp">
       <Filter>ヘッダー ファイル\connection_type</Filter>
@@ -47,6 +44,24 @@
     </ClInclude>
     <ClInclude Include="application_layer\tcp_layer.hpp">
       <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="exception.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="exception\exception_base.hpp">
+      <Filter>ヘッダー ファイル\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="exception\socket_error.hpp">
+      <Filter>ヘッダー ファイル\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="exception\error_code.hpp">
+      <Filter>ヘッダー ファイル\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="response.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="reader.hpp">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
