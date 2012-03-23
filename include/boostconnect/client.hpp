@@ -117,7 +117,9 @@ public:
 private:
 	std::shared_ptr<application_layer::layer_base> socket_layer_;
 	std::shared_ptr<connection_type::connection_base> connection_type_;
+#ifndef NO_SSL
 	context *ctx_;
+#endif
 };
 
 } // namespace protocol

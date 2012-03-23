@@ -1,5 +1,5 @@
 //
-// protocol.hpp
+// layer_base.hpp
 // ~~~~~~~~~~
 //
 // TCPやSSL判断のための、Boost.Asioを使用したクラス群

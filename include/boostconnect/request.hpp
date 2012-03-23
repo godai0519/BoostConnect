@@ -1,12 +1,12 @@
 //
-// response.hpp
+// request.hpp
 // ~~~~~~~~~~
 //
-// レスポンスコンテナー
+// リクエストコンテナー
 //
 
-#ifndef TWIT_LIB_PROTOCOL_RESPONSE
-#define TWIT_LIB_PROTOCOL_RESPONSE
+#ifndef TWIT_LIB_PROTOCOL_REQUEST
+#define TWIT_LIB_PROTOCOL_REQUEST
 
 #include <string>
 #include <map>
@@ -15,17 +15,16 @@
 namespace oauth{
 namespace protocol{
 
-struct response : boost::noncopyable{
+struct request : boost::noncopyable{
 	typedef std::string string_type;
 	typedef std::map<string_type,string_type> header_type;
-
-	int status_code;
+	
+	string_type method;
+	string_type uri;
 	string_type http_version;
-	string_type status_message;
 	header_type header;
+	
 	string_type body;
-
-	response() : status_code(0){}
 };
 
 } // namespace protocol

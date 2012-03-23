@@ -74,6 +74,7 @@ private:
 		}
 		else std::cout << "Error Connect!?" << std::endl;
 	}
+
 	ssl_socket socket_;
 };
 

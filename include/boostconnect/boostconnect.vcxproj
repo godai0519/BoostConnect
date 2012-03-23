@@ -11,19 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application_layer\http_session.hpp" />
     <ClInclude Include="application_layer\layer_base.hpp" />
+    <ClInclude Include="application_layer\socket_base.hpp" />
     <ClInclude Include="application_layer\ssl_layer.hpp" />
     <ClInclude Include="application_layer\tcp_layer.hpp" />
     <ClInclude Include="client.hpp" />
     <ClInclude Include="connection_type\async_connection.hpp" />
     <ClInclude Include="connection_type\connection_base.hpp" />
     <ClInclude Include="connection_type\sync_connection.hpp" />
-    <ClInclude Include="exception.hpp" />
-    <ClInclude Include="exception\error_code.hpp" />
-    <ClInclude Include="exception\exception_base.hpp" />
-    <ClInclude Include="exception\socket_error.hpp" />
     <ClInclude Include="reader.hpp" />
+    <ClInclude Include="request.hpp" />
     <ClInclude Include="response.hpp" />
+    <ClInclude Include="server.hpp" />
+    <ClInclude Include="system\error_code.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.jpg" />

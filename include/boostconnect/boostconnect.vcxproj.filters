@@ -19,8 +19,8 @@
     <Filter Include="ヘッダー ファイル\connection_type">
       <UniqueIdentifier>{d36f7781-c3cc-47ed-81c6-ddfc5f0bafe5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\exception">
-      <UniqueIdentifier>{27a004b8-8a8e-4f00-9ad9-7d2d94ad7342}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\system">
+      <UniqueIdentifier>{f73b34bc-de0c-4344-af9b-f7f2c42c5eba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,23 +45,26 @@
     <ClInclude Include="application_layer\tcp_layer.hpp">
       <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
-    <ClInclude Include="exception.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="exception\exception_base.hpp">
-      <Filter>ヘッダー ファイル\exception</Filter>
-    </ClInclude>
-    <ClInclude Include="exception\socket_error.hpp">
-      <Filter>ヘッダー ファイル\exception</Filter>
-    </ClInclude>
-    <ClInclude Include="exception\error_code.hpp">
-      <Filter>ヘッダー ファイル\exception</Filter>
-    </ClInclude>
     <ClInclude Include="response.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="reader.hpp">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="server.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="request.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\http_session.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\socket_base.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="system\error_code.hpp">
+      <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
