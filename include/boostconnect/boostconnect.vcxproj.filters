@@ -22,6 +22,9 @@
     <Filter Include="ヘッダー ファイル\system">
       <UniqueIdentifier>{f73b34bc-de0c-4344-af9b-f7f2c42c5eba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\session">
+      <UniqueIdentifier>{4825fe2d-122b-4aae-8e46-8c179cded422}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.hpp">
@@ -36,19 +39,7 @@
     <ClInclude Include="connection_type\sync_connection.hpp">
       <Filter>ヘッダー ファイル\connection_type</Filter>
     </ClInclude>
-    <ClInclude Include="application_layer\layer_base.hpp">
-      <Filter>ヘッダー ファイル\application_layer</Filter>
-    </ClInclude>
-    <ClInclude Include="application_layer\ssl_layer.hpp">
-      <Filter>ヘッダー ファイル\application_layer</Filter>
-    </ClInclude>
-    <ClInclude Include="application_layer\tcp_layer.hpp">
-      <Filter>ヘッダー ファイル\application_layer</Filter>
-    </ClInclude>
     <ClInclude Include="response.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="reader.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="server.hpp">
@@ -57,14 +48,20 @@
     <ClInclude Include="request.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application_layer\http_session.hpp">
-      <Filter>ヘッダー ファイル\application_layer</Filter>
-    </ClInclude>
     <ClInclude Include="application_layer\socket_base.hpp">
       <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
     <ClInclude Include="system\error_code.hpp">
       <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\tcp_socket.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\ssl_socket.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="session\http_session.hpp">
+      <Filter>ヘッダー ファイル\session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@
 #include <boost/spirit/include/karma.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
-#include "socket_base.hpp"
+#include "../application_layer/socket_base.hpp"
 #include "../request.hpp"
 #include "../response.hpp"
 

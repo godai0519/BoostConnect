@@ -12,7 +12,7 @@
 #include "application_layer/tcp_session.hpp"
 #include "application_layer/ssl_session.hpp"*/
 
-#include "application_layer/http_session.hpp"
+#include "session/http_session.hpp"
 
 namespace oauth{
 namespace protocol{
