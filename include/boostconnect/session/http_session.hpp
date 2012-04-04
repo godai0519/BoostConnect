@@ -8,6 +8,7 @@
 #ifndef TWIT_LIB_PROTOCOL_APPLAYER_HTTP_SESSION
 #define TWIT_LIB_PROTOCOL_APPLAYER_HTTP_SESSION
 
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/karma.hpp>
 #include <boost/fusion/include/std_pair.hpp>
@@ -20,8 +21,8 @@
 
 namespace oauth{
 namespace protocol{
-
-class http_session : boost::noncopyable{
+	
+class http_session : boost::noncopyable, public boost::enable_shared_from_this<http_session>{
 public:
 	typedef boost::asio::io_service io_service;
 	typedef boost::asio::ssl::context context;
@@ -29,7 +30,8 @@ public:
 	typedef oauth::protocol::request request_type;
 	typedef oauth::protocol::response response_type;
 	typedef boost::function<void(const request_type&,response_type&)> RequestHandler;
-	
+	typedef boost::function<void(boost::shared_ptr<http_session>&)> CloseHandler;
+
 	oauth::protocol::application_layer::socket_base::lowest_layer_type& lowest_layer()
 	{
 		return socket_->lowest_layer();
@@ -48,19 +50,22 @@ public:
 		delete socket_;
 	}
 
-	void start(RequestHandler handler)
+	void start(RequestHandler handler,CloseHandler c_handler)
 	{
 		if(socket_busy_) return; //例外予定
 		socket_busy_ = true;
 		handler_ = handler;
+		c_handler_ = c_handler;
+
 		socket_->async_handshake(boost::asio::ssl::stream_base::server,
-			boost::bind(&http_session::handle_handshake,this,
+			boost::bind(&http_session::handle_handshake,shared_from_this(),
 				boost::asio::placeholders::error));
 	}
 	void end()
 	{
 		socket_->close();
-		delete this;
+		c_handler_(shared_from_this());
+		//delete this;
 		return;
 	}
 
@@ -72,20 +77,24 @@ private:
 			read_buf_.reset(new boost::asio::streambuf());
 			boost::asio::async_read_until(*socket_,*read_buf_.get(),
 				"\r\n\r\n",
-				boost::bind(&http_session::handle_header_read,this,
+				boost::bind(&http_session::handle_header_read,shared_from_this(),
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred));
 
 			read_timer_.expires_from_now(boost::posix_time::seconds(5));
 			read_timer_.async_wait(
-				boost::bind(&http_session::read_timeout,this,boost::asio::placeholders::error));
+				boost::bind(&http_session::read_timeout,shared_from_this(),boost::asio::placeholders::error));
 		}
-		else delete this; //例外
+		//else delete this; //例外
 	}
 
 	void read_timeout(const error_code& ec)
 	{
-		delete this;
+		//socket_->shutdown(boost::asio::socket_base::shutdown_both);
+		//socket_->close();
+		//socket_->get_io_service().stop();
+		//delete this;
+		this->end();
 		return;
 	}
 
@@ -115,7 +124,7 @@ private:
 					*socket_,
 					*read_buf_.get(),
 					boost::asio::transfer_at_least(byte - request_.body.length()),
-					boost::bind(&http_session::handle_body_read,this,
+					boost::bind(&http_session::handle_body_read,shared_from_this(),
 						boost::asio::placeholders::error,
 						boost::asio::placeholders::bytes_transferred));
 			}
@@ -125,7 +134,7 @@ private:
 				handle_request_read_complete();
 			}
 		}
-		else delete this; //例外
+		//else delete this; //例外
 	}
 
 	void handle_body_read(const error_code& ec,std::size_t sz)
@@ -137,7 +146,7 @@ private:
 
 			handle_request_read_complete();
 		}
-		else delete this; //例外
+		//else delete this; //例外
 	}
 
 	void handle_request_read_complete()
@@ -155,11 +164,11 @@ private:
 		if(response_generater(std::ostreambuf_iterator<char>(write_buf_.get()),response))
 		{
 			boost::asio::async_write(*socket_,*write_buf_.get(),
-				boost::bind(&http_session::handle_write,this,
+				boost::bind(&http_session::handle_write,shared_from_this(),
 					boost::asio::placeholders::error,
 					boost::asio::placeholders::bytes_transferred));
 		}
-		else delete this; //パース失敗
+		//else delete this; //パース失敗
 	}
 
 	void handle_write(const error_code& ec,std::size_t sz)
@@ -172,11 +181,11 @@ private:
 			}
 			else
 			{
-				delete this;
+				this->end();
 				return;
 			}
 		}
-		else delete this; //例外
+		//else delete this; //例外
 	}
 
 
@@ -243,6 +252,7 @@ private:
 
 	oauth::protocol::application_layer::socket_base *socket_;
 	RequestHandler handler_;
+	CloseHandler c_handler_;
 	boost::asio::deadline_timer read_timer_;
 	bool socket_busy_;
 	bool keep_alive_;

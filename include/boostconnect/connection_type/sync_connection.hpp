@@ -19,7 +19,7 @@ namespace connection_type{
 
 class sync_connection : public connection_base{
 public:
-	sync_connection(const std::shared_ptr<application_layer::socket_base>& socket)
+	sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
 	{
 		socket_ = socket;
 		busy = false;
@@ -47,22 +47,14 @@ public:
 		boost::asio::ip::tcp::resolver::iterator ep_iterator = resolver.resolve(query);
 
 		boost::asio::connect(socket_->lowest_layer(),ep_iterator);
-
-	//	socket_->connect((boost::asio::ip::tcp::endpoint)*ep_iterator); //resolve完了しているならその名前解決先に接続(ハンドシェイク)
 		socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
 		
 		boost::asio::write(*socket_.get(),buf);
-
-		//socket_layer_->connect(ep_iterator);
-		//socket_layer_->write(buf); //書き込み
-
+		
 		// TODO
 		reader_.reset(new reader());
 		reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
-
-		//response_.reset(new oauth::protocol::response());
-		//socket_layer_->read(boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error)); //読み込み
-		
+				
 		busy = false;
 
 		return reader_->get_response();
@@ -77,18 +69,6 @@ private:
 	
 	ReadHandler handler_;
 	bool busy;
-	/*
-	//追加	
-	error_code& operator() (
-		boost::asio::ip::tcp::resolver::iterator ep_iterator,
-		boost::asio::streambuf& buf,
-		error_code& ec
-		)
-	{
-		
-		//非同期実装
-		return ec;
-	}*/
 };
 
 } // namespace connection_type

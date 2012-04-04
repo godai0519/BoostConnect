@@ -27,7 +27,7 @@ class client : boost::noncopyable{
 public:
 	typedef boost::asio::io_service io_service;
 	typedef boost::system::error_code error_code;
-	typedef std::shared_ptr<oauth::protocol::response> response_type;
+	typedef boost::shared_ptr<oauth::protocol::response> response_type;
 //#ifdef TWIT_LIB_PROTOCOL_APPLAYER_SSL_LAYER
 	typedef boost::asio::ssl::context context;
 //#endif
@@ -113,8 +113,8 @@ public:
 	//void reset_response(){socket_layer_->reset_response();}
 
 private:
-	std::shared_ptr<application_layer::socket_base> socket_;
-	std::shared_ptr<connection_type::connection_base> connection_type_;
+	boost::shared_ptr<application_layer::socket_base> socket_;
+	boost::shared_ptr<connection_type::connection_base> connection_type_;
 #ifndef NO_SSL
 	context *ctx_;
 #endif

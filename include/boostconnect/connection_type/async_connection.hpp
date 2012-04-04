@@ -5,14 +5,12 @@
 // ”ñ“¯Šú‚Ì‚½‚ß‚ÌƒNƒ‰ƒXŒQ
 //
 
-
 #ifndef TWIT_LIB_PROTOCOL_CONNECTTYPE_ASYNC_CONNECTION
 #define TWIT_LIB_PROTOCOL_CONNECTTYPE_ASYNC_CONNECTION
 
 #include <memory>
 #include <boost/asio.hpp>
 #include "connection_base.hpp"
-//#include "../application_layer/layer_base.hpp"
 
 namespace oauth{
 namespace protocol{
@@ -20,7 +18,7 @@ namespace connection_type{
 
 class async_connection : public connection_base{
 public:
-	async_connection(const std::shared_ptr<application_layer::socket_base>& socket/*std::shared_ptr<application_layer::layer_base>& socket_layer*/)
+	async_connection(const boost::shared_ptr<application_layer::socket_base>& socket/*boost::shared_ptr<application_layer::layer_base>& socket_layer*/)
 	{
 		socket_ = socket;
 		//socket_layer_ = socket_layer;
@@ -55,26 +53,8 @@ public:
 			boost::asio::placeholders::iterator,
 			boost::asio::placeholders::error)); //handle_resolve‚Ö
 
-		//”ñ“¯ŠúŽÀ‘•
-		//return ec;
 		return reader_->get_response();
 	}
-	/*
-	//’Ç‰Á	
-	error_code& operator() (
-		boost::asio::ip::tcp::resolver::iterator ep_iterator,
-		boost::asio::streambuf& buf,
-		error_code& ec
-		)
-	{
-		buf_ = &buf;
-		socket_layer_->async_connect(ep_iterator,
-			boost::bind(&async_connection::handle_connect,this,
-				boost::asio::placeholders::error));
-		
-		//”ñ“¯ŠúŽÀ‘•
-		return ec;
-	}*/
 
 private:
 	ReadHandler handler_;
@@ -116,10 +96,9 @@ private:
 	{
 		if(!ec)
 		{
-			reader_->async_read_starter(*socket_.get(),boost::bind(&async_connection::handle_read,this,boost::asio::placeholders::error));
-			//socket_layer_->async_read(
-			//	boost::bind(&async_connection::handle_read,this,boost::asio::placeholders::error)
-			//	);
+			reader_->async_read_starter(*socket_.get(),
+				boost::bind(&async_connection::handle_read,this,
+					boost::asio::placeholders::error));
 		}
 		else std::cout << "Error Write!?" << std::endl;
 	}

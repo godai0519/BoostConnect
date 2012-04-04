@@ -24,7 +24,7 @@ class connection_base : boost::noncopyable{
 public:
 	typedef boost::system::error_code error_code;
 	typedef boost::function<void (const error_code&)> ReadHandler;
-	typedef std::shared_ptr<oauth::protocol::response> response_type;
+	typedef boost::shared_ptr<oauth::protocol::response> response_type;
 
 	connection_base(){}
 	virtual ~connection_base(){}
@@ -32,13 +32,12 @@ public:
 	//通信開始(オーバーライド必須)
 	virtual response_type operator() (const std::string&,boost::asio::streambuf&,/*error_code&,*/ReadHandler handler = [](const error_code&)->void{}) = 0;
 
-
 	inline const response_type& get_response() const { return reader_->get_response(); }
 
 protected:
 	class reader : boost::noncopyable{
 	protected:
-		typedef std::shared_ptr<oauth::protocol::response> response_type;
+		typedef boost::shared_ptr<oauth::protocol::response> response_type;
 		typedef boost::system::error_code error_code;
 		typedef boost::function<void (const error_code&)> ReadHandler;
 		boost::asio::streambuf read_buf_;
@@ -407,11 +406,11 @@ protected:
 			return; //空なら終わりだ
 		}
 	};
-	std::shared_ptr<application_layer::socket_base> socket_;
+	boost::shared_ptr<application_layer::socket_base> socket_;
 	std::unique_ptr<connection_base::reader> reader_;
 
 	//response_type response_;
-	//std::shared_ptr<application_layer::layer_base> socket_layer_;
+	//boost::shared_ptr<application_layer::layer_base> socket_layer_;
 };
 
 } // namespace connection_type

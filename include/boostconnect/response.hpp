@@ -26,6 +26,7 @@ struct response : boost::noncopyable{
 	string_type body;
 
 	response() : status_code(0){}
+
 };
 
 } // namespace protocol
