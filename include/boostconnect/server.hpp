@@ -12,6 +12,7 @@
 #include "application_layer/tcp_session.hpp"
 #include "application_layer/ssl_session.hpp"*/
 
+#include "session/manager.hpp"
 #include "session/http_session.hpp"
 
 namespace oauth{
@@ -19,25 +20,8 @@ namespace protocol{
 
 class server : boost::noncopyable{
 private:
-	class manager : boost::noncopyable {
-	public:
-		typedef std::set<boost::shared_ptr<http_session>> sessions_type;
-		manager(){}
-		sessions_type sessions_;
-		static const int margin = 5;
-
-		void add(boost::shared_ptr<http_session> session)
-		{
-			this->sessions_.insert(session);
-			return;
-		}
-		void ended(boost::shared_ptr<http_session> session)
-		{
-			this->sessions_.erase(session);
-			return;
-		}
-	};
-	manager manage_;
+	typedef session::http_session SessionType;
+	session::manager<typename SessionType> manage_;
 
 public:
 	typedef boost::asio::io_service io_service;
@@ -46,8 +30,8 @@ public:
 	typedef boost::asio::ssl::context context;
 #endif
 	
-	typedef http_session::RequestHandler RequestHandler;
-	typedef http_session::CloseHandler CloseHandler;
+	typedef session::http_session::RequestHandler RequestHandler;
+	typedef session::http_session::CloseHandler CloseHandler;
 
 	server(io_service &io_service,unsigned short port)
 		: io_service_(&io_service),ctx_(nullptr),port_(port),acceptor_(io_service,boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
@@ -64,7 +48,7 @@ public:
 		//application_layer::session_base* new_session;
 		if(ctx_ == nullptr)
 		{
-			boost::shared_ptr<http_session> new_session(new http_session(*io_service_));
+			boost::shared_ptr<SessionType> new_session(new SessionType(*io_service_));
 			//auto socket = new_session->socket();
 
 			acceptor_.async_accept(new_session->lowest_layer(),
@@ -75,7 +59,7 @@ public:
 		}
 		else
 		{
-			boost::shared_ptr<http_session> new_session(new http_session(*io_service_,*ctx_));
+			boost::shared_ptr<SessionType> new_session(new SessionType(*io_service_,*ctx_));
 			//auto& socket = (new_session->socket()->lowest_layer());
 			acceptor_.async_accept(new_session->lowest_layer(),
 				boost::bind(&server::handle_accept,this,
@@ -88,18 +72,18 @@ public:
 	}
 
 private:
-	void handle_accept(boost::shared_ptr<http_session> new_session,RequestHandler handler,const boost::system::error_code& ec)
+	void handle_accept(boost::shared_ptr<SessionType> new_session,RequestHandler handler,const boost::system::error_code& ec)
 	{
 		start(handler);
-		manage_.add(new_session);
+		manage_.run(new_session);
 
 		if(!ec) new_session->start(handler,boost::bind(&server::handle_closed,this,_1));
 		else new_session->end();
 	}
 
-	void handle_closed(boost::shared_ptr<http_session>& session)
+	void handle_closed(boost::shared_ptr<SessionType>& session)
 	{
-		manage_.ended(session);
+		manage_.stop(session);
 		return;
 	}
 

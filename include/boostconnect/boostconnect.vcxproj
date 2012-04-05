@@ -22,6 +22,8 @@
     <ClInclude Include="response.hpp" />
     <ClInclude Include="server.hpp" />
     <ClInclude Include="session\http_session.hpp" />
+    <ClInclude Include="session\manager.hpp" />
+    <ClInclude Include="session\session_base.hpp" />
     <ClInclude Include="system\error_code.hpp" />
   </ItemGroup>
   <ItemGroup>

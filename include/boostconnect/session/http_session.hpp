@@ -21,6 +21,7 @@
 
 namespace oauth{
 namespace protocol{
+namespace session{
 	
 class http_session : boost::noncopyable, public boost::enable_shared_from_this<http_session>{
 public:
@@ -258,6 +259,7 @@ private:
 	bool keep_alive_;
 };
 
+} // namespace session
 } // namespace protocol
 } // namespace oauth
 

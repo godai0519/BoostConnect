@@ -4,6 +4,8 @@
 #include <boostconnect/client.hpp>
 #include <boostconnect/server.hpp>
 
+#include <boostconnect/session/manager.hpp>
+
 #include <boost/format.hpp>
 
 int main()
