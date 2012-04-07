@@ -8,11 +8,8 @@
 #ifndef TWIT_LIB_PROTOCOL_SERVER
 #define TWIT_LIB_PROTOCOL_SERVER
 
-/*#include "application_layer/session_base.hpp"
-#include "application_layer/tcp_session.hpp"
-#include "application_layer/ssl_session.hpp"*/
-
 #include "session/manager.hpp"
+#include "session/session_base.hpp"
 #include "session/http_session.hpp"
 
 namespace oauth{
@@ -21,7 +18,7 @@ namespace protocol{
 class server : boost::noncopyable{
 private:
 	typedef session::http_session SessionType;
-	session::manager<typename SessionType> manage_;
+	session::manager<session::session_base> manage_;
 
 public:
 	typedef boost::asio::io_service io_service;
@@ -67,21 +64,20 @@ public:
 					handler,
 					boost::asio::placeholders::error));
 		}
-
-
+		return;
 	}
 
 private:
-	void handle_accept(boost::shared_ptr<SessionType> new_session,RequestHandler handler,const boost::system::error_code& ec)
+	void handle_accept(boost::shared_ptr<session::session_base> new_session,RequestHandler handler,const boost::system::error_code& ec)
 	{
 		start(handler);
 		manage_.run(new_session);
 
 		if(!ec) new_session->start(handler,boost::bind(&server::handle_closed,this,_1));
-		else new_session->end();
+		else new_session->end([](boost::shared_ptr<session::session_base>&)->void{return;});
 	}
 
-	void handle_closed(boost::shared_ptr<SessionType>& session)
+	void handle_closed(boost::shared_ptr<session::session_base>& session)
 	{
 		manage_.stop(session);
 		return;

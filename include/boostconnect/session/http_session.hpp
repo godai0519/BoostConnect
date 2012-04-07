@@ -1,37 +1,29 @@
 //
-// layer_base.hpp
+// http_session.hpp
 // ~~~~~~~~~~
 //
-// TCPやSSL判断のための、Boost.Asioを使用したクラス群
+// HTTP通信のセッションを管理
 //
 
-#ifndef TWIT_LIB_PROTOCOL_APPLAYER_HTTP_SESSION
-#define TWIT_LIB_PROTOCOL_APPLAYER_HTTP_SESSION
+#ifndef TWIT_LIB_PROTOCOL_SESSION_HTTP
+#define TWIT_LIB_PROTOCOL_SESSION_HTTP
 
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/karma.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
+#include "session_base.hpp"
 #include "../application_layer/socket_base.hpp"
-#include "../request.hpp"
-#include "../response.hpp"
-
-#define MAP_FIND_RETURN_OR_DEFAULT(map,elements,defaults) (map.find(elements)==map.cend() ? defaults : map.at(elements))
 
 namespace oauth{
 namespace protocol{
 namespace session{
 	
-class http_session : boost::noncopyable, public boost::enable_shared_from_this<http_session>{
+class http_session : public session_common<http_session> {
 public:
 	typedef boost::asio::io_service io_service;
 	typedef boost::asio::ssl::context context;
 	typedef boost::system::error_code error_code;
-	typedef oauth::protocol::request request_type;
-	typedef oauth::protocol::response response_type;
-	typedef boost::function<void(const request_type&,response_type&)> RequestHandler;
-	typedef boost::function<void(boost::shared_ptr<http_session>&)> CloseHandler;
 
 	oauth::protocol::application_layer::socket_base::lowest_layer_type& lowest_layer()
 	{
@@ -44,7 +36,7 @@ public:
 	}
 	http_session(io_service& io_service,context& ctx): socket_busy_(false),read_timer_(io_service)
 	{
-		socket_ = new oauth::protocol::application_layer::ssl_socket(io_service,ctx);		
+		socket_ = new oauth::protocol::application_layer::ssl_socket(io_service,ctx);
 	}
 	virtual ~http_session()
 	{
@@ -62,10 +54,11 @@ public:
 			boost::bind(&http_session::handle_handshake,shared_from_this(),
 				boost::asio::placeholders::error));
 	}
-	void end()
+	void end(CloseHandler c_handler)
 	{
 		socket_->close();
-		c_handler_(shared_from_this());
+
+		c_handler(static_cast<boost::shared_ptr<session_base>>(shared_from_this()));
 		//delete this;
 		return;
 	}
@@ -95,7 +88,7 @@ private:
 		//socket_->close();
 		//socket_->get_io_service().stop();
 		//delete this;
-		this->end();
+		this->end(c_handler_);
 		return;
 	}
 
@@ -182,7 +175,7 @@ private:
 			}
 			else
 			{
-				this->end();
+				this->end(c_handler_);
 				return;
 			}
 		}
