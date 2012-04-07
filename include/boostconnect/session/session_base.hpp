@@ -22,24 +22,24 @@
 namespace oauth{
 namespace protocol{
 namespace session{
-	
+  
 struct session_base : boost::noncopyable{
-	typedef oauth::protocol::request request_type;
-	typedef oauth::protocol::response response_type;
-	typedef boost::function<void(const request_type&,response_type&)> RequestHandler;
-	typedef boost::function<void(boost::shared_ptr<session_base>&)> CloseHandler;
+  typedef oauth::protocol::request request_type;
+  typedef oauth::protocol::response response_type;
+  typedef boost::function<void(const request_type&,response_type&)> RequestHandler;
+  typedef boost::function<void(boost::shared_ptr<session_base>&)> CloseHandler;
 
-	session_base(){}
-	virtual ~session_base(){}
+  session_base(){}
+  virtual ~session_base(){}
 
-	virtual void start(RequestHandler handler,CloseHandler c_handler) = 0;
-	virtual void end(CloseHandler c_handler) = 0;
+  virtual void start(RequestHandler handler,CloseHandler c_handler) = 0;
+  virtual void end(CloseHandler c_handler) = 0;
 };
 
 template<class Derived>
 struct session_common : public session_base, public boost::enable_shared_from_this<Derived>{
-	session_common(){}
-	virtual ~session_common(){}
+  session_common(){}
+  virtual ~session_common(){}
 };
 
 } // namespace session
