@@ -30,27 +30,34 @@ int main()
       res.header["Content-Length"] = (boost::format("%d") % res.body.size()).str();
     }
   );
-  
-  //oauth::protocol::client client(
-  //  io_service,
-  //  ctx,
-  //  oauth::protocol::connection_type::async
-  //  );
 
-  //std::string host = "www.google.co.jp";
-  //boost::system::error_code ec;
-  //boost::asio::streambuf buf;
-  //std::ostream os(&buf);
-  //{
-  //  os << "GET / HTTP/1.1\r\n";
-  //  os << "Host: "+host+"\r\n";
-  //  os << "Connection: close\r\n";
-  //  os << "\r\n";
-  //}
-  //const boost::shared_ptr<oauth::protocol::response> response = client(host,buf,/*ec,*/[&host](const error_code&)->void{std::cout << "\n\n\nTHIS is Handler: "+host+"\n\n\n";});
-
-  //client.get_response();
+  try{  
+    oauth::protocol::client client(
+      io_service,
+      oauth::protocol::connection_type::async
+      );
   
+    std::string host = "127.0.0.1";
+    boost::system::error_code ec;
+    boost::asio::streambuf buf;
+    std::ostream os(&buf);
+    {
+      os << "GET / HTTP/1.1\r\n";
+      os << "Host: "+host+"\r\n";
+      os << "Connection: close\r\n";
+      os << "\r\n";
+    }
+    const boost::shared_ptr<oauth::protocol::response> response = 
+      client(
+        boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 5600),
+        buf,
+        [&host,&response](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response->body << std::endl;}
+      );
+    
+    io_service.run();
+
+  ////client.get_response();
+  //
   //std::string host2 = "www.hatena.ne.jp";
   //boost::system::error_code ec2;
   //boost::asio::streambuf buf2;
@@ -63,9 +70,11 @@ int main()
   //}
   //auto response2 = client(host2,buf2,/*ec2,*/[&host2](const error_code&)->void{std::cout << "\n\n\nTHIS is Handler: "+host2+"\n\n\n";});
   //
-  io_service.run();
   //client.close();
-
+  }
+  catch(oauth::system::exception& e){
+    std::cout << e.what() << std::endl;
+  }
   
   return 0;
 }

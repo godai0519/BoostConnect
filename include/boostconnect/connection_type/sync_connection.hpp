@@ -34,32 +34,62 @@ public:
     ReadHandler handler
     )
   {
-    if(busy)
-    {
-      throw std::runtime_error("SOCKET_BUSY");
-      //例外！！
-    }
-    busy = true;
-    handler_ = handler;
+    common_init(handler);
 
+    // Resolve Start
     boost::asio::ip::tcp::resolver resolver(socket_->get_io_service());
     boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
     boost::asio::ip::tcp::resolver::iterator ep_iterator = resolver.resolve(query);
 
+    // Connect Start
     boost::asio::connect(socket_->lowest_layer(),ep_iterator);
-    socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
-    
+    socket_->handshake(application_layer::socket_base::ssl_socket_type::client);    
     boost::asio::write(*socket_.get(),buf);
     
-    // TODO
+    // Read Start
     reader_.reset(new reader());
     reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
         
     busy = false;
-
     return reader_->get_response();
   }
+
+  response_type operator() (
+    const endpoint_type& ep,
+    boost::asio::streambuf& buf,
+    ReadHandler handler
+    )
+  {
+    common_init(handler);
+
+    // Connect Start
+    socket_->lowest_layer().connect(ep);
+    socket_->handshake(application_layer::socket_base::ssl_socket_type::client);    
+    boost::asio::write(*socket_.get(),buf);
+    
+    // Read Start
+    reader_.reset(new reader());
+    reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
+
+    busy = false;
+    return reader_->get_response();
+  }
+
 private:
+  void common_init(ReadHandler& handler)
+  {
+    if(busy)
+    {
+      oauth::system::throw_error(
+        oauth::system::error_code(oauth::system::error::busy,oauth::system::client_category),
+        "Sync"
+        );
+      //例外！！
+    }
+    busy = true;
+    handler_ = handler;
+  }
+
   void handle_read(const error_code& ec)
   {
     //std::cout << "SYNC";

@@ -56,7 +56,7 @@ public:
     }
   }
   
-//#ifdef TWIT_LIB_PROTOCOL_APPLAYER_SSL_LAYER
+#ifndef NO_SSL
   //SSL
   client(io_service &io_service,context &ctx,const connection_type::connection_type& ct=connection_type::sync) : ctx_(&ctx),socket_(new application_layer::ssl_socket(io_service,ctx))
   {
@@ -69,16 +69,16 @@ public:
       connection_type_.reset(new connection_type::async_connection(socket_));
     }
   }
-//#endif
+#endif
   
+  // Use host
   const response_type& operator() (
     const std::string& host,
     boost::asio::streambuf& buf,
-  //  error_code& ec,
     connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
     )
   {
-    connection_type_->operator()(host,buf,/*ec,*/handler);
+    connection_type_->operator()(host,buf,handler);
     return get_response();
   }
   const response_type& operator() (
@@ -100,6 +100,36 @@ public:
     }
   }
 
+  // Use EndPoint
+  const response_type& operator() (
+    const boost::asio::ip::tcp::endpoint& host,
+    boost::asio::streambuf& buf,
+    connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
+    )
+  {
+    connection_type_->operator()(host,buf,handler);
+    return get_response();
+  }
+  const response_type& operator() (
+    const boost::asio::ip::tcp::endpoint& host,
+    boost::asio::streambuf& buf,
+    error_code& ec,
+    connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
+    )
+  {
+    try
+    {
+      (*this)(host,buf,handler);
+      return get_response();
+    }
+    catch(const boost::system::system_error &e)
+    {
+      ec = e.code(); //例外からerror_codeを抜き取る
+      return get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+    }
+  }
+
+  // Socket Close
   void close()
   {
     socket_->close();

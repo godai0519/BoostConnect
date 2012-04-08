@@ -23,6 +23,7 @@ namespace connection_type{
 class connection_base : boost::noncopyable{
 public:
   typedef boost::system::error_code error_code;
+  typedef boost::asio::ip::tcp::endpoint endpoint_type;
   typedef boost::function<void (const error_code&)> ReadHandler;
   typedef boost::shared_ptr<oauth::protocol::response> response_type;
 
@@ -30,7 +31,8 @@ public:
   virtual ~connection_base(){}
 
   //通信開始(オーバーライド必須)
-  virtual response_type operator() (const std::string&,boost::asio::streambuf&,/*error_code&,*/ReadHandler handler = [](const error_code&)->void{}) = 0;
+  virtual response_type operator() (const std::string&,boost::asio::streambuf&,ReadHandler handler = [](const error_code&)->void{}) = 0;
+  virtual response_type operator() (const endpoint_type&,boost::asio::streambuf&,ReadHandler handler = [](const error_code&)->void{}) = 0;
 
   inline const response_type& get_response() const { return reader_->get_response(); }
 

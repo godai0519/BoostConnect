@@ -11,6 +11,7 @@
 #include <memory>
 #include <boost/asio.hpp>
 #include "connection_base.hpp"
+#include "../system/error_code.hpp"
 
 namespace oauth{
 namespace protocol{
@@ -34,18 +35,7 @@ public:
     ReadHandler handler
     )
   {
-    error_code ec;
-    if(busy)
-    {
-      throw std::runtime_error("SOCKET_BUSY");
-      //—áŠOII
-    }
-    busy = true;
-
-    buf_ = &buf;
-    handler_ = handler;
-    
-    reader_.reset(new reader());
+    common_init(buf,handler);
 
     boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
     resolver_->async_resolve(query,
@@ -56,7 +46,41 @@ public:
     return reader_->get_response();
   }
 
+  response_type operator() (
+    const endpoint_type& ep,
+    boost::asio::streambuf& buf,
+    ReadHandler handler
+    )
+  {
+    common_init(buf,handler);
+    
+    socket_->lowest_layer().async_connect(
+      ep,
+      boost::bind(&async_connection::handle_connect,this,
+        boost::asio::placeholders::error));
+
+    return reader_->get_response();
+  }
+
 private:
+  void common_init(boost::asio::streambuf &buf,ReadHandler& handler)
+  {
+    if(busy)
+    {
+      oauth::system::throw_error(
+        oauth::system::error_code(oauth::system::error::busy,oauth::system::client_category),
+        "ASync"
+        );
+    }
+    busy = true;
+
+    buf_ = &buf;
+    handler_ = handler;    
+    reader_.reset(new reader());
+
+    return;
+  }
+
   ReadHandler handler_;
   bool busy;
 

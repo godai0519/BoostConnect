@@ -1,16 +1,26 @@
+//
+// error_code.hpp
+// ~~~~~~~~~~
+//
+// ó·äOèàóùÇ∆Ç©
+//
+
+#ifndef TWIT_LIB_SYSTEM_ERROR_CODE
+#define TWIT_LIB_SYSTEM_ERROR_CODE
+
 #include <stdexcept>
 #include <boost/noncopyable.hpp>
-#include <boost/exception.hpp>
+#include <boost/exception/all.hpp>
 
 namespace oauth{
 namespace system{
-
-
+  
 namespace error
 {
   enum error_t
   {
-    success = 0
+    success = 0,
+    busy
   };
 }
 
@@ -33,9 +43,15 @@ namespace detail{
     }
     const char* message(int value) const
     {
-      // TODO:
-      // if(value ==) {}
-      return "system error";
+      switch(value){
+      case error::success:
+        return "success";
+      case error::busy:
+        return "busy";
+      default:
+        return "system error";
+      }
+      //No
     }
   };
   struct client_category : public error_category{
@@ -45,9 +61,15 @@ namespace detail{
     }
     const char* message(int value) const
     {
-      // TODO:
-      // if(value ==) {}
-      return "client.socket error";
+      switch(value){
+      case error::success:
+        return "success";
+      case error::busy:
+        return "Already Connect";
+      default:
+        return "client.socket error";
+      }
+      //No
     }
   };
 }
@@ -134,9 +156,11 @@ private:
   mutable std::string what_;
 };
 
-void inline throw_exception(error_code& ec, const std::string& what_arg=""){
+void inline throw_error(error_code& ec, const std::string& what_arg=""){
   throw exception(ec,what_arg);
 }
 
 } // namespace system
 } // namespace oauth
+
+#endif
