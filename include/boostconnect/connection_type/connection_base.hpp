@@ -5,8 +5,8 @@
 // 同期や非同期判断のための、Boost.Asioを使用したクラス群
 //
 
-#ifndef TWIT_LIB_PROTOCOL_CONNECTTYPE_CONNECTION_BASE
-#define TWIT_LIB_PROTOCOL_CONNECTTYPE_CONNECTION_BASE
+#ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE
+#define BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE
 
 #include <memory>
 #include <boost/asio.hpp>
@@ -15,8 +15,7 @@
 #include "../application_layer/socket_base.hpp"
 #include "../response.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 namespace connection_type{
   enum connection_type{async,sync};
 
@@ -25,7 +24,7 @@ public:
   typedef boost::system::error_code error_code;
   typedef boost::asio::ip::tcp::endpoint endpoint_type;
   typedef boost::function<void (const error_code&)> ReadHandler;
-  typedef boost::shared_ptr<oauth::protocol::response> response_type;
+  typedef boost::shared_ptr<bstcon::response> response_type;
 
   connection_base(){}
   virtual ~connection_base(){}
@@ -39,7 +38,7 @@ public:
 protected:
   class reader : boost::noncopyable{
   protected:
-    typedef boost::shared_ptr<oauth::protocol::response> response_type;
+    typedef boost::shared_ptr<bstcon::response> response_type;
     typedef boost::system::error_code error_code;
     typedef boost::function<void (const error_code&)> ReadHandler;
     boost::asio::streambuf read_buf_;
@@ -47,7 +46,7 @@ protected:
 
   public:
     //ctor & dtor
-    reader() : response_(new oauth::protocol::response()) { }
+    reader() : response_(new bstcon::response()) { }
     reader(response_type& response) : response_(response) { }
     virtual ~reader() { }
 
@@ -55,7 +54,7 @@ protected:
     const response_type& get_response() const { return response_; }
     const response_type& reset_response()
     {
-      response_.reset(new oauth::protocol::response());
+      response_.reset(new bstcon::response());
       return response_;
     }
     bool is_chunked() const {return (response_->header.find("Transfer-Encoding")==response_->header.end()) ? false : (response_->header.at("Transfer-Encoding")=="chunked");}
@@ -416,7 +415,6 @@ protected:
 };
 
 } // namespace connection_type
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

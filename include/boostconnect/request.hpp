@@ -5,15 +5,14 @@
 // リクエストコンテナー
 //
 
-#ifndef TWIT_LIB_PROTOCOL_REQUEST
-#define TWIT_LIB_PROTOCOL_REQUEST
+#ifndef BOOSTCONNECT_REQUEST
+#define BOOSTCONNECT_REQUEST
 
 #include <string>
 #include <map>
 #include <boost/noncopyable.hpp>
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
   
 struct request : boost::noncopyable{
   typedef std::string string_type;
@@ -40,7 +39,6 @@ struct http_request : request{
 
 };
 
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

@@ -5,8 +5,8 @@
 // SessionÇÃéıñΩÇä«óùÇ∑ÇÈmanager
 //
 
-#ifndef TWIT_LIB_PROTOCOL_SESSION_MANAGER
-#define TWIT_LIB_PROTOCOL_SESSION_MANAGER
+#ifndef BOOSTCONNECT_SESSION_MANAGER
+#define BOOSTCONNECT_SESSION_MANAGER
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/spirit/include/qi.hpp>
@@ -17,8 +17,7 @@
 #include "../request.hpp"
 #include "../response.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 namespace session{
 
 template<class ManagedType>
@@ -42,7 +41,6 @@ private:
 };
   
 } // namespace session
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

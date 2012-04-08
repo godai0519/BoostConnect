@@ -5,14 +5,14 @@
 // ó·äOèàóùÇ∆Ç©
 //
 
-#ifndef TWIT_LIB_SYSTEM_ERROR_CODE
-#define TWIT_LIB_SYSTEM_ERROR_CODE
+#ifndef BOOSTCONNECT_SYSTEM_ERROR_CODE
+#define BOOSTCONNECT_SYSTEM_ERROR_CODE
 
 #include <stdexcept>
 #include <boost/noncopyable.hpp>
 #include <boost/exception/all.hpp>
 
-namespace oauth{
+namespace bstcon{
 namespace system{
   
 namespace error
@@ -161,6 +161,6 @@ void inline throw_error(error_code& ec, const std::string& what_arg=""){
 }
 
 } // namespace system
-} // namespace oauth
+} // namespace bstcon
 
 #endif

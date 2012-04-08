@@ -5,8 +5,8 @@
 // HTTP通信のセッションを管理
 //
 
-#ifndef TWIT_LIB_PROTOCOL_SESSION_HTTP
-#define TWIT_LIB_PROTOCOL_SESSION_HTTP
+#ifndef BOOSTCONNECT_SESSION_HTTP
+#define BOOSTCONNECT_SESSION_HTTP
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/karma.hpp>
@@ -15,8 +15,7 @@
 #include "session_base.hpp"
 #include "../application_layer/socket_base.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 namespace session{
   
 class http_session : public session_common<http_session> {
@@ -25,18 +24,18 @@ public:
   typedef boost::asio::ssl::context context;
   typedef boost::system::error_code error_code;
 
-  oauth::protocol::application_layer::socket_base::lowest_layer_type& lowest_layer()
+  bstcon::application_layer::socket_base::lowest_layer_type& lowest_layer()
   {
     return socket_->lowest_layer();
   }
   
   http_session(io_service& io_service): socket_busy_(false),read_timer_(io_service)
   {
-    socket_ = new oauth::protocol::application_layer::tcp_socket(io_service);
+    socket_ = new bstcon::application_layer::tcp_socket(io_service);
   }
   http_session(io_service& io_service,context& ctx): socket_busy_(false),read_timer_(io_service)
   {
-    socket_ = new oauth::protocol::application_layer::ssl_socket(io_service,ctx);
+    socket_ = new bstcon::application_layer::ssl_socket(io_service,ctx);
   }
   virtual ~http_session()
   {
@@ -221,7 +220,7 @@ private:
     return parsed;
   }
 
-  const int request_header_parser(const std::string& request_str,oauth::protocol::request& request_containar) const
+  const int request_header_parser(const std::string& request_str,bstcon::request& request_containar) const
   {
     namespace qi = boost::spirit::qi;
 
@@ -244,7 +243,7 @@ private:
   std::unique_ptr<boost::asio::streambuf> read_buf_;
   std::unique_ptr<boost::asio::streambuf> write_buf_;
 
-  oauth::protocol::application_layer::socket_base *socket_;
+  bstcon::application_layer::socket_base *socket_;
   RequestHandler handler_;
   CloseHandler c_handler_;
   boost::asio::deadline_timer read_timer_;
@@ -253,7 +252,6 @@ private:
 };
 
 } // namespace session
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

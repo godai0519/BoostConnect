@@ -1,20 +1,19 @@
 //
-// async_connection.hpp
+// sync_connection.hpp
 // ~~~~~~~~~~
 //
-// 非同期のためのクラス群
+// 同期のためのクラス群
 //
 
-#ifndef TWIT_LIB_PROTOCOL_CONNECTTYPE_SYNC_CONNECTION
-#define TWIT_LIB_PROTOCOL_CONNECTTYPE_SYNC_CONNECTION
+#ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION
+#define BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION
 
 #include <memory>
 #include <boost/asio.hpp>
 #include "connection_base.hpp"
 //#include "../application_layer/layer_base.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 namespace connection_type{
 
 class sync_connection : public connection_base{
@@ -80,8 +79,8 @@ private:
   {
     if(busy)
     {
-      oauth::system::throw_error(
-        oauth::system::error_code(oauth::system::error::busy,oauth::system::client_category),
+      bstcon::system::throw_error(
+        bstcon::system::error_code(bstcon::system::error::busy,bstcon::system::client_category),
         "Sync"
         );
       //例外！！
@@ -102,7 +101,6 @@ private:
 };
 
 } // namespace connection_type
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

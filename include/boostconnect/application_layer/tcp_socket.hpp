@@ -5,13 +5,12 @@
 // TCPí êMÇ≈ì¡ï Ç…çsÇÌÇÍÇÈÇ±Ç∆ÇçsÇ§
 //
 
-#ifndef TWIT_LIB_PROTOCOL_APPLAYER_TCP_SOCKET
-#define TWIT_LIB_PROTOCOL_APPLAYER_TCP_SOCKET
+#ifndef BOOSTCONNECT_APPLAYER_TCP_SOCKET
+#define BOOSTCONNECT_APPLAYER_TCP_SOCKET
 
 #include "socket_base.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 namespace application_layer{
   
 class tcp_socket : public socket_common<socket_base::tcp_socket_type>{
@@ -52,7 +51,6 @@ public:
 };
 
 } // namespace application_layer
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

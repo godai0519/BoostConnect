@@ -2,18 +2,17 @@
 // server.hpp
 // ~~~~~~~~~~
 //
-// 接続のメイン管理クラス
+// サーバー接続のメイン管理クラス
 //
 
-#ifndef TWIT_LIB_PROTOCOL_SERVER
-#define TWIT_LIB_PROTOCOL_SERVER
+#ifndef BOOSTCONNECT_SERVER
+#define BOOSTCONNECT_SERVER
 
 #include "session/manager.hpp"
 #include "session/session_base.hpp"
 #include "session/http_session.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 
 class server : boost::noncopyable{
 private:
@@ -46,7 +45,6 @@ public:
     if(ctx_ == nullptr)
     {
       boost::shared_ptr<SessionType> new_session(new SessionType(*io_service_));
-      //auto socket = new_session->socket();
 
       acceptor_.async_accept(new_session->lowest_layer(),
         boost::bind(&server::handle_accept,this,
@@ -57,7 +55,7 @@ public:
     else
     {
       boost::shared_ptr<SessionType> new_session(new SessionType(*io_service_,*ctx_));
-      //auto& socket = (new_session->socket()->lowest_layer());
+
       acceptor_.async_accept(new_session->lowest_layer(),
         boost::bind(&server::handle_accept,this,
           new_session,
@@ -91,7 +89,6 @@ private:
 #endif
 };
 
-}
-}
+} // namespace bstcon
 
 #endif

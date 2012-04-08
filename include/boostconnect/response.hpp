@@ -5,15 +5,14 @@
 // レスポンスコンテナー
 //
 
-#ifndef TWIT_LIB_PROTOCOL_RESPONSE
-#define TWIT_LIB_PROTOCOL_RESPONSE
+#ifndef BOOSTCONNECT_RESPONSE
+#define BOOSTCONNECT_RESPONSE
 
 #include <string>
 #include <map>
 #include <boost/noncopyable.hpp>
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 
 struct response : boost::noncopyable{
   typedef std::string string_type;
@@ -29,7 +28,6 @@ struct response : boost::noncopyable{
 
 };
 
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

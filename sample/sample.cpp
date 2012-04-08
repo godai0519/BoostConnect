@@ -10,8 +10,8 @@
 
 int main()
 {
-  typedef oauth::protocol::request request_type;
-  typedef oauth::protocol::response response_type;
+  typedef bstcon::request request_type;
+  typedef bstcon::response response_type;
   typedef boost::function<void(const request_type&,response_type&)> RequestHandler;
 
   typedef boost::system::error_code error_code;
@@ -19,7 +19,7 @@ int main()
 
   boost::asio::ssl::context ctx(io_service,boost::asio::ssl::context_base::sslv3_client);
 
-  oauth::protocol::server service(io_service,5600);
+  bstcon::server service(io_service,5600);
   service.start(
     [](const request_type& req,response_type& res)
     {
@@ -32,9 +32,9 @@ int main()
   );
 
   try{  
-    oauth::protocol::client client(
+    bstcon::client client(
       io_service,
-      oauth::protocol::connection_type::async
+      bstcon::connection_type::async
       );
   
     std::string host = "127.0.0.1";
@@ -47,7 +47,7 @@ int main()
       os << "Connection: close\r\n";
       os << "\r\n";
     }
-    const boost::shared_ptr<oauth::protocol::response> response = 
+    const boost::shared_ptr<bstcon::response> response = 
       client(
         boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 5600),
         buf,
@@ -72,7 +72,7 @@ int main()
   //
   //client.close();
   }
-  catch(oauth::system::exception& e){
+  catch(bstcon::system::exception& e){
     std::cout << e.what() << std::endl;
   }
   

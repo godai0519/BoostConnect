@@ -2,11 +2,11 @@
 // client.hpp
 // ~~~~~~~~~~
 //
-// 接続のメイン管理クラス
+// クライアント接続のメイン管理クラス
 //
 
-#ifndef TWIT_LIB_PROTOCOL_CLIENT
-#define TWIT_LIB_PROTOCOL_CLIENT
+#ifndef BOOSTCONNECT_CLIENT
+#define BOOSTCONNECT_CLIENT
 
 #include <memory>
 #include <map>
@@ -19,16 +19,15 @@
 #include "connection_type/async_connection.hpp"
 #include "connection_type/sync_connection.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 
 //複数の通信を同時に要求した際の保証はしない
 class client : boost::noncopyable{
 public:
   typedef boost::asio::io_service io_service;
   typedef boost::system::error_code error_code;
-  typedef boost::shared_ptr<oauth::protocol::response> response_type;
-//#ifdef TWIT_LIB_PROTOCOL_APPLAYER_SSL_LAYER
+  typedef boost::shared_ptr<bstcon::response> response_type;
+//#ifdef BOOSTCONNECT_PROTOCOL_APPLAYER_SSL_LAYER
   typedef boost::asio::ssl::context context;
 //#endif
 
@@ -150,7 +149,6 @@ private:
 #endif
 };
 
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

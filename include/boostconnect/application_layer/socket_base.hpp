@@ -5,8 +5,8 @@
 // ソケットラッパーベースクラス
 //
 
-#ifndef TWIT_LIB_PROTOCOL_APPLAYER_SOCKET
-#define TWIT_LIB_PROTOCOL_APPLAYER_SOCKET
+#ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE
+#define BOOSTCONNECT_APPLAYER_SOCKET_BASE
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -18,8 +18,7 @@
 #pragma comment(lib, "ssleay32MDd.lib")
 #endif
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 namespace application_layer{
 
 struct socket_base : boost::noncopyable{
@@ -120,7 +119,6 @@ protected:
 };
 
 } // namespace application_layer
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif

@@ -6,14 +6,13 @@
 //
 
 #ifndef NO_SSL
-#ifndef TWIT_LIB_PROTOCOL_APPLAYER_SSL_SOCKET
-#define TWIT_LIB_PROTOCOL_APPLAYER_SSL_SOCKET
+#ifndef BOOSTCONNECT_APPLAYER_SSL_SOCKET
+#define BOOSTCONNECT_APPLAYER_SSL_SOCKET
 
 #include <boost/asio.hpp>
 #include "socket_base.hpp"
 
-namespace oauth{
-namespace protocol{
+namespace bstcon{
 namespace application_layer{
   
 class ssl_socket : public socket_common<socket_base::ssl_socket_type>{
@@ -63,8 +62,7 @@ public:
 };
 
 } // namespace application_layer
-} // namespace protocol
-} // namespace oauth
+} // namespace bstcon
 
 #endif
 #endif
