@@ -22,27 +22,22 @@ private:
 public:
   typedef boost::asio::io_service io_service;
   typedef boost::system::error_code error_code;
-#ifndef NO_SSL
-  typedef boost::asio::ssl::context context;
-#endif
-  
   typedef session::http_session::RequestHandler RequestHandler;
   typedef session::http_session::CloseHandler CloseHandler;
 
   server(io_service &io_service,unsigned short port)
-    : io_service_(&io_service),ctx_(nullptr),port_(port),acceptor_(io_service,boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
+    : io_service_(&io_service),is_ctx_(false),port_(port),acceptor_(io_service,boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
   {}
-#ifndef NO_SSL
+#ifdef USE_SSL_BOOSTCONNECT
+  typedef boost::asio::ssl::context context;
   server(io_service &io_service,context &ctx,unsigned short port)
-    : io_service_(&io_service),ctx_(&ctx),port_(port),acceptor_(io_service,boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
+    : io_service_(&io_service),is_ctx_(true),ctx_(&ctx),port_(port),acceptor_(io_service,boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
   {}
 #endif
 
   void start(RequestHandler handler)
   {
-    //application_layer::session_base* new_session = new application_layer::session_base(io_service_, context_);
-    //application_layer::session_base* new_session;
-    if(ctx_ == nullptr)
+    if(!is_ctx_)
     {
       boost::shared_ptr<SessionType> new_session(new SessionType(*io_service_));
 
@@ -52,6 +47,7 @@ public:
           handler,
           boost::asio::placeholders::error));
     }
+#ifdef USE_SSL_BOOSTCONNECT
     else
     {
       boost::shared_ptr<SessionType> new_session(new SessionType(*io_service_,*ctx_));
@@ -62,6 +58,7 @@ public:
           handler,
           boost::asio::placeholders::error));
     }
+#endif
     return;
   }
 
@@ -84,7 +81,8 @@ private:
   io_service* io_service_;
   boost::asio::ip::tcp::acceptor acceptor_;
   const unsigned short port_;
-#ifndef NO_SSL
+  bool is_ctx_;
+#ifdef USE_SSL_BOOSTCONNECT
   context *ctx_;
 #endif
 };

@@ -32,10 +32,15 @@ public:
     socket_.async_connect(begin,handler);
     return;
   }
-
+  
+#ifdef USE_SSL_BOOSTCONNECT
   //TCP通信ではHandshakeを行わない -> Handlerを直接呼び出す
   void handshake(handshake_type){return;}
   void async_handshake(handshake_type,HandshakeHandler handler){handler(error_code());return;}
+#else
+  void handshake(){return;}
+  void async_handshake(HandshakeHandler handler){handler(error_code());return;}
+#endif
 
   //TCPレイヤーの処理
   void close()

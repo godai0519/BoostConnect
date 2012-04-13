@@ -5,7 +5,7 @@
 // SSLí êMÇ≈ì¡ï Ç…çsÇÌÇÍÇÈÇ±Ç∆ÇçsÇ§
 //
 
-#ifndef NO_SSL
+#ifdef USE_SSL_BOOSTCONNECT
 #ifndef BOOSTCONNECT_APPLAYER_SSL_SOCKET
 #define BOOSTCONNECT_APPLAYER_SSL_SOCKET
 

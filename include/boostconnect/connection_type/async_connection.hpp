@@ -99,9 +99,15 @@ private:
   {
     if(!ec)
     {
+#ifdef USE_SSL_BOOSTCONNECT
       socket_->async_handshake(application_layer::socket_base::ssl_socket_type::client,
         boost::bind(&async_connection::handle_handshake,this,
           boost::asio::placeholders::error));
+#else
+      socket_->async_handshake(
+        boost::bind(&async_connection::handle_handshake,this,
+          boost::asio::placeholders::error));
+#endif
     }
     else std::cout << "Error Connect!?" << std::endl;
   }

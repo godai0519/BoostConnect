@@ -27,9 +27,6 @@ public:
   typedef boost::asio::io_service io_service;
   typedef boost::system::error_code error_code;
   typedef boost::shared_ptr<bstcon::response> response_type;
-//#ifdef BOOSTCONNECT_PROTOCOL_APPLAYER_SSL_LAYER
-  typedef boost::asio::ssl::context context;
-//#endif
 
   //// TODO: C++11Ç…Çƒâ¬ïœí∑à¯êîÇ…ëŒâûÇ≥ÇπÇÈ
   //template<class ...Args>
@@ -55,8 +52,9 @@ public:
     }
   }
   
-#ifndef NO_SSL
+#ifdef USE_SSL_BOOSTCONNECT
   //SSL
+  typedef boost::asio::ssl::context context;
   client(io_service &io_service,context &ctx,const connection_type::connection_type& ct=connection_type::sync) : ctx_(&ctx),socket_(new application_layer::ssl_socket(io_service,ctx))
   {
     if(ct == connection_type::sync)
@@ -144,7 +142,7 @@ public:
 private:
   boost::shared_ptr<application_layer::socket_base> socket_;
   boost::shared_ptr<connection_type::connection_base> connection_type_;
-#ifndef NO_SSL
+#ifdef USE_SSL_BOOSTCONNECT
   context *ctx_;
 #endif
 };

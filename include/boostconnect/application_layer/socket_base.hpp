@@ -12,7 +12,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-#ifndef NO_SSL
+#ifdef USE_SSL_BOOSTCONNECT
 #include <boost/asio/ssl.hpp>
 #pragma comment(lib, "libeay32MDd.lib")
 #pragma comment(lib, "ssleay32MDd.lib")
@@ -26,9 +26,11 @@ struct socket_base : boost::noncopyable{
   typedef boost::system::error_code error_code;
   
   typedef boost::asio::ip::tcp::socket tcp_socket_type;
+#ifdef USE_SSL_BOOSTCONNECT
   typedef boost::asio::ssl::stream<tcp_socket_type> ssl_socket_type;
   typedef boost::asio::ssl::context context_type;
   typedef boost::asio::ssl::stream_base::handshake_type handshake_type;
+#endif
   typedef boost::asio::ip::tcp::endpoint endpoint_type;
   typedef boost::asio::ip::tcp::resolver::iterator resolve_iterator;
   typedef boost::asio::socket_base::shutdown_type shutdown_type;
@@ -52,9 +54,14 @@ struct socket_base : boost::noncopyable{
 
   virtual error_code& connect(endpoint_type&,error_code&) = 0;
   virtual void async_connect(endpoint_type&,ConnectHandler) = 0;
-
+  
+#ifdef USE_SSL_BOOSTCONNECT
   virtual void handshake(handshake_type) = 0;
   virtual void async_handshake(handshake_type,HandshakeHandler) = 0;
+#else
+  virtual void handshake() = 0;
+  virtual void async_handshake(HandshakeHandler) = 0;
+#endif
 
   virtual std::size_t read_some(const mutable_buffer&,error_code&) = 0;
   virtual std::size_t write_some(const const_buffer&,error_code&) = 0;
@@ -73,7 +80,11 @@ template<class Socket>
 class socket_common : public socket_base{
 public:
   socket_common(io_service& io_service) : socket_(io_service){}
+  
+#ifdef USE_SSL_BOOSTCONNECT
   socket_common(io_service& io_service,context_type& ctx) : socket_(io_service,ctx){}
+#endif
+
   virtual ~socket_common(){}
   
   lowest_layer_type& lowest_layer()

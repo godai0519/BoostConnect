@@ -1,3 +1,5 @@
+#define USE_SSL_BOOSTCONNECT
+
 #include <iostream>
 #include <boostconnect/connection_type/async_connection.hpp>
 #include <boostconnect/connection_type/sync_connection.hpp>
@@ -19,7 +21,7 @@ int main()
 
   boost::asio::ssl::context ctx(io_service,boost::asio::ssl::context_base::sslv3_client);
 
-  bstcon::server service(io_service,5600);
+  /*bstcon::server service(io_service,5600);
   service.start(
     [](const request_type& req,response_type& res)
     {
@@ -29,15 +31,16 @@ int main()
       res.body = "<html><body><i><b>Ç›Ç°Å[Åô</b></i></body></html>";
       res.header["Content-Length"] = (boost::format("%d") % res.body.size()).str();
     }
-  );
+  );*/
 
   try{  
     bstcon::client client(
       io_service,
+      ctx,
       bstcon::connection_type::async
       );
   
-    std::string host = "127.0.0.1";
+    std::string host = "www.google.co.jp";
     boost::system::error_code ec;
     boost::asio::streambuf buf;
     std::ostream os(&buf);
@@ -49,7 +52,7 @@ int main()
     }
     const boost::shared_ptr<bstcon::response> response = 
       client(
-        boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 5600),
+        host,
         buf,
         [&host,&response](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response->body << std::endl;}
       );

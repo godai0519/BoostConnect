@@ -42,7 +42,11 @@ public:
 
     // Connect Start
     boost::asio::connect(socket_->lowest_layer(),ep_iterator);
+#ifdef USE_SSL_BOOSTCONNECT
     socket_->handshake(application_layer::socket_base::ssl_socket_type::client);    
+#else
+    socket_->handshake();    
+#endif
     boost::asio::write(*socket_.get(),buf);
     
     // Read Start
@@ -63,7 +67,11 @@ public:
 
     // Connect Start
     socket_->lowest_layer().connect(ep);
+#ifdef USE_SSL_BOOSTCONNECT
     socket_->handshake(application_layer::socket_base::ssl_socket_type::client);    
+#else
+    socket_->handshake();    
+#endif 
     boost::asio::write(*socket_.get(),buf);
     
     // Read Start

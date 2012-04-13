@@ -21,7 +21,6 @@ namespace session{
 class http_session : public session_common<http_session> {
 public:
   typedef boost::asio::io_service io_service;
-  typedef boost::asio::ssl::context context;
   typedef boost::system::error_code error_code;
 
   bstcon::application_layer::socket_base::lowest_layer_type& lowest_layer()
@@ -33,10 +32,13 @@ public:
   {
     socket_ = new bstcon::application_layer::tcp_socket(io_service);
   }
+#ifdef USE_SSL_BOOSTCONNECT
+  typedef boost::asio::ssl::context context;
   http_session(io_service& io_service,context& ctx): socket_busy_(false),read_timer_(io_service)
   {
     socket_ = new bstcon::application_layer::ssl_socket(io_service,ctx);
   }
+#endif
   virtual ~http_session()
   {
     delete socket_;
@@ -48,10 +50,16 @@ public:
     socket_busy_ = true;
     handler_ = handler;
     c_handler_ = c_handler;
-
+    
+#ifdef USE_SSL_BOOSTCONNECT
     socket_->async_handshake(boost::asio::ssl::stream_base::server,
       boost::bind(&http_session::handle_handshake,shared_from_this(),
         boost::asio::placeholders::error));
+#else
+    socket_->async_handshake(
+      boost::bind(&http_session::handle_handshake,shared_from_this(),
+        boost::asio::placeholders::error));
+#endif
   }
   void end(CloseHandler c_handler)
   {
