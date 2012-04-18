@@ -21,7 +21,7 @@ int main()
 
   boost::asio::ssl::context ctx(io_service,boost::asio::ssl::context_base::sslv3_client);
 
-  /*bstcon::server service(io_service,5600);
+  bstcon::server service(io_service,5600);
   service.start(
     [](const request_type& req,response_type& res)
     {
@@ -31,16 +31,15 @@ int main()
       res.body = "<html><body><i><b>Ç›Ç°Å[Åô</b></i></body></html>";
       res.header["Content-Length"] = (boost::format("%d") % res.body.size()).str();
     }
-  );*/
+  );
 
   try{  
     bstcon::client client(
       io_service,
-      ctx,
       bstcon::connection_type::async
       );
   
-    std::string host = "www.google.co.jp";
+    std::string host = "127.0.0.1";
     boost::system::error_code ec;
     boost::asio::streambuf buf;
     std::ostream os(&buf);
@@ -52,7 +51,7 @@ int main()
     }
     const boost::shared_ptr<bstcon::response> response = 
       client(
-        host,
+        boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), 5600),
         buf,
         [&host,&response](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response->body << std::endl;}
       );
