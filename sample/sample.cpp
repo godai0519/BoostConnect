@@ -33,46 +33,44 @@ int main()
     }
   );
 
-  try{  
+  try{
+    const std::string host = "127.0.0.1";
     bstcon::client client(
       io_service,
       bstcon::connection_type::async
       );
-  
-    std::string host = "127.0.0.1";
-    boost::system::error_code ec;
-    boost::asio::streambuf buf;
-    std::ostream os(&buf);
+
+    boost::shared_ptr<boost::asio::streambuf> buf1(new boost::asio::streambuf());
     {
-      os << "GET / HTTP/1.1\r\n";
-      os << "Host: "+host+"\r\n";
-      os << "Connection: close\r\n";
-      os << "\r\n";
+     std::ostream os1(buf1.get());
+      os1 << "GET / HTTP/1.1\r\n";
+      os1 << "Host: "+host+"\r\n";
+      os1 << "Connection: close\r\n";
+      os1 << "\r\n";
     }
-    const boost::shared_ptr<bstcon::response> response = 
+    const boost::shared_ptr<bstcon::connection_type::connection_base> response1 = 
       client(
         boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), 5600),
-        buf,
-        [&host,&response](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response->body << std::endl;}
+        buf1,
+        [&host,&response1](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response1->get_response()->body + "\n\n";}
       );
     
+    boost::shared_ptr<boost::asio::streambuf> buf2(new boost::asio::streambuf());
+    {
+      std::ostream os2(buf2.get());
+      os2 << "GET / HTTP/1.1\r\n";
+      os2 << "Host: "+host+"\r\n";
+      os2 << "Connection: close\r\n";
+      os2 << "\r\n";
+    }
+    const boost::shared_ptr<bstcon::connection_type::connection_base> response2 = 
+      client(
+        boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), 5600),
+        buf2,
+        [&host,&response2](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response2->get_response()->body + "\n\n";}
+      );
+        
     io_service.run();
-
-  ////client.get_response();
-  //
-  //std::string host2 = "www.hatena.ne.jp";
-  //boost::system::error_code ec2;
-  //boost::asio::streambuf buf2;
-  //std::ostream os2(&buf2);
-  //{
-  //  os2 << "GET / HTTP/1.1\r\n";
-  //  os2 << "Host: "+host2+"\r\n";
-  //  os2 << "Connection: close\r\n";
-  //  os2 << "\r\n";
-  //}
-  //auto response2 = client(host2,buf2,/*ec2,*/[&host2](const error_code&)->void{std::cout << "\n\n\nTHIS is Handler: "+host2+"\n\n\n";});
-  //
-  //client.close();
   }
   catch(bstcon::system::exception& e){
     std::cout << e.what() << std::endl;

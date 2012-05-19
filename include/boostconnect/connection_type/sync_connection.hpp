@@ -11,29 +11,27 @@
 #include <memory>
 #include <boost/asio.hpp>
 #include "connection_base.hpp"
-//#include "../application_layer/layer_base.hpp"
 
 namespace bstcon{
 namespace connection_type{
 
-class sync_connection : public connection_base{
+class sync_connection : public connection_common<sync_connection>{
 public:
   sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
   {
     socket_ = socket;
-    busy = false;
   }
   virtual ~sync_connection(){}
   
   //í«â¡
-  response_type operator() (
+  connection_ptr operator() (
     const std::string& host,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     //error_code& ec,
     ReadHandler handler
     )
   {
-    common_init(handler);
+    handler_ = handler;
 
     // Resolve Start
     boost::asio::ip::tcp::resolver resolver(socket_->get_io_service());
@@ -47,23 +45,22 @@ public:
 #else
     socket_->handshake();    
 #endif
-    boost::asio::write(*socket_.get(),buf);
+    boost::asio::write(*socket_.get(),*buf.get());
     
     // Read Start
     reader_.reset(new reader());
     reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
-        
-    busy = false;
-    return reader_->get_response();
+
+    return this->shared_from_this();
   }
 
-  response_type operator() (
+  connection_ptr operator() (
     const endpoint_type& ep,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     ReadHandler handler
     )
   {
-    common_init(handler);
+    handler_ = handler;
 
     // Connect Start
     socket_->lowest_layer().connect(ep);
@@ -72,31 +69,16 @@ public:
 #else
     socket_->handshake();
 #endif 
-    boost::asio::write(*socket_.get(),buf);
+    boost::asio::write(*socket_.get(),*buf.get());
     
     // Read Start
     reader_.reset(new reader());
     reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
 
-    busy = false;
-    return reader_->get_response();
+    return this->shared_from_this();
   }
 
 private:
-  void common_init(ReadHandler& handler)
-  {
-    if(busy)
-    {
-      bstcon::system::throw_error(
-        bstcon::system::error_code(bstcon::system::error::busy,bstcon::system::client_category),
-        "Sync"
-        );
-      //ó·äOÅIÅI
-    }
-    busy = true;
-    handler_ = handler;
-  }
-
   void handle_read(const error_code& ec)
   {
     //std::cout << "SYNC";
@@ -105,7 +87,6 @@ private:
   }
   
   ReadHandler handler_;
-  bool busy;
 };
 
 } // namespace connection_type

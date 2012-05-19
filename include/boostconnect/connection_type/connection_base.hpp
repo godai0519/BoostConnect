@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <boost/asio.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include "../application_layer/socket_base.hpp"
@@ -24,14 +25,15 @@ public:
   typedef boost::system::error_code error_code;
   typedef boost::asio::ip::tcp::endpoint endpoint_type;
   typedef boost::function<void (const error_code&)> ReadHandler;
+  typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
   typedef boost::shared_ptr<bstcon::response> response_type;
 
   connection_base(){}
   virtual ~connection_base(){}
 
   //通信開始(オーバーライド必須)
-  virtual response_type operator() (const std::string&,boost::asio::streambuf&,ReadHandler handler = [](const error_code&)->void{}) = 0;
-  virtual response_type operator() (const endpoint_type&,boost::asio::streambuf&,ReadHandler handler = [](const error_code&)->void{}) = 0;
+  virtual connection_ptr operator() (const std::string&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{}) = 0;
+  virtual connection_ptr operator() (const endpoint_type&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{}) = 0;
 
   inline const response_type& get_response() const { return reader_->get_response(); }
 
@@ -413,6 +415,9 @@ protected:
   //response_type response_;
   //boost::shared_ptr<application_layer::layer_base> socket_layer_;
 };
+
+template <class Devide>
+class connection_common : public connection_base, public boost::enable_shared_from_this<Devide>{};
 
 } // namespace connection_type
 } // namespace bstcon

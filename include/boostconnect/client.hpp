@@ -26,7 +26,10 @@ class client : boost::noncopyable{
 public:
   typedef boost::asio::io_service io_service;
   typedef boost::system::error_code error_code;
-  typedef boost::shared_ptr<bstcon::response> response_type;
+//  typedef boost::shared_ptr<bstcon::connection_type::connection_base> response_type;
+
+  typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
+  typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
   //// TODO: C++11にて可変長引数に対応させる
   //template<class ...Args>
@@ -40,111 +43,122 @@ public:
   //現在のasync,sync判断は美しくない！
 
   //TCP
-  client(io_service &io_service,const connection_type::connection_type& ct=connection_type::sync) : socket_(new application_layer::tcp_socket(io_service))
-  {
-    if(ct == connection_type::sync)
-    {
-      connection_type_.reset(new connection_type::sync_connection(socket_));
-    }
-    else if(ct == connection_type::async)
-    {
-      connection_type_.reset(new connection_type::async_connection(socket_));
-    }
-  }
+  client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync)
+    : connection_type_(connection_type), io_service_(io_service)
+#ifdef USE_SSL_BOOSTCONNECT
+    , ctx_(nullptr)
+#endif
+  {}
   
 #ifdef USE_SSL_BOOSTCONNECT
   //SSL
   typedef boost::asio::ssl::context context;
-  client(io_service &io_service,context &ctx,const connection_type::connection_type& ct=connection_type::sync) : ctx_(&ctx),socket_(new application_layer::ssl_socket(io_service,ctx))
-  {
-    if(ct == connection_type::sync)
-    {
-      connection_type_.reset(new connection_type::sync_connection(socket_));
-    }
-    else if(ct == connection_type::async)
-    {
-      connection_type_.reset(new connection_type::async_connection(socket_));
-    }
-  }
+  client(io_service &io_service,context &ctx,const connection_type::connection_type& connection_type=connection_type::sync) : io_service_(io_service), connection_type_(connection_type), ctx_(&ctx){}
 #endif
   
   // Use host
-  const response_type& operator() (
+  const connection_ptr operator() (
     const std::string& host,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
     )
   {
-    connection_type_->operator()(host,buf,handler);
-    return get_response();
+    connection_ptr connection = crerate_connection();
+    connection->operator()(host,buf,handler);
+    return connection;
   }
-  const response_type& operator() (
+  const connection_ptr operator() (
     const std::string& host,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
     connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
     )
   {
     try
     {
-      (*this)(host,buf,handler);
-      return get_response();
+      return (*this)(host,buf,handler);
     }
     catch(const boost::system::system_error &e)
     {
       ec = e.code(); //例外からerror_codeを抜き取る
-      return get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      return connection_ptr(); //get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
     }
   }
 
   // Use EndPoint
-  const response_type& operator() (
+  const connection_ptr operator() (
     const boost::asio::ip::tcp::endpoint& host,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
     )
   {
-    connection_type_->operator()(host,buf,handler);
-    return get_response();
+    connection_ptr connection = crerate_connection();
+    connection->operator()(host,buf,handler);
+    return connection;
   }
-  const response_type& operator() (
+  const connection_ptr operator() (
     const boost::asio::ip::tcp::endpoint& host,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
     connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
     )
   {
     try
-    {
-      (*this)(host,buf,handler);
-      return get_response();
+    {      
+      return (*this)(host,buf,handler);
     }
     catch(const boost::system::system_error &e)
     {
       ec = e.code(); //例外からerror_codeを抜き取る
-      return get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      return connection_ptr(); //get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      //return get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
     }
   }
 
-  // Socket Close
-  void close()
+  const std::string service_protocol() const
   {
-    socket_->close();
-    return;
+#ifdef USE_SSL_BOOSTCONNECT
+  return (ctx_==nullptr) ? "http" : "https";
+#endif
+  return "http";
   }
 
-  const std::string service_protocol() const {return socket_->service_protocol();}
-
   //response Service
-  inline const response_type& get_response(){return connection_type_->get_response();}
+//  inline const response_type& get_response(){return connection_type_->get_response();}
   //void reset_response(){socket_layer_->reset_response();}
 
+protected:
+  socket_ptr create_socket()
+  {
+    socket_ptr socket;
+
+#ifdef USE_SSL_BOOSTCONNECT
+  if(ctx_ != nullptr)
+      socket.reset(new bstcon::application_layer::ssl_socket(io_service_,*ctx_));
+  else
+#endif
+      socket.reset(new bstcon::application_layer::tcp_socket(io_service_));
+
+    return socket;
+  }
+  const connection_ptr crerate_connection()
+  {
+    connection_ptr connection;
+
+    if(connection_type_ == connection_type::sync)
+      connection.reset(new bstcon::connection_type::sync_connection(create_socket()));
+    else 
+      connection.reset(new bstcon::connection_type::async_connection(create_socket()));
+
+    return connection;
+  }
+
 private:
-  boost::shared_ptr<application_layer::socket_base> socket_;
-  boost::shared_ptr<connection_type::connection_base> connection_type_;
 #ifdef USE_SSL_BOOSTCONNECT
   context *ctx_;
 #endif
+  boost::asio::io_service& io_service_;
+  connection_type::connection_type connection_type_;
 };
 
 } // namespace bstcon

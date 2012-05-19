@@ -16,25 +16,31 @@
 namespace bstcon{
 namespace connection_type{
 
-class async_connection : public connection_base{
+class async_connection : public connection_common<async_connection>{
 public:
-  async_connection(const boost::shared_ptr<application_layer::socket_base>& socket/*boost::shared_ptr<application_layer::layer_base>& socket_layer*/)
+  async_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
   {
     socket_ = socket;
     //socket_layer_ = socket_layer;
     resolver_ = new boost::asio::ip::tcp::resolver(socket_->get_io_service());
-    busy = false;
   }
   virtual ~async_connection(){}
+
+  void close()
+  {
+    socket_->close();
+    return;
+  }
   
   //’Ç‰Á  
-  response_type operator() (
+  connection_ptr operator() (
     const std::string& host,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     ReadHandler handler
     )
   {
-    common_init(buf,handler);
+    buf_ = buf;
+    handler_ = handler;    
 
     boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
     resolver_->async_resolve(query,
@@ -42,49 +48,32 @@ public:
       boost::asio::placeholders::iterator,
       boost::asio::placeholders::error)); //handle_resolve‚Ö
 
-    return reader_->get_response();
+    return this->shared_from_this();
   }
 
-  response_type operator() (
+  connection_ptr operator() (
     const endpoint_type& ep,
-    boost::asio::streambuf& buf,
+    boost::shared_ptr<boost::asio::streambuf> buf,
     ReadHandler handler
     )
   {
-    common_init(buf,handler);
+    buf_ = buf;
+    handler_ = handler;    
     
     socket_->lowest_layer().async_connect(
       ep,
+
       boost::bind(&async_connection::handle_connect,this,
         boost::asio::placeholders::error));
 
-    return reader_->get_response();
+    return this->shared_from_this();
   }
 
 private:
-  void common_init(boost::asio::streambuf &buf,ReadHandler& handler)
-  {
-    if(busy)
-    {
-      bstcon::system::throw_error(
-        bstcon::system::error_code(bstcon::system::error::busy,bstcon::system::client_category),
-        "ASync"
-        );
-    }
-    busy = true;
-
-    buf_ = &buf;
-    handler_ = handler;    
-    reader_.reset(new reader());
-
-    return;
-  }
-
   ReadHandler handler_;
-  bool busy;
 
   boost::asio::ip::tcp::resolver* resolver_;
-  boost::asio::streambuf *buf_;
+  boost::shared_ptr<boost::asio::streambuf> buf_;
   void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator,const boost::system::error_code& ec)
   {
     if(!ec)
@@ -115,7 +104,7 @@ private:
   {
     if(!ec)
     {
-      boost::asio::async_write(*socket_.get(),*buf_,
+      boost::asio::async_write(*socket_.get(),*buf_.get(),
         boost::bind(&async_connection::handle_write,this,
           boost::asio::placeholders::error));
     }
@@ -125,6 +114,7 @@ private:
   {
     if(!ec)
     {
+      reader_.reset(new connection_base::reader());
       reader_->async_read_starter(*socket_.get(),
         boost::bind(&async_connection::handle_read,this,
           boost::asio::placeholders::error));
@@ -136,7 +126,6 @@ private:
     //std::cout << "ASYNC";
     handler_(ec);
     //std::cout << "END";
-    busy = false;
   }
 };
 
