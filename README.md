@@ -17,7 +17,7 @@
       SSL/TLS拡張を行う場合のみ，パスを通しておいてください．  
       `#define USE_SSL_BOOSTCONNECT`によってSSLが有効になります．
 
-なるべく，SSL通信をしない場合は，OpenSSLを必要としないように調整したいものです．
+SSL通信をしない場合はOpenSSLは必要ありません！
 
 使い方
 -------
@@ -43,9 +43,9 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
 
         boost::asio::io_service io_service;
         // boost::asio::ssl::context ctx(io_service,boost::asio::ssl::context_base::sslv3_client);
-        boost::asio::streambuf request_buf;
-        std::ostream os(&request_buf);
+        boost::shared_ptr<boost::asio::streambuf> request_buf(new boost::asio::streambuf());
         {
+         std::ostream os(request_buf.get());
           os << "GET / HTTP/1.1\r\n";
           os << "Host: "+host+"\r\n";
           os << "Connection: close\r\n";
@@ -60,12 +60,14 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           bstcon::connection_type::sync
           );
         
-        const boost::shared_ptr<bstcon::response> response = 
+        const boost::shared_ptr<bstcon::connection_type::connection_base> connection = 
           client(
             "google.co.jp",
             request_buf,
             [](const error_code&)->void{std::cout << "Connection End" << std::endl;}
           );
+        
+        const boost::shared_ptr<bstcon::response> response = connection->get_response();
     
 +   非同期通信
 
@@ -75,13 +77,14 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           bstcon::connection_type::async
           );
         
-        const boost::shared_ptr<bstcon::response> response = 
+        const boost::shared_ptr<bstcon::connection_type::connection_base> connection = 
           client(
             "google.co.jp",
             request_buf,
             [](const error_code&)->void{std::cout << "Connection End" << std::endl;}
-          );
-          
+          );          
+        const boost::shared_ptr<bstcon::response> response = connection->get_response();
+        
         io_service.run();
     
 ん？違い？  
