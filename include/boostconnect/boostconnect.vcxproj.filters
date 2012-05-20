@@ -60,13 +60,13 @@
     <ClInclude Include="session\http_session.hpp">
       <Filter>ヘッダー ファイル\session</Filter>
     </ClInclude>
-    <ClInclude Include="session\manager.hpp">
-      <Filter>ヘッダー ファイル\session</Filter>
-    </ClInclude>
     <ClInclude Include="session\session_base.hpp">
       <Filter>ヘッダー ファイル\session</Filter>
     </ClInclude>
     <ClInclude Include="response.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

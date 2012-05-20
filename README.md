@@ -60,14 +60,12 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           bstcon::connection_type::sync
           );
         
-        const boost::shared_ptr<bstcon::connection_type::connection_base> connection = 
+        const boost::shared_ptr<bstcon::response> response = 
           client(
             "google.co.jp",
             request_buf,
             [](const error_code&)->void{std::cout << "Connection End" << std::endl;}
           );
-        
-        const boost::shared_ptr<bstcon::response> response = connection->get_response();
     
 +   非同期通信
 
@@ -77,13 +75,12 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           bstcon::connection_type::async
           );
         
-        const boost::shared_ptr<bstcon::connection_type::connection_base> connection = 
+        const boost::shared_ptr<bstcon::response> response = 
           client(
             "google.co.jp",
             request_buf,
             [](const error_code&)->void{std::cout << "Connection End" << std::endl;}
-          );          
-        const boost::shared_ptr<bstcon::response> response = connection->get_response();
+          );
         
         io_service.run();
     

@@ -12,6 +12,7 @@
 #include <map>
 #include <boost/smart_ptr.hpp>
 #include <boost/asio.hpp>
+#include "manager.hpp"
 #include "application_layer/socket_base.hpp"
 #include "application_layer/tcp_socket.hpp"
 #include "application_layer/ssl_socket.hpp"
@@ -26,7 +27,7 @@ class client : boost::noncopyable{
 public:
   typedef boost::asio::io_service io_service;
   typedef boost::system::error_code error_code;
-//  typedef boost::shared_ptr<bstcon::connection_type::connection_base> response_type;
+  typedef boost::shared_ptr<bstcon::response> response_type;
 
   typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
   typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
@@ -57,17 +58,21 @@ public:
 #endif
   
   // Use host
-  const connection_ptr operator() (
+  const response_type operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
-    connection->operator()(host,buf,handler);
-    return connection;
+    manager_.run(connection);
+    
+    connection->operator()(host,buf,
+      boost::bind(&client::handler,this,_1,connection,handler)
+      );
+    return connection->get_response();
   }
-  const connection_ptr operator() (
+  const response_type operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
@@ -81,22 +86,26 @@ public:
     catch(const boost::system::system_error &e)
     {
       ec = e.code(); //例外からerror_codeを抜き取る
-      return connection_ptr(); //get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      return response_type(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
     }
   }
 
   // Use EndPoint
-  const connection_ptr operator() (
+  const response_type operator() (
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
-    connection->operator()(host,buf,handler);
-    return connection;
+    manager_.run(connection);
+
+    connection->operator()(host,buf,
+      boost::bind(&client::handler,this,_1,connection,handler)
+      );
+    return connection->get_response();
   }
-  const connection_ptr operator() (
+  const response_type operator() (
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
@@ -104,13 +113,13 @@ public:
     )
   {
     try
-    {      
+    {
       return (*this)(host,buf,handler);
     }
     catch(const boost::system::system_error &e)
     {
       ec = e.code(); //例外からerror_codeを抜き取る
-      return connection_ptr(); //get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      return response_type(); //get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
       //return get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
     }
   }
@@ -128,7 +137,7 @@ public:
   //void reset_response(){socket_layer_->reset_response();}
 
 protected:
-  socket_ptr create_socket()
+  inline socket_ptr create_socket()
   {
     socket_ptr socket;
 
@@ -141,7 +150,7 @@ protected:
 
     return socket;
   }
-  const connection_ptr crerate_connection()
+  inline const connection_ptr crerate_connection()
   {
     connection_ptr connection;
 
@@ -153,12 +162,21 @@ protected:
     return connection;
   }
 
+  void handler(const error_code& ec,connection_ptr connection,connection_type::connection_base::ReadHandler h) const
+  {
+    h(ec);
+    manager_.stop(connection);
+    return;
+  }
+
 private:
 #ifdef USE_SSL_BOOSTCONNECT
   context *ctx_;
 #endif
   boost::asio::io_service& io_service_;
   connection_type::connection_type connection_type_;
+
+  mutable bstcon::manager<connection_type::connection_base> manager_;
 };
 
 } // namespace bstcon

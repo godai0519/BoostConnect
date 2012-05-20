@@ -20,6 +20,7 @@ public:
   sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
   {
     socket_ = socket;
+    reader_.reset(new reader());
   }
   virtual ~sync_connection(){}
   
@@ -48,7 +49,6 @@ public:
     boost::asio::write(*socket_.get(),*buf.get());
     
     // Read Start
-    reader_.reset(new reader());
     reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
 
     return this->shared_from_this();

@@ -5,20 +5,13 @@
 // SessionÇÃéıñΩÇä«óùÇ∑ÇÈmanager
 //
 
-#ifndef BOOSTCONNECT_SESSION_MANAGER
-#define BOOSTCONNECT_SESSION_MANAGER
+#ifndef BOOSTCONNECT_MANAGER
+#define BOOSTCONNECT_MANAGER
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/karma.hpp>
-#include <boost/fusion/include/std_pair.hpp>
-
-#include "../application_layer/socket_base.hpp"
-#include "../request.hpp"
-#include "../response.hpp"
+#include <set>
+#include <boost/shared_ptr.hpp>
 
 namespace bstcon{
-namespace session{
 
 template<class ManagedType>
 class manager /*final*/ {
@@ -40,7 +33,6 @@ private:
   ManagedSet data_;
 };
   
-} // namespace session
 } // namespace bstcon
 
 #endif

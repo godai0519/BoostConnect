@@ -8,7 +8,7 @@
 #ifndef BOOSTCONNECT_SERVER
 #define BOOSTCONNECT_SERVER
 
-#include "session/manager.hpp"
+#include "manager.hpp"
 #include "session/session_base.hpp"
 #include "session/http_session.hpp"
 
@@ -17,7 +17,7 @@ namespace bstcon{
 class server : boost::noncopyable{
 private:
   typedef session::http_session SessionType;
-  session::manager<session::session_base> manage_;
+  manager<session::session_base> manage_;
 
 public:
   typedef boost::asio::io_service io_service;

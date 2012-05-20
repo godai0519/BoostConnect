@@ -6,8 +6,6 @@
 #include <boostconnect/client.hpp>
 #include <boostconnect/server.hpp>
 
-#include <boostconnect/session/manager.hpp>
-
 #include <boost/format.hpp>
 
 int main()
@@ -48,11 +46,11 @@ int main()
       os1 << "Connection: close\r\n";
       os1 << "\r\n";
     }
-    const boost::shared_ptr<bstcon::connection_type::connection_base> response1 = 
+    const boost::shared_ptr<bstcon::response> response1 = 
       client(
         boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), 5600),
         buf1,
-        [&host,&response1](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response1->get_response()->body + "\n\n";}
+        [&host,&response1](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response1->body + "\n\n";}
       );
     
     boost::shared_ptr<boost::asio::streambuf> buf2(new boost::asio::streambuf());
@@ -63,11 +61,11 @@ int main()
       os2 << "Connection: close\r\n";
       os2 << "\r\n";
     }
-    const boost::shared_ptr<bstcon::connection_type::connection_base> response2 = 
+    const boost::shared_ptr<bstcon::response> response2 = 
       client(
         boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), 5600),
         buf2,
-        [&host,&response2](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response2->get_response()->body + "\n\n";}
+        [&host,&response2](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response2->body + "\n\n";}
       );
         
     io_service.run();

@@ -21,8 +21,8 @@ public:
   async_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
   {
     socket_ = socket;
-    //socket_layer_ = socket_layer;
     resolver_ = new boost::asio::ip::tcp::resolver(socket_->get_io_service());
+    reader_.reset(new reader());
   }
   virtual ~async_connection(){}
 
@@ -114,7 +114,6 @@ private:
   {
     if(!ec)
     {
-      reader_.reset(new connection_base::reader());
       reader_->async_read_starter(*socket_.get(),
         boost::bind(&async_connection::handle_read,this,
           boost::asio::placeholders::error));

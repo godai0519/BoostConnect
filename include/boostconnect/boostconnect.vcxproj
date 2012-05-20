@@ -18,11 +18,11 @@
     <ClInclude Include="connection_type\async_connection.hpp" />
     <ClInclude Include="connection_type\connection_base.hpp" />
     <ClInclude Include="connection_type\sync_connection.hpp" />
+    <ClInclude Include="manager.hpp" />
     <ClInclude Include="request.hpp" />
     <ClInclude Include="response.hpp" />
     <ClInclude Include="server.hpp" />
     <ClInclude Include="session\http_session.hpp" />
-    <ClInclude Include="session\manager.hpp" />
     <ClInclude Include="session\session_base.hpp" />
     <ClInclude Include="system\error_code.hpp" />
   </ItemGroup>
