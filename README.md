@@ -64,7 +64,7 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           client(
             "google.co.jp",
             request_buf,
-            [](const error_code&)->void{std::cout << "Connection End" << std::endl;}
+            [](const boost::shared_ptr<bstcon::response>,const error_code&)->void{std::cout << "Connection End" << std::endl;} /*同期通信ならこのハンドラーを渡さなくても勝手に何とかしてくれます*/
           );
     
 +   非同期通信
@@ -75,12 +75,12 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           bstcon::connection_type::async
           );
         
-        const boost::shared_ptr<bstcon::response> response = 
-          client(
-            "google.co.jp",
-            request_buf,
-            [](const error_code&)->void{std::cout << "Connection End" << std::endl;}
-          );
+         
+        client(
+          "google.co.jp",
+          request_buf,
+          [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{std::cout << "Connection End" << std::endl;}
+        );
         
         io_service.run();
     

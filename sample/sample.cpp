@@ -50,7 +50,7 @@ int main()
       client(
         boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), 5600),
         buf1,
-        [&host,&response1](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response1->body + "\n\n";}
+        [&host](const boost::shared_ptr<bstcon::response> response1,const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response1->body + "\n\n";}
       );
     
     boost::shared_ptr<boost::asio::streambuf> buf2(new boost::asio::streambuf());
@@ -65,7 +65,7 @@ int main()
       client(
         boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), 5600),
         buf2,
-        [&host,&response2](const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response2->body + "\n\n";}
+        [&host](const boost::shared_ptr<bstcon::response> response2,const error_code&)->void{std::cout << "THIS is Handler: "+host+"\n"+response2->body + "\n\n";}
       );
         
     io_service.run();

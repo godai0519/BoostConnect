@@ -32,6 +32,8 @@ public:
   typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
   typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
+  typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> ClientHandler;
+
   //// TODO: C++11‚É‚Ä‰Â•Ï’·ˆø”‚É‘Î‰‚³‚¹‚é
   //template<class ...Args>
   //client(boost::asio::io_service &io_service,boost::asio::ip::tcp::endpoint& ep,Args... args)
@@ -61,7 +63,7 @@ public:
   const response_type operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
@@ -76,7 +78,7 @@ public:
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
-    connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     try
@@ -94,7 +96,7 @@ public:
   const response_type operator() (
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
@@ -109,7 +111,7 @@ public:
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
-    connection_type::connection_base::ReadHandler handler = [](const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     try
@@ -162,9 +164,9 @@ protected:
     return connection;
   }
 
-  void handler(const error_code& ec,connection_ptr connection,connection_type::connection_base::ReadHandler h) const
+  void handler(const error_code& ec,connection_ptr connection,ClientHandler h) const
   {
-    h(ec);
+    h(connection->get_response(),ec);
     manager_.stop(connection);
     return;
   }
