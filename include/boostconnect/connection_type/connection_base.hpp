@@ -13,6 +13,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
+#include <boost/lexical_cast.hpp>
 #include "../application_layer/socket_base.hpp"
 #include "../response.hpp"
 
@@ -76,7 +77,7 @@ protected:
         >> *(+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n") //“ñs–Ú‚ðmap‚É
         >> ("\r\n"); //"\r\n\r\n"‚Ü‚Å
 
-      T::const_iterator it = source.cbegin();
+      typename T::const_iterator it = source.cbegin();
       qi::parse(it,source.cend(),header_rule,
         response_->http_version,
         response_->status_code,
@@ -92,7 +93,7 @@ protected:
       namespace qi = boost::spirit::qi;
       const auto header_rule = (qi::hex[boost::phoenix::ref(chunk) = qi::_1] - "\r\n") >> *(qi::char_ - "\r\n") >> ("\r\n");
 
-      T::const_iterator it = source.cbegin();
+      typename T::const_iterator it = source.cbegin();
       qi::parse(it,source.cend(),header_rule,chunk);
 
       return std::distance(source.cbegin(),it);
