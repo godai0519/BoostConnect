@@ -28,7 +28,6 @@ public:
   connection_ptr operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    //error_code& ec,
     ReadHandler handler
     )
   {
@@ -81,9 +80,7 @@ public:
 private:
   void handle_read(const error_code& ec)
   {
-    //std::cout << "SYNC";
     handler_(ec);
-    //std::cout << "END";
   }
   
   ReadHandler handler_;

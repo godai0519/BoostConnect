@@ -17,7 +17,7 @@
 #include "../request.hpp"
 #include "../response.hpp"
 
-#define MAP_FIND_RETURN_OR_DEFAULT(map,elements,defaults) (map.find(elements)==map.cend() ? defaults : map.at(elements))
+//#define MAP_FIND_RETURN_OR_DEFAULT(map,elements,defaults) (map.find(elements)==map.cend() ? defaults : map.at(elements))
 
 namespace bstcon{
 namespace session{
@@ -33,6 +33,11 @@ struct session_base : boost::noncopyable{
 
   virtual void start(RequestHandler handler,CloseHandler c_handler) = 0;
   virtual void end(CloseHandler c_handler) = 0;
+
+  inline const std::string& MAP_FIND_RETURN_OR_DEFAULT(const std::map<std::string,std::string>& map,const std::string& elements,const std::string& defaults) const
+  {
+    return (map.find(elements)==map.cend() ? defaults : map.at(elements));
+  }
 };
 
 template<class Derived>

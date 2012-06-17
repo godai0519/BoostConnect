@@ -122,9 +122,7 @@ private:
   }
   void handle_read(const error_code& ec)
   {
-    //std::cout << "ASYNC";
     handler_(ec);
-    //std::cout << "END";
   }
 };
 

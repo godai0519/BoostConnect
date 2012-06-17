@@ -66,7 +66,6 @@ public:
     socket_->close();
 
     c_handler(static_cast<boost::shared_ptr<session_base>>(shared_from_this()));
-    //delete this;
     return;
   }
 
@@ -91,22 +90,12 @@ private:
 
   void read_timeout(const error_code& ec)
   {
-    //socket_->shutdown(boost::asio::socket_base::shutdown_both);
-    //socket_->close();
-    //socket_->get_io_service().stop();
-    //delete this;
     this->end(c_handler_);
     return;
   }
 
   void handle_header_read(const error_code& ec,std::size_t)
   {
-    /*if(ec)
-    {
-      delete this;
-      return;
-    }*/
-
     if(!ec)
     {
       std::string request_str(boost::asio::buffer_cast<const char*>(read_buf_->data()));

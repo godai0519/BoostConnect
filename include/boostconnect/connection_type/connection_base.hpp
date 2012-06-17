@@ -412,9 +412,6 @@ protected:
   };
   boost::shared_ptr<application_layer::socket_base> socket_;
   std::unique_ptr<connection_base::reader> reader_;
-
-  //response_type response_;
-  //boost::shared_ptr<application_layer::layer_base> socket_layer_;
 };
 
 template <class Devide>

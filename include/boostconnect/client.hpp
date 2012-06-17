@@ -121,8 +121,7 @@ public:
     catch(const boost::system::system_error &e)
     {
       ec = e.code(); //例外からerror_codeを抜き取る
-      return response_type(); //get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
-      //return get_response(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      return response_type(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
     }
   }
 
@@ -133,10 +132,6 @@ public:
 #endif
   return "http";
   }
-
-  //response Service
-//  inline const response_type& get_response(){return connection_type_->get_response();}
-  //void reset_response(){socket_layer_->reset_response();}
 
 protected:
   inline socket_ptr create_socket()
