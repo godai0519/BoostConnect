@@ -67,22 +67,27 @@ protected:
     //
   protected:
     //レスポンスヘッダ読み込み
-    template<class T>
-    const int read_header(const T& source)
+    const int read_header(const std::string& source)
     {    
       namespace qi = boost::spirit::qi;
 
-      const auto header_rule = 
-        "HTTP/" >> +(qi::char_ - " ") >> " " >> qi::int_ >> " " >> +(qi::char_ - "\r\n") >> ("\r\n") //一行目
-        >> *(+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n") //二行目をmapに
-        >> ("\r\n"); //"\r\n\r\n"まで
+      qi::rule<std::string::const_iterator,std::pair<std::string,std::string>> field = (+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n");
 
-      typename T::const_iterator it = source.cbegin();
-      qi::parse(it,source.cend(),header_rule,
+      //const auto header_rule = 
+      //  "HTTP/" >> +(qi::char_ - " ") >> " " >> qi::int_ >> " " >> +(qi::char_ - "\r\n") >> ("\r\n") //一行目
+      //  >> *(+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n") //二行目をmapに
+      //  >> ("\r\n"); //"\r\n\r\n"まで
+
+      std::string::const_iterator it = source.cbegin();
+      qi::parse(it,source.cend(),"HTTP/" >> +(qi::char_ - " ") >> " " >> qi::int_ >> " " >> +(qi::char_ - "\r\n") >> ("\r\n"),
         response_->http_version,
         response_->status_code,
-        response_->status_message,
+        response_->status_message);
+
+      qi::parse(it,source.cend(),*(+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n"),
         response_->header);
+
+      qi::parse(it,source.cend(),qi::lit("\r\n"));
     
       return std::distance(source.cbegin(),it);
     }
@@ -139,7 +144,9 @@ protected:
           boost::asio::transfer_at_least(content_length-boost::asio::buffer_size(read_buf_.data())),
           ec
           );
-        response_->body += ((std::string)boost::asio::buffer_cast<const char*>(read_buf_.data())).substr(0,content_length);
+        auto data = read_buf_.data();
+        response_->body.append(boost::asio::buffers_begin(data),boost::asio::buffers_end(data));
+        //response_->body += ((std::string)boost::asio::buffer_cast<const char*>(read_buf_.data())).substr(0,content_length);
         read_buf_.consume(content_length);
       }
 

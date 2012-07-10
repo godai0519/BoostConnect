@@ -14,8 +14,6 @@
 
 #ifdef USE_SSL_BOOSTCONNECT
 #include <boost/asio/ssl.hpp>
-#pragma comment(lib, "libeay32MDd.lib")
-#pragma comment(lib, "ssleay32MDd.lib")
 #endif
 
 namespace bstcon{
