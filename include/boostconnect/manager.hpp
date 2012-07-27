@@ -16,7 +16,7 @@ namespace bstcon{
 template<class ManagedType>
 class manager /*final*/ {
 public:
-  typedef boost::shared_ptr<typename ManagedType> ManagedPtr;
+  typedef boost::shared_ptr<ManagedType> ManagedPtr;
   typedef std::set<ManagedPtr> ManagedSet;
 
   const ManagedSet& data() const { return data_; }

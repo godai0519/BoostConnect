@@ -150,8 +150,8 @@ private:
     write_buf_.reset(new boost::asio::streambuf());
 
     //std::ostream os(write_buf_.get()); //TODO:
-
-    if(response_generater(std::ostreambuf_iterator<char>(write_buf_.get()),response))
+    std::ostreambuf_iterator<char> out(write_buf_.get());
+    if(response_generater(out,response))
     {
       boost::asio::async_write(*socket_,*write_buf_.get(),
         boost::bind(&http_session::handle_write,shared_from_this(),
@@ -221,17 +221,28 @@ private:
   {
     namespace qi = boost::spirit::qi;
 
-    auto line = +(qi::char_-' ') >> ' ' >> +(qi::char_-' ') >> ' ' >> qi::lit("HTTP/") >> +(qi::char_ - qi::lit("\r\n")) >> qi::lit("\r\n");
-    auto field = +(qi::char_-':') >> qi::lit(": ") >> +(qi::char_-qi::lit("\r\n")) >> qi::lit("\r\n");
-    auto rule =  line >> *field >> qi::lit("\r\n");
+    std::string::const_iterator it = request_str.cbegin();
 
-    auto it = request_str.cbegin();
-    qi::parse(it,request_str.cend(),rule,
-      request_containar.method,
-      request_containar.uri,
-      request_containar.http_version,
-      request_containar.header);
+    qi::parse(
+      it,
+      request_str.cend(),
+      +(qi::char_-' ') >> ' ' >> +(qi::char_-' ') >> ' ' >> +(qi::char_-"\r\n") >> "\r\n",
+      request_containar.method, request_containar.uri, request_containar.http_version
+      );
 
+    qi::parse(
+      it,
+      request_str.cend(),
+      *( +(qi::char_-':') >> ": " >> +(qi::char_-"\r\n") >> "\r\n" ) >> "\r\n",
+      request_containar.header
+      );
+
+    //qi::parse(it,request_str.cend(),line >> (field % "\r\n"),
+    //  request_containar.method,
+    //  request_containar.uri,
+    //  request_containar.http_version,
+    //  request_containar.header);
+    
     return std::distance(request_str.cbegin(),it);
   }
 
