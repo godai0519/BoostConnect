@@ -96,10 +96,12 @@ protected:
     const int chunk_parser(const T& source,std::size_t& chunk)
     {
       namespace qi = boost::spirit::qi;
-      const auto header_rule = (qi::hex[boost::phoenix::ref(chunk) = qi::_1] - "\r\n") >> *(qi::char_ - "\r\n") >> ("\r\n");
+      const qi::rule<T::const_iterator,unsigned int()> rule = qi::hex >> qi::lit("\r\n");
+
+    //  const auto header_rule = (qi::hex[boost::phoenix::ref(chunk) = qi::_1] - qi::lit("\r\n")) >> *(qi::char_ - qi::lit("\r\n")) >> qi::lit("\r\n");
 
       typename T::const_iterator it = source.cbegin();
-      qi::parse(it,source.cend(),header_rule,chunk);
+      qi::parse(it,source.cend(),rule,chunk);
 
       return std::distance(source.cbegin(),it);
     }
