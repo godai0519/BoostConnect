@@ -36,11 +36,13 @@ public:
   connection_ptr operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ReadHandler handler
+    ReadHandler handler,
+    EveryChunkHandler chunk_handler
     )
   {
     buf_ = buf;
-    handler_ = handler;    
+    handler_ = handler;
+    chunk_handler_ = chunk_handler;
 
     boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
     resolver_->async_resolve(query,
@@ -54,11 +56,13 @@ public:
   connection_ptr operator() (
     const endpoint_type& ep,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ReadHandler handler
+    ReadHandler handler,
+    EveryChunkHandler chunk_handler
     )
   {
     buf_ = buf;
-    handler_ = handler;    
+    handler_ = handler;
+    chunk_handler_ = chunk_handler;
     
     socket_->lowest_layer().async_connect(
       ep,
@@ -71,6 +75,7 @@ public:
 
 private:
   ReadHandler handler_;
+  EveryChunkHandler chunk_handler_;
 
   boost::asio::ip::tcp::resolver* resolver_;
   boost::shared_ptr<boost::asio::streambuf> buf_;
@@ -114,9 +119,10 @@ private:
   {
     if(!ec)
     {
-      reader_->async_read_starter(*socket_.get(),
-        boost::bind(&async_connection::handle_read,this,
-          boost::asio::placeholders::error));
+      reader_->async_read_starter(
+        *socket_.get(),
+        boost::bind(&async_connection::handle_read,this,boost::asio::placeholders::error),
+        chunk_handler_);
     }
     else std::cout << "Error Write!?" << std::endl;
   }

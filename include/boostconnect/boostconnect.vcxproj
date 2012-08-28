@@ -62,8 +62,8 @@
     <LibraryPath>C:\OpenSSL\lib\VC\static;C:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\OpenSSL\include;C:\boost\include\boost-1_50;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\OpenSSL\lib\VC\static;C:\boost\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\openssl\build\release\include;C:\boost\include\boost-1_50;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openssl\build\release\lib;C:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

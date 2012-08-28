@@ -33,6 +33,7 @@ public:
   typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
   typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> ClientHandler;
+  typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
 
   //// TODO: C++11‚É‚Ä‰Â•Ï’·ˆø”‚É‘Î‰‚³‚¹‚é
   //template<class ...Args>
@@ -63,14 +64,16 @@ public:
   const response_type operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
     manager_.run(connection);
     
     connection->operator()(host,buf,
-      boost::bind(&client::handler,this,_1,connection,handler)
+      boost::bind(&client::handler,this,_1,connection,handler),
+      chunk_handler
       );
     return connection->get_response();
   }
@@ -78,12 +81,13 @@ public:
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     try
     {
-      return (*this)(host,buf,handler);
+      return (*this)(host,buf,handler,chunk_handler);
     }
     catch(const boost::system::system_error &e)
     {
@@ -96,14 +100,16 @@ public:
   const response_type operator() (
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
     manager_.run(connection);
 
     connection->operator()(host,buf,
-      boost::bind(&client::handler,this,_1,connection,handler)
+      boost::bind(&client::handler,this,_1,connection,handler),
+      chunk_handler
       );
     return connection->get_response();
   }
@@ -111,12 +117,13 @@ public:
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     try
     {
-      return (*this)(host,buf,handler);
+      return (*this)(host,buf,handler,chunk_handler);
     }
     catch(const boost::system::system_error &e)
     {

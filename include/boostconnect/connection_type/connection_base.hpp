@@ -26,6 +26,7 @@ public:
   typedef boost::system::error_code error_code;
   typedef boost::asio::ip::tcp::endpoint endpoint_type;
   typedef boost::function<void (const error_code&)> ReadHandler;
+  typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
   typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
   typedef boost::shared_ptr<bstcon::response> response_type;
 
@@ -33,8 +34,8 @@ public:
   virtual ~connection_base(){}
 
   //通信開始(オーバーライド必須)
-  virtual connection_ptr operator() (const std::string&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{}) = 0;
-  virtual connection_ptr operator() (const endpoint_type&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{}) = 0;
+  virtual connection_ptr operator() (const std::string&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{},EveryChunkHandler chunk_handler = [](const error_code&)->void{}) = 0;
+  virtual connection_ptr operator() (const endpoint_type&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{},EveryChunkHandler chunk_handler = [](const error_code&)->void{}) = 0;
 
   inline const response_type& get_response() const { return reader_->get_response(); }
 
@@ -44,6 +45,7 @@ protected:
     typedef boost::shared_ptr<bstcon::response> response_type;
     typedef boost::system::error_code error_code;
     typedef boost::function<void (const error_code&)> ReadHandler;
+    typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
     boost::asio::streambuf read_buf_;
     response_type response_;
 
@@ -72,12 +74,7 @@ protected:
       namespace qi = boost::spirit::qi;
 
       qi::rule<std::string::const_iterator,std::pair<std::string,std::string>> field = (+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n");
-
-      //const auto header_rule = 
-      //  "HTTP/" >> +(qi::char_ - " ") >> " " >> qi::int_ >> " " >> +(qi::char_ - "\r\n") >> ("\r\n") //一行目
-      //  >> *(+(qi::char_ - ": ") >> ": " >> +(qi::char_ - "\r\n") >> "\r\n") //二行目をmapに
-      //  >> ("\r\n"); //"\r\n\r\n"まで
-
+      
       std::string::const_iterator it = source.cbegin();
       qi::parse(it,source.cend(),"HTTP/" >> +(qi::char_ - " ") >> " " >> qi::int_ >> " " >> +(qi::char_ - "\r\n") >> ("\r\n"),
         response_->http_version,
@@ -96,7 +93,7 @@ protected:
     const int chunk_parser(const T& source,std::size_t& chunk)
     {
       namespace qi = boost::spirit::qi;
-      const qi::rule<T::const_iterator,unsigned int()> rule = qi::hex >> qi::lit("\r\n");
+      const qi::rule<typename T::const_iterator,unsigned int()> rule = qi::hex >> qi::lit("\r\n");
 
     //  const auto header_rule = (qi::hex[boost::phoenix::ref(chunk) = qi::_1] - qi::lit("\r\n")) >> *(qi::char_ - qi::lit("\r\n")) >> qi::lit("\r\n");
 
@@ -111,7 +108,7 @@ protected:
     //
   public:
     template<class Socket>
-    void read_starter(Socket& socket,/*error_code& ec,*/ReadHandler handler)
+    void read_starter(Socket& socket,/*error_code& ec,*/ReadHandler handler,EveryChunkHandler chunk_handler)
     {
       //ヘッダーのみ
       boost::asio::read_until(socket,read_buf_,"\r\n\r\n"/*,ec*/);
@@ -123,7 +120,7 @@ protected:
       {
         //syncなchunked
         //処理をチャンク用の関数に投げるから適当
-        read_chunk_size(socket,handler);
+        read_chunk_size(socket,handler,chunk_handler);
         return;
       }
     
@@ -164,7 +161,7 @@ protected:
     //chunkを持っている同期通信
     //チャンクサイズの表示行を読み出す
     template<class Socket>
-    void read_chunk_size(Socket& socket,ReadHandler handler)
+    void read_chunk_size(Socket& socket,ReadHandler handler,EveryChunkHandler chunk_handler)
     {
       error_code ec;
       boost::asio::read_until(socket,read_buf_,"\r\n",ec);
@@ -187,13 +184,13 @@ protected:
       }
 
       //そのチャンク表示でbodyのreadを試みる．
-      read_chunk_body(socket,chunk,handler);
+      read_chunk_body(socket,chunk,handler,chunk_handler);
       return;
     }
   
     //chunk指定に基づいて処理
     template<class Socket>
-    void read_chunk_body(Socket& socket,const std::size_t chunk,ReadHandler handler)
+    void read_chunk_body(Socket& socket,const std::size_t chunk,ReadHandler handler,EveryChunkHandler chunk_handler)
     {
       error_code ec;
       boost::asio::read(socket,read_buf_,
@@ -212,7 +209,9 @@ protected:
       response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk/*+2*/);
       read_buf_.consume(chunk+2); //流す
 
-      read_chunk_size(socket,handler);
+      chunk_handler(response_,ec);
+
+      read_chunk_size(socket,handler,chunk_handler);
       return;
     }
   
@@ -222,7 +221,7 @@ protected:
   public:
     //非同期読み出し開始
     template<class Socket>
-    void async_read_starter(Socket& socket,ReadHandler handler)
+    void async_read_starter(Socket& socket,ReadHandler handler,EveryChunkHandler chunk_handler)
     {
       //ただわかりやすくしただけ．渡し逃げ．まあ，ヘッダを読み込み切ってくれれば．
       boost::asio::async_read_until(socket,
@@ -232,7 +231,8 @@ protected:
           boost::ref(socket),
           boost::asio::placeholders::error,
           boost::asio::placeholders::bytes_transferred,
-          handler));
+          handler,
+          chunk_handler));
 
       return;
     }
@@ -240,7 +240,7 @@ protected:
   protected:
     //ヘッダー処理，処理を各系統へ渡す．
     template<class Socket>
-    void async_read_header(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler)
+    void async_read_header(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler,EveryChunkHandler chunk_handler)
     {
       //レスポンスが帰ってこない？
       if(read_buf_.size()==0)
@@ -264,7 +264,8 @@ protected:
             boost::ref(socket),
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred,
-            handler));
+            handler,
+            chunk_handler));
       }
       else if(response_->header.find("Content-Length")==response_->header.end())
       {
@@ -318,7 +319,7 @@ protected:
     //チャンク行を読み込み終えてるはずなので，チャンク量を読み出し．
     //(なんか魔導書と似ちゃってるような)
     template<class Socket>
-    void async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler)
+    void async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t,ReadHandler handler,EveryChunkHandler chunk_handler)
     {
       if(read_buf_.size()==0)
       {
@@ -337,7 +338,8 @@ protected:
             boost::ref(socket),
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred,
-            handler));
+            handler,
+            chunk_handler));
       }
       else
       {
@@ -366,7 +368,8 @@ protected:
             chunk,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred,
-            handler));
+            handler,
+            chunk_handler));
       }
 
       return;
@@ -374,7 +377,7 @@ protected:
 
     //チャンクの表示量を読みだし終えてるはずだけど．
     template<class Socket>
-    void async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t,ReadHandler handler)
+    void async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t,ReadHandler handler,EveryChunkHandler chunk_handler)
     {
       if(read_buf_.size()==0)
       {
@@ -392,6 +395,8 @@ protected:
         response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk);
         read_buf_.consume(chunk+2); //流す
 
+        chunk_handler(response_,ec);
+        
         //chunk取得にもどるよ
         boost::asio::async_read_until(socket,
           read_buf_,
@@ -400,7 +405,8 @@ protected:
             boost::ref(socket),
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred,
-            handler));
+            handler,
+            chunk_handler));
       }
     }
 

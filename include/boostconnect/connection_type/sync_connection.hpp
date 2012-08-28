@@ -28,7 +28,8 @@ public:
   connection_ptr operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ReadHandler handler
+    ReadHandler handler,
+    EveryChunkHandler chunk_handler
     )
   {
     handler_ = handler;
@@ -48,7 +49,7 @@ public:
     boost::asio::write(*socket_.get(),*buf.get());
     
     // Read Start
-    reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
+    reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error),chunk_handler);
 
     return this->shared_from_this();
   }
@@ -56,7 +57,8 @@ public:
   connection_ptr operator() (
     const endpoint_type& ep,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ReadHandler handler
+    ReadHandler handler,
+    EveryChunkHandler chunk_handler
     )
   {
     handler_ = handler;
@@ -72,7 +74,7 @@ public:
     
     // Read Start
     reader_.reset(new reader());
-    reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error));
+    reader_->read_starter(*socket_.get(),boost::bind(&sync_connection::handle_read,this,boost::asio::placeholders::error),chunk_handler);
 
     return this->shared_from_this();
   }
