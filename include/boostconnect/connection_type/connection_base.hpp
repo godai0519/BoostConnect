@@ -41,7 +41,7 @@ public:
 
 protected:
   class reader : boost::noncopyable{
-  protected:
+  private:
     typedef boost::shared_ptr<bstcon::response> response_type;
     typedef boost::system::error_code error_code;
     typedef boost::function<void (const error_code&)> ReadHandler;
@@ -132,7 +132,8 @@ protected:
       {
         while(boost::asio::read(socket,read_buf_,/*boost::asio::transfer_at_least(1)*/boost::asio::transfer_all(),ec));
         //std::cout << ec.message();
-        response_->body +=  boost::asio::buffer_cast<const char*>(read_buf_.data());
+        auto data = read_buf_.data();
+        response_->body.append(boost::asio::buffers_begin(data),boost::asio::buffers_end(data));
         read_buf_.consume(read_buf_.size());
       }
       else
@@ -307,12 +308,13 @@ protected:
       }
       else
       {
-        response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()));
+        auto data = read_buf_.data();
+        response_->body.append(boost::asio::buffers_begin(data),boost::asio::buffers_end(data));
         read_buf_.consume(read_buf_.size());
 
         handler(ec);
       }
-        
+      //socket.close();
       return;
     }
     

@@ -32,7 +32,7 @@ public:
   typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
   typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
-  typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> ClientHandler;
+  typedef boost::function<void (const connection_ptr,const error_code&)> ClientHandler;
   typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
 
   //// TODO: C++11にて可変長引数に対応させる
@@ -61,27 +61,27 @@ public:
 #endif
   
   // Use host
-  const response_type operator() (
+  const connection_ptr operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
     EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
-    manager_.run(connection);
+    //manager_.run(connection);
     
     connection->operator()(host,buf,
       boost::bind(&client::handler,this,_1,connection,handler),
       chunk_handler
       );
-    return connection->get_response();
+    return connection;
   }
-  const response_type operator() (
+  const connection_ptr operator() (
     const std::string& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
     EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
@@ -92,32 +92,32 @@ public:
     catch(const boost::system::system_error &e)
     {
       ec = e.code(); //例外からerror_codeを抜き取る
-      return response_type(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      return crerate_connection(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
     }
   }
 
   // Use EndPoint
-  const response_type operator() (
+  const connection_ptr operator() (
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
     EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
     connection_ptr connection = crerate_connection();
-    manager_.run(connection);
+    //manager_.run(connection);
 
     connection->operator()(host,buf,
       boost::bind(&client::handler,this,_1,connection,handler),
       chunk_handler
       );
-    return connection->get_response();
+    return connection;
   }
-  const response_type operator() (
+  const connection_ptr operator() (
     const boost::asio::ip::tcp::endpoint& host,
     boost::shared_ptr<boost::asio::streambuf> buf,
     error_code& ec,
-    ClientHandler handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{},
+    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
     EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
     )
   {
@@ -128,7 +128,7 @@ public:
     catch(const boost::system::system_error &e)
     {
       ec = e.code(); //例外からerror_codeを抜き取る
-      return response_type(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+      return crerate_connection(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
     }
   }
 
@@ -168,8 +168,8 @@ protected:
 
   void handler(const error_code& ec,connection_ptr connection,ClientHandler h) const
   {
-    h(connection->get_response(),ec);
-    manager_.stop(connection);
+    h(connection,ec);
+    //manager_.stop(connection);
     return;
   }
 
@@ -180,7 +180,7 @@ private:
   boost::asio::io_service& io_service_;
   connection_type::connection_type connection_type_;
 
-  mutable bstcon::manager<connection_type::connection_base> manager_;
+  //mutable bstcon::manager<connection_type::connection_base> manager_;
 };
 
 } // namespace bstcon
