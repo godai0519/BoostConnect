@@ -25,162 +25,178 @@ namespace bstcon{
 //複数の通信を同時に要求した際の保証はしない
 class client : boost::noncopyable{
 public:
-  typedef boost::asio::io_service io_service;
-  typedef boost::system::error_code error_code;
-  typedef boost::shared_ptr<bstcon::response> response_type;
+    typedef boost::asio::io_service io_service;
+    typedef boost::system::error_code error_code;
+    typedef boost::asio::ip::tcp::endpoint endpoint_type;
+    typedef boost::shared_ptr<bstcon::response> response_type;
 
-  typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
-  typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
+    typedef boost::shared_ptr<bstcon::application_layer::socket_base>     socket_ptr;
+    typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
-  typedef boost::function<void (const connection_ptr,const error_code&)> ClientHandler;
-  typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
+    typedef bstcon::connection_type::connection_base::ConnectionHandler ConnectionHandler;
 
-  //// TODO: C++11にて可変長引数に対応させる
-  //template<class ...Args>
-  //client(boost::asio::io_service &io_service,boost::asio::ip::tcp::endpoint& ep,Args... args)
-  //{
-  //  connector_.reset(new connector(io_service,ep,arg...));
-  //  socket_layer_ = connector_->get_layer();
-  //}
+    //typedef boost::function<void (const connection_ptr,const error_code&)> ClientHandler;
+    //typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
 
-  //コンストラクタの引数でconnection_type_初期化しなくては。
-  //現在のasync,sync判断は美しくない！
+    //// TODO: C++11にて可変長引数に対応させる
+    //template<class ...Args>
+    //client(boost::asio::io_service &io_service,boost::asio::ip::tcp::endpoint& ep,Args... args)
+    //{
+    //    connector_.reset(new connector(io_service,ep,arg...));
+    //    socket_layer_ = connector_->get_layer();
+    //}
 
-  //TCP
-  client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync)
-    : connection_type_(connection_type), io_service_(io_service)
+    //コンストラクタの引数でconnection_type_初期化しなくては。
+    //現在のasync,sync判断は美しくない！
+
+    //TCP
+    client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync)
+        : connection_type_(connection_type), io_service_(io_service)
 #ifdef USE_SSL_BOOSTCONNECT
-    , ctx_(nullptr)
+        , ctx_(nullptr)
 #endif
-  {}
-  
-#ifdef USE_SSL_BOOSTCONNECT
-  //SSL
-  typedef boost::asio::ssl::context context;
-  client(io_service &io_service,context &ctx,const connection_type::connection_type& connection_type=connection_type::sync) : io_service_(io_service), connection_type_(connection_type), ctx_(&ctx){}
-#endif
-  
-  // Use host
-  const connection_ptr operator() (
-    const std::string& host,
-    boost::shared_ptr<boost::asio::streambuf> buf,
-    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
-    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
-    )
-  {
-    connection_ptr connection = crerate_connection();
-    //manager_.run(connection);
+    {}
     
-    connection->operator()(host,buf,
-      boost::bind(&client::handler,this,_1,connection,handler),
-      chunk_handler
-      );
-    return connection;
-  }
-  const connection_ptr operator() (
-    const std::string& host,
-    boost::shared_ptr<boost::asio::streambuf> buf,
-    error_code& ec,
-    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
-    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
-    )
-  {
-    try
-    {
-      return (*this)(host,buf,handler,chunk_handler);
-    }
-    catch(const boost::system::system_error &e)
-    {
-      ec = e.code(); //例外からerror_codeを抜き取る
-      return crerate_connection(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
-    }
-  }
-
-  // Use EndPoint
-  const connection_ptr operator() (
-    const boost::asio::ip::tcp::endpoint& host,
-    boost::shared_ptr<boost::asio::streambuf> buf,
-    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
-    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
-    )
-  {
-    connection_ptr connection = crerate_connection();
-    //manager_.run(connection);
-
-    connection->operator()(host,buf,
-      boost::bind(&client::handler,this,_1,connection,handler),
-      chunk_handler
-      );
-    return connection;
-  }
-  const connection_ptr operator() (
-    const boost::asio::ip::tcp::endpoint& host,
-    boost::shared_ptr<boost::asio::streambuf> buf,
-    error_code& ec,
-    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
-    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
-    )
-  {
-    try
-    {
-      return (*this)(host,buf,handler,chunk_handler);
-    }
-    catch(const boost::system::system_error &e)
-    {
-      ec = e.code(); //例外からerror_codeを抜き取る
-      return crerate_connection(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
-    }
-  }
-
-  const std::string service_protocol() const
-  {
 #ifdef USE_SSL_BOOSTCONNECT
-  return (ctx_==nullptr) ? "http" : "https";
+    //SSL
+    typedef boost::asio::ssl::context context;
+    client(io_service &io_service,context &ctx,const connection_type::connection_type& connection_type=connection_type::sync) : io_service_(io_service), connection_type_(connection_type), ctx_(&ctx){}
 #endif
-  return "http";
-  }
+
+    template<typename T>
+    connection_ptr operator() (
+        const T& host,
+        ConnectionHandler handler
+        )
+    {
+        auto connection = crerate_connection();
+        connection->connect(host, handler);
+
+        return connection;
+    }
+
+    
+    //// Use host
+    //const connection_ptr operator() (
+    //    const std::string& host,
+    //    boost::shared_ptr<boost::asio::streambuf> buf,
+    //    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
+    //    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    //    )
+    //{
+    //    connection_ptr connection = crerate_connection();
+    //    //manager_.run(connection);
+    //    
+    //    connection->operator()(host,buf,
+    //        boost::bind(&client::handler,this,_1,/*connection,*/handler),
+    //        chunk_handler
+    //        );
+    //    return connection;
+    //}
+    //const connection_ptr operator() (
+    //    const std::string& host,
+    //    boost::shared_ptr<boost::asio::streambuf> buf,
+    //    error_code& ec,
+    //    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
+    //    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    //    )
+    //{
+    //    try
+    //    {
+    //        return (*this)(host,buf,handler,chunk_handler);
+    //    }
+    //    catch(const boost::system::system_error &e)
+    //    {
+    //        ec = e.code(); //例外からerror_codeを抜き取る
+    //        return crerate_connection(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+    //    }
+    //}
+
+    //// Use EndPoint
+    //const connection_ptr operator() (
+    //    const boost::asio::ip::tcp::endpoint& host,
+    //    boost::shared_ptr<boost::asio::streambuf> buf,
+    //    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
+    //    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    //    )
+    //{
+    //    connection_ptr connection = crerate_connection();
+    //    //manager_.run(connection);
+
+    //    connection->operator()(host,buf,
+    //        boost::bind(&client::handler,this,_1,/*connection,*/handler),
+    //        chunk_handler
+    //        );
+    //    return connection;
+    //}
+    //const connection_ptr operator() (
+    //    const boost::asio::ip::tcp::endpoint& host,
+    //    boost::shared_ptr<boost::asio::streambuf> buf,
+    //    error_code& ec,
+    //    ClientHandler handler = [](const connection_ptr,const error_code&)->void{},
+    //    EveryChunkHandler chunk_handler = [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{}
+    //    )
+    //{
+    //    try
+    //    {
+    //        return (*this)(host,buf,handler,chunk_handler);
+    //    }
+    //    catch(const boost::system::system_error &e)
+    //    {
+    //        ec = e.code(); //例外からerror_codeを抜き取る
+    //        return crerate_connection(); //レスポンスが空のままというのもアレなので，作成済みのレスポンスのアドレスを取得
+    //    }
+    //}
+
+    const std::string service_protocol() const
+    {
+#ifdef USE_SSL_BOOSTCONNECT
+    return (ctx_==nullptr) ? "http" : "https";
+#endif
+    return "http";
+    }
 
 protected:
-  inline socket_ptr create_socket()
-  {
-    socket_ptr socket;
+    inline socket_ptr create_socket()
+    {
+        socket_ptr socket;
 
 #ifdef USE_SSL_BOOSTCONNECT
-  if(ctx_ != nullptr)
-      socket.reset(new bstcon::application_layer::ssl_socket(io_service_,*ctx_));
-  else
+    if(ctx_ != nullptr)
+            socket.reset(new bstcon::application_layer::ssl_socket(io_service_,*ctx_));
+    else
 #endif
-      socket.reset(new bstcon::application_layer::tcp_socket(io_service_));
+            socket.reset(new bstcon::application_layer::tcp_socket(io_service_));
 
-    return socket;
-  }
-  inline const connection_ptr crerate_connection()
-  {
-    connection_ptr connection;
+        return socket;
+    }
+    inline const connection_ptr crerate_connection()
+    {
+        connection_ptr connection;
 
-    if(connection_type_ == connection_type::sync)
-      connection.reset(new bstcon::connection_type::sync_connection(create_socket()));
-    else 
-      connection.reset(new bstcon::connection_type::async_connection(create_socket()));
+        if(connection_type_ == connection_type::sync)
+            connection.reset(new bstcon::connection_type::sync_connection(create_socket()));
+        else 
+            connection.reset(new bstcon::connection_type::async_connection(create_socket()));
 
-    return connection;
-  }
+        return connection;
+    }
 
-  void handler(const error_code& ec,connection_ptr connection,ClientHandler h) const
-  {
-    h(connection,ec);
-    //manager_.stop(connection);
-    return;
-  }
+//    void handler(const error_code& ec,/*connection_ptr connection,*/ClientHandler h) const
+//    {
+////        h(connection,ec);
+//        //manager_.stop(connection);
+//        return;
+//    }
 
 private:
 #ifdef USE_SSL_BOOSTCONNECT
-  context *ctx_;
+    context *ctx_;
 #endif
-  boost::asio::io_service& io_service_;
-  connection_type::connection_type connection_type_;
+    boost::asio::io_service& io_service_;
+    connection_type::connection_type connection_type_;
 
-  //mutable bstcon::manager<connection_type::connection_base> manager_;
+    //mutable bstcon::manager<connection_type::connection_base> manager_;
 };
 
 } // namespace bstcon

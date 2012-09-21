@@ -16,23 +16,23 @@ namespace bstcon{
 template<class ManagedType>
 class manager /*final*/ {
 public:
-  typedef boost::shared_ptr<ManagedType> ManagedPtr;
-  typedef std::set<ManagedPtr> ManagedSet;
+    typedef boost::shared_ptr<ManagedType> ManagedPtr;
+    typedef std::set<ManagedPtr> ManagedSet;
 
-  const ManagedSet& data() const { return data_; }
-  void run(ManagedPtr& object){
-    data_.insert(object);
-    return;
-  }
-  void stop(ManagedPtr& object){
-    data_.erase(object);
-    return;
-  }
+    const ManagedSet& data() const { return data_; }
+    void run(ManagedPtr& object){
+        data_.insert(object);
+        return;
+    }
+    void stop(ManagedPtr& object){
+        data_.erase(object);
+        return;
+    }
 
 private:
-  ManagedSet data_;
+    ManagedSet data_;
 };
-  
+    
 } // namespace bstcon
 
 #endif

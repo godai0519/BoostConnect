@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <boost/asio.hpp>
+#include <boost/scoped_ptr.hpp>
 #include "connection_base.hpp"
 #include "../system/error_code.hpp"
 
@@ -18,118 +19,166 @@ namespace connection_type{
 
 class async_connection : public connection_common<async_connection>{
 public:
-  async_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
-  {
-    socket_ = socket;
-    resolver_ = new boost::asio::ip::tcp::resolver(socket_->get_io_service());
-    reader_.reset(new reader());
-  }
-  virtual ~async_connection(){}
+    async_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
+    {
+        socket_ = socket;
+        resolver_.reset(new boost::asio::ip::tcp::resolver(socket_->get_io_service()));
+        //reader_.reset(new reader());
+    }
+    virtual ~async_connection(){}
 
-  void close()
-  {
-    socket_->close();
-    return;
-  }
-  
-  //’Ç‰Á  
-  connection_ptr operator() (
-    const std::string& host,
-    boost::shared_ptr<boost::asio::streambuf> buf,
-    ReadHandler handler,
-    EveryChunkHandler chunk_handler
-    )
-  {
-    buf_ = buf;
-    handler_ = handler;
-    chunk_handler_ = chunk_handler;
+    void close()
+    {
+        socket_->close();
+        return;
+    }
 
-    boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
-    resolver_->async_resolve(query,
-      boost::bind(&async_connection::handle_resolve,this,
-      boost::asio::placeholders::iterator,
-      boost::asio::placeholders::error)); //handle_resolve‚Ö
-
-    return this->shared_from_this();
-  }
-
-  connection_ptr operator() (
-    const endpoint_type& ep,
-    boost::shared_ptr<boost::asio::streambuf> buf,
-    ReadHandler handler,
-    EveryChunkHandler chunk_handler
-    )
-  {
-    buf_ = buf;
-    handler_ = handler;
-    chunk_handler_ = chunk_handler;
+    //boost::shared_ptr<async_connection> wear_manager_;
     
-    socket_->lowest_layer().async_connect(
-      ep,
+    connection_ptr connect(const std::string& host,ConnectionHandler handler)
+    {
+        boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
+        resolver_->async_resolve(
+            query,
+            boost::bind(&async_connection::handle_resolve, shared_from_this(), boost::asio::placeholders::iterator, boost::asio::placeholders::error, handler)
+            );
 
-      boost::bind(&async_connection::handle_connect,this,
-        boost::asio::placeholders::error));
+        return this->shared_from_this();
+    }
+    connection_ptr connect(const endpoint_type& ep,ConnectionHandler handler)
+    {
+        socket_->lowest_layer().async_connect(
+            ep,
+            boost::bind(handler, shared_from_this(), boost::asio::placeholders::error)
+            );
 
-    return this->shared_from_this();
-  }
+        return this->shared_from_this();
+    }    
+
+    void send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
+    {        
+        boost::asio::async_write(*socket_,*buf,
+            boost::bind(&async_connection::handle_write, shared_from_this(), boost::asio::placeholders::error, end_handler, chunk_handler));
+
+        return;
+    }
+
+    ////’Ç‰Á    
+    //connection_ptr operator() (
+    //    const std::string& host,
+    //    boost::shared_ptr<boost::asio::streambuf> buf,
+    //    ReadHandler handler,
+    //    EveryChunkHandler chunk_handler
+    //    )
+    //{
+    //    buf_ = buf;
+    //    handler_ = handler;
+    //    chunk_handler_ = chunk_handler;
+
+    //    boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
+    //    resolver_->async_resolve(query,
+    //        boost::bind(&async_connection::handle_resolve,this,
+    //        boost::asio::placeholders::iterator,
+    //        boost::asio::placeholders::error)); //handle_resolve‚Ö
+
+    ////    wear_manager_ = this->shared_from_this();
+    //    return this->shared_from_this();
+    //}
+
+    //connection_ptr operator() (
+    //    const endpoint_type& ep,
+    //    boost::shared_ptr<boost::asio::streambuf> buf,
+    //    ReadHandler handler,
+    //    EveryChunkHandler chunk_handler
+    //    )
+    //{
+    //    buf_ = buf;
+    //    handler_ = handler;
+    //    chunk_handler_ = chunk_handler;
+    //    
+    //    socket_->lowest_layer().async_connect(
+    //        ep,
+
+    //        boost::bind(&async_connection::handle_connect,this,
+    //            boost::asio::placeholders::error));
+
+    //    return this->shared_from_this();
+    //}
 
 private:
-  ReadHandler handler_;
-  EveryChunkHandler chunk_handler_;
+    //ReadHandler handler_;
+    //EveryChunkHandler chunk_handler_;
 
-  boost::asio::ip::tcp::resolver* resolver_;
-  boost::shared_ptr<boost::asio::streambuf> buf_;
-  void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator,const boost::system::error_code& ec)
-  {
-    if(!ec)
+    boost::scoped_ptr<boost::asio::ip::tcp::resolver> resolver_;
+    //boost::shared_ptr<boost::asio::streambuf> buf_;
+    void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator, const boost::system::error_code& ec, ConnectionHandler handler)
     {
-      boost::asio::async_connect(socket_->lowest_layer(),ep_iterator,
-        boost::bind(&async_connection::handle_connect,this,
-          boost::asio::placeholders::error));
+        if(!ec)
+        {
+            boost::asio::async_connect(
+                socket_->lowest_layer(),
+                ep_iterator,
+                boost::bind(&async_connection::handle_connect, shared_from_this(), boost::asio::placeholders::error, handler)
+                );
+        }
+        else std::cout << "Error Resolve!?\n" << ec.message() << std::endl;
     }
-    else std::cout << "Error Resolve!?\n" << ec.message() << std::endl;
-  }
-  void handle_connect(const boost::system::error_code& ec)
-  {
-    if(!ec)
+
+    void handle_connect(const boost::system::error_code& ec, ConnectionHandler handler)
     {
+        if(!ec)
+        {
 #ifdef USE_SSL_BOOSTCONNECT
-      socket_->async_handshake(application_layer::socket_base::ssl_socket_type::client,
-        boost::bind(&async_connection::handle_handshake,this,
-          boost::asio::placeholders::error));
+            socket_->async_handshake(
+                application_layer::socket_base::ssl_socket_type::client,
+                boost::bind(handler, shared_from_this(), boost::asio::placeholders::error)
+                );
 #else
-      socket_->async_handshake(
-        boost::bind(&async_connection::handle_handshake,this,
-          boost::asio::placeholders::error));
+            socket_->async_handshake(
+                boost::bind(handler, shared_from_this(), boost::asio::placeholders::error)
+                );
 #endif
+        }
+        else std::cout << "Error Connect!?" << std::endl;
     }
-    else std::cout << "Error Connect!?" << std::endl;
-  }
-  void handle_handshake(const boost::system::error_code& ec)
-  {
-    if(!ec)
+    //void handle_handshake(const boost::system::error_code& ec)
+    //{
+    //    if(!ec)
+    //    {
+    //        boost::asio::async_write(*socket_.get(),*buf_.get(),
+    //            boost::bind(&async_connection::handle_write,this,
+    //                boost::asio::placeholders::error));
+    //    }
+    //    else std::cout << "Error HandShake!?\n" << ec.message() << std::endl;
+    //}
+    void handle_write(const boost::system::error_code& ec, EndHandler end_handler, ChunkHandler chunk_handler)
     {
-      boost::asio::async_write(*socket_.get(),*buf_.get(),
-        boost::bind(&async_connection::handle_write,this,
-          boost::asio::placeholders::error));
+        if(!ec)
+        {
+            reader_.reset(new connection_base::reader());
+            reader_->async_read_starter(
+                *socket_,
+                boost::bind(&async_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, end_handler),
+                chunk_handler
+                );
+        }
+        else std::cout << "Error Write!?" << std::endl;
     }
-    else std::cout << "Error HandShake!?\n" << ec.message() << std::endl;
-  }
-  void handle_write(const boost::system::error_code& ec)
-  {
-    if(!ec)
+
+    void handle_read(const error_code& ec, EndHandler end_handler)
     {
-      reader_->async_read_starter(
-        *socket_.get(),
-        boost::bind(&async_connection::handle_read,this,boost::asio::placeholders::error),
-        chunk_handler_);
+        auto response = reader_->get_response();
+        reader_.reset();
+
+        end_handler(response, ec);
+        return;
     }
-    else std::cout << "Error Write!?" << std::endl;
-  }
-  void handle_read(const error_code& ec)
-  {
-    handler_(ec);
-  }
+
+    //void handle_read(const error_code& ec)
+    //{
+    //    handler_(ec);
+    ////    wear_manager_.reset();
+    //}
 };
 
 } // namespace connection_type
