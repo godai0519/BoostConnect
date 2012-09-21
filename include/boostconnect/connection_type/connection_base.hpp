@@ -26,8 +26,6 @@ public:
     typedef boost::system::error_code error_code;
     typedef boost::asio::ip::tcp::endpoint endpoint_type;
 
-    //typedef boost::function<void (const error_code&)> ReadHandler;
-    //typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
     typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
     typedef boost::shared_ptr<bstcon::response> response_type;
 
@@ -49,9 +47,6 @@ public:
         ChunkHandler = [](response_type,error_code)->void{}
         ) = 0;
 
-    //virtual connection_ptr operator() (const std::string&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{},EveryChunkHandler chunk_handler = [](const error_code&)->void{}) = 0;
-    //virtual connection_ptr operator() (const endpoint_type&,boost::shared_ptr<boost::asio::streambuf>,ReadHandler handler = [](const error_code&)->void{},EveryChunkHandler chunk_handler = [](const error_code&)->void{}) = 0;
-
     virtual void close()
     {
         socket_->close();
@@ -62,9 +57,6 @@ public:
 protected:
     class reader : boost::noncopyable{
     private:
-        //typedef boost::function<void (const error_code&)> EndHandler;
-        //typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
-
         typedef connection_base::ChunkHandler ChunkHandler;
         typedef boost::function<void(error_code)> EndHandler;
 

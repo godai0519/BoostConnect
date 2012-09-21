@@ -104,7 +104,7 @@ private:
             request_str.erase(0,request_header_parser(request_str,request_));
             request_.body.append(request_str);
         
-            size_t byte = int_parser(MAP_FIND_RETURN_OR_DEFAULT(request_.header,"Content-Length","0"));
+            size_t byte = int_parser(find_return_or_default(request_.header,"Content-Length","0"));
             if( byte != 0 )
             {
                 //’·‚³‚ª‚ ‚é
@@ -143,8 +143,8 @@ private:
     void handle_request_read_complete()
     {
         keep_alive_ = 
-            MAP_FIND_RETURN_OR_DEFAULT(request_.header,"Connection","close") == "Keep-Alive" ||
-            MAP_FIND_RETURN_OR_DEFAULT(request_.header,"Proxy-Connection","close") == "Keep-Alive";
+            find_return_or_default(request_.header,"Connection","close") == "Keep-Alive" ||
+            find_return_or_default(request_.header,"Proxy-Connection","close") == "Keep-Alive";
 
         response_type response;
         handler_(request_,response);
@@ -238,12 +238,6 @@ private:
             request_containar.header
             );
 
-        //qi::parse(it,request_str.cend(),line >> (field % "\r\n"),
-        //    request_containar.method,
-        //    request_containar.uri,
-        //    request_containar.http_version,
-        //    request_containar.header);
-        
         return std::distance(request_str.cbegin(),it);
     }
 

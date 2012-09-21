@@ -70,9 +70,4 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.jpg">
-      <Filter>リソース ファイル</Filter>
-    </None>
-  </ItemGroup>
 </Project>

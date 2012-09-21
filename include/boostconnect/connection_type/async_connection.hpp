@@ -65,54 +65,10 @@ public:
         return reader_->get_response();
     }
 
-    ////’Ç‰Á    
-    //connection_ptr operator() (
-    //    const std::string& host,
-    //    boost::shared_ptr<boost::asio::streambuf> buf,
-    //    ReadHandler handler,
-    //    EveryChunkHandler chunk_handler
-    //    )
-    //{
-    //    buf_ = buf;
-    //    handler_ = handler;
-    //    chunk_handler_ = chunk_handler;
-
-    //    boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
-    //    resolver_->async_resolve(query,
-    //        boost::bind(&async_connection::handle_resolve,this,
-    //        boost::asio::placeholders::iterator,
-    //        boost::asio::placeholders::error)); //handle_resolve‚Ö
-
-    ////    wear_manager_ = this->shared_from_this();
-    //    return this->shared_from_this();
-    //}
-
-    //connection_ptr operator() (
-    //    const endpoint_type& ep,
-    //    boost::shared_ptr<boost::asio::streambuf> buf,
-    //    ReadHandler handler,
-    //    EveryChunkHandler chunk_handler
-    //    )
-    //{
-    //    buf_ = buf;
-    //    handler_ = handler;
-    //    chunk_handler_ = chunk_handler;
-    //    
-    //    socket_->lowest_layer().async_connect(
-    //        ep,
-
-    //        boost::bind(&async_connection::handle_connect,this,
-    //            boost::asio::placeholders::error));
-
-    //    return this->shared_from_this();
-    //}
-
 private:
-    //ReadHandler handler_;
-    //EveryChunkHandler chunk_handler_;
-
     boost::scoped_ptr<boost::asio::ip::tcp::resolver> resolver_;
     boost::shared_ptr<boost::asio::streambuf> buf_;
+
     void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator, const boost::system::error_code& ec, ConnectionHandler handler)
     {
         if(!ec)
@@ -175,12 +131,6 @@ private:
         end_handler(response, ec);
         return;
     }
-
-    //void handle_read(const error_code& ec)
-    //{
-    //    handler_(ec);
-    ////    wear_manager_.reset();
-    //}
 };
 
 } // namespace connection_type

@@ -26,9 +26,6 @@
     <ClInclude Include="session\session_base.hpp" />
     <ClInclude Include="system\error_code.hpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.jpg" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{16641C79-954C-4833-80D4-64FDC908700B}</ProjectGuid>
     <RootNamespace>BoostConnect</RootNamespace>
