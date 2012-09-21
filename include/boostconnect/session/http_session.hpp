@@ -124,6 +124,7 @@ private:
                 handle_request_read_complete();
             }
         }
+        else std::cout << ec.message() << std::endl;
         //else delete this; //—áŠO
     }
 

@@ -59,20 +59,22 @@ public:
         return this->shared_from_this();
     }
 
-    void send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
+    response_type send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
     {
+        reader_.reset(new connection_base::reader());
+        response_type response = reader_->get_response();
+
         error_code ec;
         boost::asio::write(*socket_, *buf, ec);
 
         if(!ec)
         {
-            reader_.reset(new connection_base::reader());
             reader_->read_starter(
                 *socket_,
                 boost::bind(&sync_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, end_handler),
                 chunk_handler);
         }
-        return;
+        return response;
     }
 
 //

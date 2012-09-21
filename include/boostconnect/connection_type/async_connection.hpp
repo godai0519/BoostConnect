@@ -55,12 +55,14 @@ public:
         return this->shared_from_this();
     }    
 
-    void send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
-    {        
+    response_type send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
+    {
+        buf_ = buf; //Žõ–½ŠÇ—
+        reader_.reset(new connection_base::reader());
         boost::asio::async_write(*socket_,*buf,
             boost::bind(&async_connection::handle_write, shared_from_this(), boost::asio::placeholders::error, end_handler, chunk_handler));
 
-        return;
+        return reader_->get_response();
     }
 
     ////’Ç‰Á    
@@ -110,7 +112,7 @@ private:
     //EveryChunkHandler chunk_handler_;
 
     boost::scoped_ptr<boost::asio::ip::tcp::resolver> resolver_;
-    //boost::shared_ptr<boost::asio::streambuf> buf_;
+    boost::shared_ptr<boost::asio::streambuf> buf_;
     void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator, const boost::system::error_code& ec, ConnectionHandler handler)
     {
         if(!ec)
@@ -153,16 +155,16 @@ private:
     //}
     void handle_write(const boost::system::error_code& ec, EndHandler end_handler, ChunkHandler chunk_handler)
     {
+        buf_.reset();
         if(!ec)
         {
-            reader_.reset(new connection_base::reader());
             reader_->async_read_starter(
                 *socket_,
                 boost::bind(&async_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, end_handler),
                 chunk_handler
                 );
         }
-        else std::cout << "Error Write!?" << std::endl;
+        else std::cout << "Error Write!?" << ec.message() << std::endl;
     }
 
     void handle_read(const error_code& ec, EndHandler end_handler)

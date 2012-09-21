@@ -43,7 +43,7 @@ public:
     virtual connection_ptr connect(const std::string&, ConnectionHandler) = 0;
     virtual connection_ptr connect(const endpoint_type&, ConnectionHandler) = 0;
     
-    virtual void send(
+    virtual response_type send(
         boost::shared_ptr<boost::asio::streambuf>,
         EndHandler = [](response_type,error_code)->void{},
         ChunkHandler = [](response_type,error_code)->void{}
@@ -65,7 +65,7 @@ protected:
         //typedef boost::function<void (const error_code&)> EndHandler;
         //typedef boost::function<void (const boost::shared_ptr<bstcon::response>,const error_code&)> EveryChunkHandler;
 
-        typedef ChunkHandler ChunkHandler;
+        typedef connection_base::ChunkHandler ChunkHandler;
         typedef boost::function<void(error_code)> EndHandler;
 
         boost::asio::streambuf read_buf_;
@@ -282,7 +282,7 @@ protected:
             else if(response_->header.find("Content-Length")==response_->header.end())
             {
                 //Content-Lengthが見つからないasync通信
-                //終了条件は暗示的にtransfer_all()　= 読めるだけ読み込む
+                //終了条件は暗示的にtransfer_all() = 読めるだけ読み込む
                 boost::asio::async_read(socket,
                     read_buf_,
                     boost::bind(&reader::async_read_all<Socket>,this,

@@ -32,6 +32,7 @@ SSL通信をしない場合はOpenSSLは必要ありません！
 この時，第二引数に`boost::asio::ssl::context`を渡すと暗黙的にSSL通信を行うことになります．
 
 サンプルの詳細な説明は以下に提示しますから，見るとわかるかも知れません．
+サンプルはVC10以降の場合は付属の.sln，gccの場合は`g++ -std=c++11 ./sample/sample.cpp -I./include/ -lssl -lcrypto -lboost_thread -lboost_system`でコンパイルできるはずです.
 
 クライアント
 -----------
@@ -59,13 +60,12 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           // ctx,
           bstcon::connection_type::sync
           );
-        
-        const boost::shared_ptr<bstcon::response> response = 
-          client(
-            "google.co.jp",
-            request_buf,
-            [](const boost::shared_ptr<bstcon::response>,const error_code&)->void{std::cout << "Connection End" << std::endl;} /*同期通信ならこのハンドラーを渡さなくても勝手に何とかしてくれます*/
-          );
+                 
+		bstcon::client::connection_ptr connection = c("google.co.jp",[](bstcon::client::connection_ptr,boost::system::error_code){});
+        boost::shared_ptr<bstcon::response> response = connection->send(request_local);
+    
+	    std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
+	    std::cout << response->body + "\n\n" <<std::endl;
     
 +   非同期通信
 
@@ -75,17 +75,31 @@ SSL通信を行う場合は全ての#includeの前に，`#define USE_SSL_BOOSTCO
           bstcon::connection_type::async
           );
         
-         
-        client(
-          "google.co.jp",
-          request_buf,
-          [](const boost::shared_ptr<bstcon::response> response,const error_code&)->void{std::cout << "Connection End" << std::endl;}
-        );
+		bstcon::client::connection_ptr connection = c(
+			"google.co.jp",
+			[&connection](bstcon::client::connection_ptr handled_connection, boost::system::error_code ec)->void
+			{			
+				//ソケットのコネクションが終わったらここに来る
+				assert(connection == handled_connection);
+				connection->send(
+					request_buf,
+					[](bstcon::client::response_type response, boost::system::error_code ec)
+					{
+						//レスポンス受け取り完了
+						if(!!ec) return;
+
+						std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
+						std::cout << response->body + "\n\n" <<std::endl;
+					}
+				);
+			}
+		);
         
         io_service.run();
     
-ん？違い？  
-多分クライアントの第二引数(SSLなら第三引数)と，非同期開始する`io_service.run();`だけだと思うよ．  
+同期通信は簡単．clientの第2引数は削除できるようにする方針．
+非同期通信の方は`io_service.run();`があるのが特徴．あと，ラムダがネストしまくってるけど一つ一つ関数にすれば綺麗だと思うし，
+sendのコールバックでレスポンスを受け取った後，connection->sendすればまた新しいのをそのまま始められるよ．
 なるべくライブラリのユーザが使いやすいように，ポインタとかで同じように扱えるようになってる．
 
 サーバー
