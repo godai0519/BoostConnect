@@ -1,8 +1,8 @@
-//
+ï»¿//
 // request.hpp
 // ~~~~~~~~~~
 //
-// ƒŠƒNƒGƒXƒgƒRƒ“ƒeƒi[
+// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚³ãƒ³ãƒ†ãƒŠãƒ¼
 //
 
 #ifndef BOOSTCONNECT_REQUEST

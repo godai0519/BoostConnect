@@ -1,8 +1,8 @@
-//
+ï»¿//
 // manager.hpp
 // ~~~~~~~~~~
 //
-// Session‚Ìõ–½‚ğŠÇ—‚·‚émanager
+// Sessionã®å¯¿å‘½ã‚’ç®¡ç†ã™ã‚‹manager
 //
 
 #ifndef BOOSTCONNECT_MANAGER

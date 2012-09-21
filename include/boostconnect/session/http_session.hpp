@@ -1,8 +1,8 @@
-//
+ï»¿//
 // http_session.hpp
 // ~~~~~~~~~~
 //
-// HTTP’ÊM‚ÌƒZƒbƒVƒ‡ƒ“‚ğŠÇ—
+// HTTPé€šä¿¡ã®ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’ç®¡ç†
 //
 
 #ifndef BOOSTCONNECT_SESSION_HTTP
@@ -46,7 +46,7 @@ public:
 
     void start(RequestHandler handler,CloseHandler c_handler)
     {
-        if(socket_busy_) return; //—áŠO—\’è
+        if(socket_busy_) return; //ä¾‹å¤–äºˆå®š
         socket_busy_ = true;
         handler_ = handler;
         c_handler_ = c_handler;
@@ -85,7 +85,7 @@ private:
             read_timer_.async_wait(
                 boost::bind(&http_session::read_timeout,shared_from_this(),boost::asio::placeholders::error));
         }
-        //else delete this; //—áŠO
+        //else delete this; //ä¾‹å¤–
     }
 
     void read_timeout(const error_code& ec)
@@ -100,14 +100,14 @@ private:
         {
             std::string request_str(boost::asio::buffer_cast<const char*>(read_buf_->data()));
 
-            //ƒŠƒNƒGƒXƒgƒwƒbƒ_[‚Ìƒp[ƒX
+            //ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ˜ãƒƒãƒ€ãƒ¼ã®ãƒ‘ãƒ¼ã‚¹
             request_str.erase(0,request_header_parser(request_str,request_));
             request_.body.append(request_str);
         
             size_t byte = int_parser(find_return_or_default(request_.header,"Content-Length","0"));
             if( byte != 0 )
             {
-                //’·‚³‚ª‚ ‚é
+                //é•·ã•ãŒã‚ã‚‹
                 read_buf_.reset(new boost::asio::streambuf());
 
                 boost::asio::async_read(
@@ -120,12 +120,12 @@ private:
             }
             else
             {
-                //’·‚³‚ª‚È‚¢ -> ’·‚³‚ª•ª‚©‚ç‚È‚¢‚È‚ç‚±‚Ìæ“Ç‚İ‚Ş‚Ì‚ÍŠë‚È‚¢
+                //é•·ã•ãŒãªã„ -> é•·ã•ãŒåˆ†ã‹ã‚‰ãªã„ãªã‚‰ã“ã®å…ˆèª­ã¿è¾¼ã‚€ã®ã¯å±ãªã„
                 handle_request_read_complete();
             }
         }
         else std::cout << ec.message() << std::endl;
-        //else delete this; //—áŠO
+        //else delete this; //ä¾‹å¤–
     }
 
     void handle_body_read(const error_code& ec,std::size_t sz)
@@ -137,7 +137,7 @@ private:
 
             handle_request_read_complete();
         }
-        //else delete this; //—áŠO
+        //else delete this; //ä¾‹å¤–
     }
 
     void handle_request_read_complete()
@@ -159,7 +159,7 @@ private:
                     boost::asio::placeholders::error,
                     boost::asio::placeholders::bytes_transferred));
         }
-        //else delete this; //ƒp[ƒX¸”s
+        //else delete this; //ãƒ‘ãƒ¼ã‚¹å¤±æ•—
     }
 
     void handle_write(const error_code& ec,std::size_t sz)
@@ -176,7 +176,7 @@ private:
                 return;
             }
         }
-        //else delete this; //—áŠO
+        //else delete this; //ä¾‹å¤–
     }
 
 

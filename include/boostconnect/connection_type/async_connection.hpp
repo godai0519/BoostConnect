@@ -1,8 +1,8 @@
-//
+ï»¿//
 // async_connection.hpp
 // ~~~~~~~~~~
 //
-// ”ñ“¯Šú‚Ì‚½‚ß‚ÌƒNƒ‰ƒXŒQ
+// éåŒæœŸã®ãŸã‚ã®ã‚¯ãƒ©ã‚¹ç¾¤
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION
@@ -57,7 +57,7 @@ public:
 
     response_type send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
     {
-        buf_ = buf; //õ–½ŠÇ—
+        buf_ = buf; //å¯¿å‘½ç®¡ç†
         reader_.reset(new connection_base::reader());
         boost::asio::async_write(*socket_,*buf,
             boost::bind(&async_connection::handle_write, shared_from_this(), boost::asio::placeholders::error, end_handler, chunk_handler));

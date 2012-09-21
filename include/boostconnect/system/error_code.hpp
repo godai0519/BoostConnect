@@ -1,8 +1,8 @@
-//
+ï»¿//
 // error_code.hpp
 // ~~~~~~~~~~
 //
-// —áŠOˆ—‚Æ‚©
+// ä¾‹å¤–å‡¦ç†ã¨ã‹
 //
 
 #ifndef BOOSTCONNECT_SYSTEM_ERROR_CODE

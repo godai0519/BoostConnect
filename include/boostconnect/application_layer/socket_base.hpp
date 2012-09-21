@@ -1,8 +1,8 @@
-//
+ï»¿//
 // socket_base.hpp
 // ~~~~~~~~~~
 //
-// ƒ\ƒPƒbƒgƒ‰ƒbƒp[ƒx[ƒXƒNƒ‰ƒX
+// ã‚½ã‚±ãƒƒãƒˆãƒ©ãƒƒãƒ‘ãƒ¼ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹
 //
 
 #ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE
@@ -73,7 +73,7 @@ struct socket_base : boost::noncopyable{
     virtual void shutdown(shutdown_type what) = 0;
 };
 
-// TCPESSL‚É‹¤’Ê‚Ìİ’è
+// TCPãƒ»SSLã«å…±é€šã®è¨­å®š
 template<class Socket>
 class socket_common : public socket_base{
 public:

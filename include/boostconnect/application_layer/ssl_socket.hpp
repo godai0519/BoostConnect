@@ -1,8 +1,8 @@
-//
+ï»¿//
 // ssl_socket.hpp
 // ~~~~~~~~~~
 //
-// SSL’ÊM‚Å“Á•Ê‚És‚í‚ê‚é‚±‚Æ‚ğs‚¤
+// SSLé€šä¿¡ã§ç‰¹åˆ¥ã«è¡Œã‚ã‚Œã‚‹ã“ã¨ã‚’è¡Œã†
 //
 
 #ifdef USE_SSL_BOOSTCONNECT
@@ -24,7 +24,7 @@ public:
 
     const std::string service_protocol() const { return "https"; }
 
-    //SSL’ÊM‚ÌƒRƒlƒNƒVƒ‡ƒ“Šm—§(TCPƒŒƒCƒ„[‚ÅƒRƒlƒNƒVƒ‡ƒ“‚ğs‚¤)
+    //SSLé€šä¿¡ã®ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ç¢ºç«‹(TCPãƒ¬ã‚¤ãƒ¤ãƒ¼ã§ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‚’è¡Œã†)
     error_code& connect(endpoint_type& begin,error_code& ec)
     {
         ec = socket_.lowest_layer().connect(begin,ec);
@@ -47,7 +47,7 @@ public:
         return;
     }
     
-    //[(SSLƒŒƒCƒ„[‚Ìˆ— ->] TCPƒŒƒCƒ„[‚Ìˆ—
+    //[(SSLãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç† ->] TCPãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç†
     void close()
     {
         socket_.lowest_layer().close();

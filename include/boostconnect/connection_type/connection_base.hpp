@@ -1,8 +1,8 @@
-//
+ï»¿//
 // connection_base.hpp
 // ~~~~~~~~~~
 //
-// “¯Šú‚â”ñ“¯Šú”»’f‚Ì‚½‚ß‚ÌABoost.Asio‚ğg—p‚µ‚½ƒNƒ‰ƒXŒQ
+// åŒæœŸã‚„éåŒæœŸåˆ¤æ–­ã®ãŸã‚ã®ã€Boost.Asioã‚’ä½¿ç”¨ã—ãŸã‚¯ãƒ©ã‚¹ç¾¤
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE
@@ -37,7 +37,7 @@ public:
     connection_base(){}
     virtual ~connection_base(){}
 
-    //’ÊMŠJn(ƒI[ƒo[ƒ‰ƒCƒh•K{)
+    //é€šä¿¡é–‹å§‹(ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰å¿…é ˆ)
     virtual connection_ptr connect(const std::string&, ConnectionHandler) = 0;
     virtual connection_ptr connect(const endpoint_type&, ConnectionHandler) = 0;
     
@@ -79,10 +79,10 @@ protected:
         bool is_chunked() const {return (response_->header.find("Transfer-Encoding")==response_->header.end()) ? false : (response_->header.at("Transfer-Encoding")=="chunked");}
 
         //
-        // ‹¤’Êƒƒ“ƒoŠÖ”
+        // å…±é€šãƒ¡ãƒ³ãƒé–¢æ•°
         //
     protected:
-        //ƒŒƒXƒ|ƒ“ƒXƒwƒbƒ_“Ç‚İ‚İ
+        //ãƒ¬ã‚¹ãƒãƒ³ã‚¹ãƒ˜ãƒƒãƒ€èª­ã¿è¾¼ã¿
         const int read_header(const std::string& source)
         {        
             namespace qi = boost::spirit::qi;
@@ -102,7 +102,7 @@ protected:
         
             return std::distance(source.cbegin(),it);
         }
-        //ƒ`ƒƒƒ“ƒN‚ğQÆ‚Èˆø”‚©‚ç•Ô‚µCƒ`ƒƒƒ“ƒN•¶š—ñ‚Ì’·‚³‚ğ•Ô‚·
+        //ãƒãƒ£ãƒ³ã‚¯ã‚’å‚ç…§ãªå¼•æ•°ã‹ã‚‰è¿”ã—ï¼Œãƒãƒ£ãƒ³ã‚¯æ–‡å­—åˆ—ã®é•·ã•ã‚’è¿”ã™
         const int chunk_parser(const std::string& source,std::size_t& chunk)
         {
             namespace qi = boost::spirit::qi;
@@ -115,13 +115,13 @@ protected:
         }
 
         //
-        // “¯Šú
+        // åŒæœŸ
         //
     public:
         template<class Socket>
         void read_starter(Socket& socket, EndHandler end_handler, ChunkHandler chunk_handler)
         {
-            //ƒwƒbƒ_[‚Ì‚İ
+            //ãƒ˜ãƒƒãƒ€ãƒ¼ã®ã¿
             boost::asio::read_until(socket,read_buf_,"\r\n\r\n");
             read_buf_.consume(
                 read_header((std::string)boost::asio::buffer_cast<const char*>(read_buf_.data()))
@@ -130,13 +130,13 @@ protected:
             error_code ec;
             if(is_chunked())
             {
-                //sync‚Èchunked
-                //ˆ—‚ğƒ`ƒƒƒ“ƒN—p‚ÌŠÖ”‚É“Š‚°‚é‚©‚ç“K“–
+                //syncãªchunked
+                //å‡¦ç†ã‚’ãƒãƒ£ãƒ³ã‚¯ç”¨ã®é–¢æ•°ã«æŠ•ã’ã‚‹ã‹ã‚‰é©å½“
                 read_chunk_size(socket,end_handler,chunk_handler);
             }
             else if(response_->header.find("Content-Length")==response_->header.end())
             {        
-                //"Content-Length"‚ª–³‚¢‚©‚çC‚Æ‚è‚ ‚¦‚¸‘S•”D
+                //"Content-Length"ãŒç„¡ã„ã‹ã‚‰ï¼Œã¨ã‚Šã‚ãˆãšå…¨éƒ¨ï¼
                 while(boost::asio::read(socket,read_buf_,boost::asio::transfer_all(),ec));
 
                 auto data = read_buf_.data();
@@ -145,7 +145,7 @@ protected:
             }
             else
             {
-                //‚±‚±‚É‚«‚½‚È‚ç"Content-Length"‚ª‚ ‚è‚Ü‚·‚æ‚Ë
+                //ã“ã“ã«ããŸãªã‚‰"Content-Length"ãŒã‚ã‚Šã¾ã™ã‚ˆã­
                 const size_t content_length = boost::lexical_cast<size_t>(response_->header.at("Content-Length"));
                 boost::asio::read(socket,read_buf_,
                     boost::asio::transfer_at_least(content_length - boost::asio::buffer_size(read_buf_.data())),
@@ -166,8 +166,8 @@ protected:
         }
 
     protected:
-        //chunk‚ğ‚Á‚Ä‚¢‚é“¯Šú’ÊM
-        //ƒ`ƒƒƒ“ƒNƒTƒCƒY‚Ì•\¦s‚ğ“Ç‚İo‚·
+        //chunkã‚’æŒã£ã¦ã„ã‚‹åŒæœŸé€šä¿¡
+        //ãƒãƒ£ãƒ³ã‚¯ã‚µã‚¤ã‚ºã®è¡¨ç¤ºè¡Œã‚’èª­ã¿å‡ºã™
         template<class Socket>
         void read_chunk_size(Socket& socket,EndHandler handler,ChunkHandler chunk_handler)
         {
@@ -177,22 +177,22 @@ protected:
             {
                 handler(ec);
                 boost::asio::detail::throw_error(ec,"sync_chunk_read");
-                //—áŠOI
+                //ä¾‹å¤–ï¼
             }
 
             std::size_t chunk;
             read_buf_.consume(chunk_parser((std::string)boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk));
-            //chunk—Ê+"\r\n"‚Ü‚ÅCread_buf‚ğÁ‚µ‹‚Á‚½
+            //chunké‡+"\r\n"ã¾ã§ï¼Œread_bufã‚’æ¶ˆã—å»ã£ãŸ
         
-            //chunk‚ª0 => body‚ÌI—¹
+            //chunkãŒ0 => bodyã®çµ‚äº†
             if(chunk == 0) return;
 
-            //‚»‚Ìƒ`ƒƒƒ“ƒN•\¦‚Åbody‚Ìread‚ğ‚İ‚éD
+            //ãã®ãƒãƒ£ãƒ³ã‚¯è¡¨ç¤ºã§bodyã®readã‚’è©¦ã¿ã‚‹ï¼
             read_chunk_body(socket,chunk,handler,chunk_handler);
             return;
         }
     
-        //chunkw’è‚ÉŠî‚Ã‚¢‚Äˆ—
+        //chunkæŒ‡å®šã«åŸºã¥ã„ã¦å‡¦ç†
         template<class Socket>
         void read_chunk_body(Socket& socket,const std::size_t chunk,EndHandler handler,ChunkHandler chunk_handler)
         {
@@ -202,16 +202,16 @@ protected:
                 ec
                 );
         
-            //“Ç‚İ‚ñ‚¾‚Æ‚±‚ë‚É chunk—Ê+"\r\n" ‚ª‚È‚¢ê‡‚ÍƒGƒ‰‚Æ‚µ‚Ä”rœ
+            //èª­ã¿è¾¼ã‚“ã ã¨ã“ã‚ã« chunké‡+"\r\n" ãŒãªã„å ´åˆã¯ã‚¨ãƒ©ã¨ã—ã¦æ’é™¤
             if(boost::asio::buffer_size(read_buf_.data()) < chunk + 2)
             {
                 handler(ec);
                 boost::asio::detail::throw_error(ec,"sync_chunk_less");
-                //—áŠOI
+                //ä¾‹å¤–ï¼
             }
 
             response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk/*+2*/);
-            read_buf_.consume(chunk+2); //—¬‚·
+            read_buf_.consume(chunk+2); //æµã™
 
             chunk_handler(response_,ec);
 
@@ -220,14 +220,14 @@ protected:
         }
     
         //
-        // ”ñ“¯Šú
+        // éåŒæœŸ
         //
     public:
-        //”ñ“¯Šú“Ç‚İo‚µŠJn
+        //éåŒæœŸèª­ã¿å‡ºã—é–‹å§‹
         template<class Socket>
         void async_read_starter(Socket& socket, EndHandler end_handler, ChunkHandler chunk_handler)
         {
-            //‚½‚¾‚í‚©‚è‚â‚·‚­‚µ‚½‚¾‚¯D“n‚µ“¦‚°D‚Ü‚ Cƒwƒbƒ_‚ğ“Ç‚İ‚İØ‚Á‚Ä‚­‚ê‚ê‚ÎD
+            //ãŸã ã‚ã‹ã‚Šã‚„ã™ãã—ãŸã ã‘ï¼æ¸¡ã—é€ƒã’ï¼ã¾ã‚ï¼Œãƒ˜ãƒƒãƒ€ã‚’èª­ã¿è¾¼ã¿åˆ‡ã£ã¦ãã‚Œã‚Œã°ï¼
             boost::asio::async_read_until(socket,
                 read_buf_,
                 "\r\n\r\n",
@@ -242,16 +242,16 @@ protected:
         }
 
     protected:
-        //ƒwƒbƒ_[ˆ—Cˆ—‚ğŠeŒn“‚Ö“n‚·D
+        //ãƒ˜ãƒƒãƒ€ãƒ¼å‡¦ç†ï¼Œå‡¦ç†ã‚’å„ç³»çµ±ã¸æ¸¡ã™ï¼
         template<class Socket>
         void async_read_header(Socket& socket,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
         {
-            //ƒŒƒXƒ|ƒ“ƒX‚ª‹A‚Á‚Ä‚±‚È‚¢H
+            //ãƒ¬ã‚¹ãƒãƒ³ã‚¹ãŒå¸°ã£ã¦ã“ãªã„ï¼Ÿ
             if(read_buf_.size()==0)
             {
                 handler(ec);
                 boost::asio::detail::throw_error(ec,"async_not_response");
-                //—áŠOI
+                //ä¾‹å¤–ï¼
             }
 
             read_buf_.consume(
@@ -260,7 +260,7 @@ protected:
 
             if(is_chunked())
             {
-                //chunked‚Èasync’ÊM
+                //chunkedãªasyncé€šä¿¡
                 boost::asio::async_read_until(socket,
                     read_buf_,
                     "\r\n",
@@ -273,8 +273,8 @@ protected:
             }
             else if(response_->header.find("Content-Length")==response_->header.end())
             {
-                //Content-Length‚ªŒ©‚Â‚©‚ç‚È‚¢async’ÊM
-                //I—¹ğŒ‚ÍˆÃ¦“I‚Étransfer_all() = “Ç‚ß‚é‚¾‚¯“Ç‚İ‚Ş
+                //Content-LengthãŒè¦‹ã¤ã‹ã‚‰ãªã„asyncé€šä¿¡
+                //çµ‚äº†æ¡ä»¶ã¯æš—ç¤ºçš„ã«transfer_all() = èª­ã‚ã‚‹ã ã‘èª­ã¿è¾¼ã‚€
                 boost::asio::async_read(socket,
                     read_buf_,
                     boost::bind(&reader::async_read_all<Socket>,this,
@@ -285,8 +285,8 @@ protected:
             }
             else
             {
-                //Content-Length‚ğ‚à‚Æ‚ÉRead‚ğs‚¤Casync’ÊM
-                //‚±‚±‚É‚«‚½‚È‚ç"Content-Length"‚ª‚ ‚è‚Ü‚·‚æ‚Ë
+                //Content-Lengthã‚’ã‚‚ã¨ã«Readã‚’è¡Œã†ï¼Œasyncé€šä¿¡
+                //ã“ã“ã«ããŸãªã‚‰"Content-Length"ãŒã‚ã‚Šã¾ã™ã‚ˆã­
                 boost::asio::async_read(socket,
                     read_buf_,
                     boost::asio::transfer_at_least(boost::lexical_cast<size_t>(response_->header.at("Content-Length"))-boost::asio::buffer_size(read_buf_.data())),
@@ -300,7 +300,7 @@ protected:
             return;
         }
     
-        //‚±‚±‚É—ˆ‚é‘O‚ÉÅŒã‚Ü‚Å“Ç‚İØ‚Á‚Ä‚é‚Í‚¸
+        //ã“ã“ã«æ¥ã‚‹å‰ã«æœ€å¾Œã¾ã§èª­ã¿åˆ‡ã£ã¦ã‚‹ã¯ãš
         template<class Socket>
         void async_read_all(Socket& socket,const error_code& ec,const std::size_t size,EndHandler handler)
         {
@@ -321,21 +321,21 @@ protected:
             return;
         }
         
-        //ƒ`ƒƒƒ“ƒNs‚ğ“Ç‚İ‚İI‚¦‚Ä‚é‚Í‚¸‚È‚Ì‚ÅCƒ`ƒƒƒ“ƒN—Ê‚ğ“Ç‚İo‚µD
-        //(‚È‚ñ‚©–‚“±‘‚Æ—‚¿‚á‚Á‚Ä‚é‚æ‚¤‚È)
+        //ãƒãƒ£ãƒ³ã‚¯è¡Œã‚’èª­ã¿è¾¼ã¿çµ‚ãˆã¦ã‚‹ã¯ãšãªã®ã§ï¼Œãƒãƒ£ãƒ³ã‚¯é‡ã‚’èª­ã¿å‡ºã—ï¼
+        //(ãªã‚“ã‹é­”å°æ›¸ã¨ä¼¼ã¡ã‚ƒã£ã¦ã‚‹ã‚ˆã†ãª)
         template<class Socket>
         void async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
         {
             if(read_buf_.size()==0)
             {
-                //ƒwƒbƒ_[“Ç‚İ‚ñ‚¾‚©‚ç”¼’[‚Í—L‚é‚Í‚¸
-                //‚Æ‚¢‚¤‚±‚Æ‚ÍC‚±‚±‚É—ˆ‚é‚Æƒ}ƒY‚¢
+                //ãƒ˜ãƒƒãƒ€ãƒ¼èª­ã¿è¾¼ã‚“ã ã‹ã‚‰åŠç«¯ã¯æœ‰ã‚‹ã¯ãš
+                //ã¨ã„ã†ã“ã¨ã¯ï¼Œã“ã“ã«æ¥ã‚‹ã¨ãƒã‚ºã„
                 handler(ec);
                 boost::asio::detail::throw_error(ec,"async_read_chunk");
             }
             else if(read_buf_.size()<=2)
             {
-                //chunk—Ê+"\r\n"‚È‚¢‚©‚ç‚à‚¤ˆê‰ñRead‚µ‚Ä‚İ‚æ‚¤‚©
+                //chunké‡+"\r\n"ãªã„ã‹ã‚‰ã‚‚ã†ä¸€å›Readã—ã¦ã¿ã‚ˆã†ã‹
                 boost::asio::async_read_until(socket,
                     read_buf_,
                     "\r\n",
@@ -348,12 +348,12 @@ protected:
             }
             else
             {
-                //chunk“ü‚Á‚Ä‚é‚Ì‚ÅCchunk‚ğ“Ç‚İ‚à‚¤
-                //chunk—Ê+"\r\n"‚Ü‚ÅCread_buf‚àÁ‚µ‹‚é
+                //chunkå…¥ã£ã¦ã‚‹ã®ã§ï¼Œchunkã‚’èª­ã¿è¾¼ã‚‚ã†
+                //chunké‡+"\r\n"ã¾ã§ï¼Œread_bufã‚‚æ¶ˆã—å»ã‚‹
                 std::size_t chunk;
                 read_buf_.consume(chunk_parser((std::string)boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk));
 
-                if(chunk == 0) //I‚í‚Á‚½‚¯‚Ç
+                if(chunk == 0) //çµ‚ã‚ã£ãŸã‘ã©
                 {
                     boost::asio::async_read(socket,
                         read_buf_,
@@ -364,7 +364,7 @@ protected:
                             handler));
                 }
 
-                //chunk—Ê“Ç‚İo‚µ
+                //chunké‡èª­ã¿å‡ºã—
                 boost::asio::async_read(socket,
                     read_buf_,
                     boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf_.data())),
@@ -380,29 +380,29 @@ protected:
             return;
         }
 
-        //ƒ`ƒƒƒ“ƒN‚Ì•\¦—Ê‚ğ“Ç‚İ‚¾‚µI‚¦‚Ä‚é‚Í‚¸‚¾‚¯‚ÇD
+        //ãƒãƒ£ãƒ³ã‚¯ã®è¡¨ç¤ºé‡ã‚’èª­ã¿ã ã—çµ‚ãˆã¦ã‚‹ã¯ãšã ã‘ã©ï¼
         template<class Socket>
         void async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
         {
             if(read_buf_.size()==0)
             {
-                //‚È‚¢‚ñ‚¾‚¯‚ÇH
+                //ãªã„ã‚“ã ã‘ã©ï¼Ÿ
                 handler(ec);
                 boost::asio::detail::throw_error(ec,"async_read_body");
-                //—áŠOI
+                //ä¾‹å¤–ï¼
             }
             else
             {
-                //‚³‚Ä–{‘Ì
+                //ã•ã¦æœ¬ä½“
                 if(boost::asio::buffer_size(read_buf_.data()) < chunk + 2) return;
 
-                //Œã‚ë‚É’Ç‰Á
+                //å¾Œã‚ã«è¿½åŠ 
                 response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk);
-                read_buf_.consume(chunk+2); //—¬‚·
+                read_buf_.consume(chunk+2); //æµã™
 
                 chunk_handler(response_,ec);
                 
-                //chunkæ“¾‚É‚à‚Ç‚é‚æ
+                //chunkå–å¾—ã«ã‚‚ã©ã‚‹ã‚ˆ
                 boost::asio::async_read_until(socket,
                     read_buf_,
                     "\r\n",
@@ -415,20 +415,20 @@ protected:
             }
         }
 
-        //ÅŒãC‚±‚±‚Ü‚ÅD
+        //æœ€å¾Œï¼Œã“ã“ã¾ã§ï¼
         template<class Socket>
         void async_read_end(Socket& socket,const error_code &ec,const std::size_t,EndHandler handler)
         {
             if(read_buf_.size() != 0)
             {
-                //I‚í‚Á‚Ä‚È‚¢c‚¾‚ÆH
+                //çµ‚ã‚ã£ã¦ãªã„â€¦ã ã¨ï¼Ÿ
                 handler(ec);
                 boost::asio::detail::throw_error(ec,"async_not_end");
             }
 
             handler(ec);
             
-            return; //‹ó‚È‚çI‚í‚è‚¾
+            return; //ç©ºãªã‚‰çµ‚ã‚ã‚Šã 
         }
     };
     boost::shared_ptr<application_layer::socket_base> socket_;

@@ -1,8 +1,8 @@
-//
+ï»¿//
 // client.hpp
 // ~~~~~~~~~~
 //
-// ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‚ÌƒƒCƒ“ŠÇ—ƒNƒ‰ƒX
+// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šã®ãƒ¡ã‚¤ãƒ³ç®¡ç†ã‚¯ãƒ©ã‚¹
 //
 
 #ifndef BOOSTCONNECT_CLIENT
@@ -22,7 +22,7 @@
 
 namespace bstcon{
 
-//•¡”‚Ì’ÊM‚ğ“¯‚É—v‹‚µ‚½Û‚Ì•ÛØ‚Í‚µ‚È‚¢
+//è¤‡æ•°ã®é€šä¿¡ã‚’åŒæ™‚ã«è¦æ±‚ã—ãŸéš›ã®ä¿è¨¼ã¯ã—ãªã„
 class client : boost::noncopyable{
 public:
     typedef boost::asio::io_service io_service;
@@ -35,7 +35,7 @@ public:
     typedef bstcon::connection_type::connection_base::ConnectionHandler ConnectionHandler;
 
 
-    //// TODO: C++11‚É‚Ä‰Â•Ï’·ˆø”‚É‘Î‰‚³‚¹‚é
+    //// TODO: C++11ã«ã¦å¯å¤‰é•·å¼•æ•°ã«å¯¾å¿œã•ã›ã‚‹
     //template<class ...Args>
     //client(boost::asio::io_service &io_service,boost::asio::ip::tcp::endpoint& ep,Args... args)
     //{
@@ -43,8 +43,8 @@ public:
     //    socket_layer_ = connector_->get_layer();
     //}
 
-    //ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Ìˆø”‚Åconnection_type_‰Šú‰»‚µ‚È‚­‚Ä‚ÍB
-    //Œ»İ‚Ìasync,sync”»’f‚Í”ü‚µ‚­‚È‚¢I
+    //ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã®å¼•æ•°ã§connection_type_åˆæœŸåŒ–ã—ãªãã¦ã¯ã€‚
+    //ç¾åœ¨ã®async,syncåˆ¤æ–­ã¯ç¾ã—ããªã„ï¼
 
     //TCP
     client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync)

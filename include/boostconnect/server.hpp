@@ -1,8 +1,8 @@
-//
+﻿//
 // server.hpp
 // ~~~~~~~~~~
 //
-// �T�[�o�[�ڑ��̃��C���Ǘ��N���X
+// サーバー接続のメイン管理クラス
 //
 
 #ifndef BOOSTCONNECT_SERVER

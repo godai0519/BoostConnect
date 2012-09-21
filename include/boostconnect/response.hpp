@@ -1,8 +1,8 @@
-//
+ï»¿//
 // response.hpp
 // ~~~~~~~~~~
 //
-// ƒŒƒXƒ|ƒ“ƒXƒRƒ“ƒeƒi[
+// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚³ãƒ³ãƒ†ãƒŠãƒ¼
 //
 
 #ifndef BOOSTCONNECT_RESPONSE

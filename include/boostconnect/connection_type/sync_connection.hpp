@@ -1,8 +1,8 @@
-//
+﻿//
 // sync_connection.hpp
 // ~~~~~~~~~~
 //
-// �����̂��߂̃N���X�Q
+// 同期のためのクラス群
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION
