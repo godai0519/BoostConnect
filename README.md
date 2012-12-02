@@ -33,6 +33,7 @@ SSL通信をしない場合はOpenSSLは必要ありません！
 
 サンプルの詳細な説明は以下に提示しますから，見るとわかるかも知れません．
 サンプルはVC10以降の場合は付属の.sln，gccの場合は`g++ -std=c++11 ./sample/sample.cpp -I./include/ -lssl -lcrypto -lboost_thread -lboost_system`でコンパイルできるはずです.
+clang++も`clang++ -std=c++11 ./sample/sample.cpp -I./include/ -lssl -lcrypto -lboost_thread -lboost_system`で出来ましたよっと．
 
 クライアント
 -----------
