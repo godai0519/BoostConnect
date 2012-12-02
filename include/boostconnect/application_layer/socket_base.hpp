@@ -43,8 +43,8 @@ struct socket_base : boost::noncopyable{
     typedef boost::function<void(const error_code&,std::size_t)> ReadHandler;
     typedef boost::function<void(const error_code&,std::size_t)> WriteHandler;
 
-    socket_base(){}
-    virtual ~socket_base(){}
+    socket_base();
+    virtual ~socket_base();
 
     virtual io_service& get_io_service() = 0;
     virtual lowest_layer_type& lowest_layer() = 0;
@@ -77,51 +77,23 @@ struct socket_base : boost::noncopyable{
 template<class Socket>
 class socket_common : public socket_base{
 public:
-    socket_common(io_service& io_service) : socket_(io_service){}
+    socket_common(io_service& io_service);
     
 #ifdef USE_SSL_BOOSTCONNECT
-    socket_common(io_service& io_service,context_type& ctx) : socket_(io_service,ctx){}
+    socket_common(io_service& io_service,context_type& ctx);
 #endif
 
-    virtual ~socket_common(){}
+    virtual ~socket_common();
     
-    lowest_layer_type& lowest_layer()
-    {
-        return socket_.lowest_layer();
-    }
+    lowest_layer_type& lowest_layer();
+    io_service& get_io_service();
 
-    io_service& get_io_service()
-    {
-        return socket_.get_io_service();
-    }
-
-    std::size_t read_some(const mutable_buffer& buf,error_code& ec)
-    {
-        return socket_.read_some(buf,ec);
-    }
-    std::size_t write_some(const const_buffer& buf,error_code& ec)
-    {
-        return socket_.write_some(buf,ec);
-    }
-    std::size_t write_some(const consuming_buffer& buf,error_code& ec)
-    {
-        return socket_.write_some(buf,ec);
-    }
-    void async_read_some(const mutable_buffer& buf,ReadHandler handler)
-    {
-        socket_.async_read_some(buf,handler);
-        return;
-    }
-    void async_write_some(const const_buffer& buf,WriteHandler handler)
-    {
-        socket_.async_write_some(buf,handler);
-        return;
-    }
-    void async_write_some(const consuming_buffer& buf,WriteHandler handler)
-    {
-        socket_.async_write_some(buf,handler);
-        return;
-    }
+    std::size_t read_some(const mutable_buffer& buf,error_code& ec);
+    std::size_t write_some(const const_buffer& buf,error_code& ec);
+    std::size_t write_some(const consuming_buffer& buf,error_code& ec);
+    void async_read_some(const mutable_buffer& buf,ReadHandler handler);
+    void async_write_some(const const_buffer& buf,WriteHandler handler);
+    void async_write_some(const consuming_buffer& buf,WriteHandler handler);
 
 protected:
     Socket socket_;
@@ -129,5 +101,9 @@ protected:
 
 } // namespace application_layer
 } // namespace bstcon
+
+#ifdef BOOSTCONNECT_LIB_BUILD
+#include "../../../src/application_layer/socket_base.cpp"
+#endif
 
 #endif

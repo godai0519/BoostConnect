@@ -1,4 +1,5 @@
 ﻿#define USE_SSL_BOOSTCONNECT
+#define BOOSTCONNECT_LIB_BUILD
 
 #include <iostream>
 #include <boostconnect/connection_type/async_connection.hpp>

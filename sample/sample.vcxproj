@@ -37,12 +37,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\openssl\build\debug\include;C:\boost\include\boost-1_51</IncludePath>
-    <LibraryPath>C:\openssl\build\debug\lib;C:\boost\lib</LibraryPath>
+    <IncludePath>C:\openssl\build\debug\include;C:\boost\include\boost-1_51;..\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openssl\build\debug\lib;C:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\openssl\build\release\include;C:\boost\include\boost-1_51;$(SolutionDIr)include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\openssl\build\release\lib;C:\boost\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\openssl\build\debug\include;C:\boost\include\boost-1_51;..\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openssl\build\debug\lib;C:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

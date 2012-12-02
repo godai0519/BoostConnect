@@ -13,49 +13,38 @@
 namespace bstcon{
 namespace application_layer{
     
-class tcp_socket : public socket_common<socket_base::tcp_socket_type>{
+class tcp_socket : public socket_common<socket_base::tcp_socket_type>
+{
     typedef socket_common<socket_base::tcp_socket_type> my_base;
 public:    
-    tcp_socket(io_service& io_service) : my_base(io_service){}
-    virtual ~tcp_socket(){}
+    tcp_socket(io_service& io_service);
+    virtual ~tcp_socket();
     
-    const std::string service_protocol() const { return "http"; }
+    const std::string service_protocol() const;
 
     //TCP通信のコネクション確立
-    error_code& connect(endpoint_type& begin,error_code& ec)
-    {
-        ec = socket_.connect(begin,ec);
-        return ec;
-    }
-    void async_connect(endpoint_type& begin,ConnectHandler handler)
-    {
-        socket_.async_connect(begin,handler);
-        return;
-    }
+    error_code& connect(endpoint_type& begin,error_code& ec);
+    void async_connect(endpoint_type& begin,ConnectHandler handler);
     
 #ifdef USE_SSL_BOOSTCONNECT
     //TCP通信ではHandshakeを行わない -> Handlerを直接呼び出す
-    void handshake(handshake_type){return;}
-    void async_handshake(handshake_type,HandshakeHandler handler){handler(error_code());return;}
+    void handshake(handshake_type);
+    void async_handshake(handshake_type,HandshakeHandler handler);
 #else
-    void handshake(){return;}
-    void async_handshake(HandshakeHandler handler){handler(error_code());return;}
+    void handshake();
+    void async_handshake(HandshakeHandler handler);
 #endif
 
     //TCPレイヤーの処理
-    void close()
-    {
-        socket_.close();
-        return;
-    }
-    void shutdown(shutdown_type what)
-    {
-        socket_.shutdown(what);
-        return;
-    }
+    void close();
+    void shutdown(shutdown_type what);
 };
 
 } // namespace application_layer
 } // namespace bstcon
+
+#ifdef BOOSTCONNECT_LIB_BUILD
+#include "../../../src/application_layer/tcp_socket.cpp"
+#endif
 
 #endif
