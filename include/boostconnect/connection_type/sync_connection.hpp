@@ -17,78 +17,23 @@ namespace connection_type{
 
 class sync_connection : public connection_common<sync_connection>{
 public:
-    sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
-    {
-        socket_ = socket;
-        reader_.reset(new reader());
-    }
-    virtual ~sync_connection(){}
+    sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket);
+    virtual ~sync_connection();
     
-    connection_ptr connect(const std::string& host,ConnectionHandler handler)
-    {
-        boost::asio::ip::tcp::resolver resolver(socket_->get_io_service());
-        boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
-        
-        // Connect Start
-        error_code ec;
-        boost::asio::ip::tcp::resolver::iterator ep_iterator = resolver.resolve(query,ec);
-        boost::asio::connect(socket_->lowest_layer(),ep_iterator,ec);
+    connection_ptr connect(const std::string& host,ConnectionHandler handler);
+    connection_ptr connect(const endpoint_type& ep,ConnectionHandler handler);
 
-#ifdef USE_SSL_BOOSTCONNECT
-        socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
-#else
-        socket_->handshake();
-#endif
-
-        handler(shared_from_this(), ec);
-        return this->shared_from_this();
-    }
-
-    connection_ptr connect(const endpoint_type& ep,ConnectionHandler handler)
-    {
-        // Connect Start
-        error_code ec;
-        socket_->lowest_layer().connect(ep,ec);
-#ifdef USE_SSL_BOOSTCONNECT
-        socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
-#else
-        socket_->handshake();
-#endif
-
-        handler(shared_from_this(), ec);
-        return this->shared_from_this();
-    }
-
-    response_type send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
-    {
-        reader_.reset(new connection_base::reader());
-        response_type response = reader_->get_response();
-
-        error_code ec;
-        boost::asio::write(*socket_, *buf, ec);
-
-        if(!ec)
-        {
-            reader_->read_starter(
-                *socket_,
-                boost::bind(&sync_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, end_handler),
-                chunk_handler);
-        }
-        return response;
-    }
+    response_type send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler);
 
 private:
-    void handle_read(const error_code& ec, EndHandler end_handler)
-    {
-        auto response = reader_->get_response();
-        reader_.reset();
-
-        end_handler(response, ec);
-        return;
-    }
+    void handle_read(const error_code& ec, EndHandler end_handler);
 };
 
 } // namespace connection_type
 } // namespace bstcon
+
+#ifdef BOOSTCONNECT_LIB_BUILD
+#include "../../../src/connection_type/sync_connection.cpp"
+#endif
 
 #endif

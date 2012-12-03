@@ -28,6 +28,9 @@
     <Filter Include="ソース ファイル\application_layer">
       <UniqueIdentifier>{cccd1c1c-6353-422e-943f-701befe6d3b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\connection_type">
+      <UniqueIdentifier>{07c6e3f2-23b5-40d5-ab3c-c49206c2d1a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\boostconnect\client.hpp">
@@ -85,6 +88,15 @@
     </ClCompile>
     <ClCompile Include="application_layer\socket_base.cpp">
       <Filter>ソース ファイル\application_layer</Filter>
+    </ClCompile>
+    <ClCompile Include="connection_type\connection_base.cpp">
+      <Filter>ソース ファイル\connection_type</Filter>
+    </ClCompile>
+    <ClCompile Include="connection_type\async_connection.cpp">
+      <Filter>ソース ファイル\connection_type</Filter>
+    </ClCompile>
+    <ClCompile Include="connection_type\sync_connection.cpp">
+      <Filter>ソース ファイル\connection_type</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

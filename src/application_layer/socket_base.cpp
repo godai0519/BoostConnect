@@ -8,11 +8,15 @@ socket_base::socket_base(){}
 socket_base::~socket_base(){}
 
 template<class Socket>
-socket_common<Socket>::socket_common(io_service& io_service) : socket_(io_service){}
+socket_common<Socket>::socket_common(io_service& io_service) : socket_(io_service)
+{
+}
 
 #ifdef USE_SSL_BOOSTCONNECT
 template<class Socket>
-socket_common<Socket>::socket_common(io_service& io_service,context_type& ctx) : socket_(io_service,ctx){}
+socket_common<Socket>::socket_common(io_service& io_service,context_type& ctx) : socket_(io_service,ctx)
+{
+}
 #endif
 
 template<class Socket>
@@ -63,6 +67,10 @@ void socket_common<Socket>::async_write_some(const consuming_buffer& buf,WriteHa
     return;
 }
 
-
 } // namespace application_layer
 } // namespace bstcon
+
+#ifndef BOOSTCONNECT_LIB_BUILD
+#include <boostconnect/application_layer/tcp_socket.hpp>
+#include <boostconnect/application_layer/ssl_socket.hpp>
+#endif
