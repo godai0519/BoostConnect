@@ -31,6 +31,9 @@
     <Filter Include="ソース ファイル\connection_type">
       <UniqueIdentifier>{07c6e3f2-23b5-40d5-ab3c-c49206c2d1a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\session">
+      <UniqueIdentifier>{07589162-f5c5-4d8b-b7ed-bb149095a44f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\boostconnect\client.hpp">
@@ -97,6 +100,12 @@
     </ClCompile>
     <ClCompile Include="connection_type\sync_connection.cpp">
       <Filter>ソース ファイル\connection_type</Filter>
+    </ClCompile>
+    <ClCompile Include="session\session_base.cpp">
+      <Filter>ソース ファイル\session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\http_session.cpp">
+      <Filter>ソース ファイル\session</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -34,6 +34,8 @@
     <ClCompile Include="connection_type\async_connection.cpp" />
     <ClCompile Include="connection_type\connection_base.cpp" />
     <ClCompile Include="connection_type\sync_connection.cpp" />
+    <ClCompile Include="session\http_session.cpp" />
+    <ClCompile Include="session\session_base.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{16641C79-954C-4833-80D4-64FDC908700B}</ProjectGuid>
