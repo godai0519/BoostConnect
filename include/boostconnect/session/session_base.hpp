@@ -48,7 +48,7 @@ struct session_common : public session_base, public boost::enable_shared_from_th
 
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "../../../src/session/session_base.cpp"
+#include <boostconnect/session/impl/session_base.ipp>
 #endif
 
 #endif

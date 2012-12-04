@@ -44,7 +44,7 @@ public:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "../../../src/application_layer/tcp_socket.cpp"
+#include <boostconnect/application_layer/impl/tcp_socket.ipp>
 #endif
 
 #endif

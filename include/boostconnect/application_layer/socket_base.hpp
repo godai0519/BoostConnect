@@ -103,7 +103,7 @@ protected:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "../../../src/application_layer/socket_base.cpp"
+#include <boostconnect/application_layer/impl/socket_base.ipp>
 #endif
 
 #endif

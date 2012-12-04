@@ -138,7 +138,7 @@ class connection_common : public connection_base, public boost::enable_shared_fr
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "../../../src/connection_type/connection_base.cpp"
+#include <boostconnect/connection_type/impl/connection_base.ipp>
 #endif
 
 #endif

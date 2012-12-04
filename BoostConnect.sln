@@ -2,8 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "sample\sample.vcxproj", "{EE6486AA-E297-45E8-BBEB-D54B5FD990DE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{16641C79-954C-4833-80D4-64FDC908700B} = {16641C79-954C-4833-80D4-64FDC908700B}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boostconnect", "src\boostconnect.vcxproj", "{16641C79-954C-4833-80D4-64FDC908700B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boostconnect", "include\boostconnect\boostconnect.vcxproj", "{16641C79-954C-4833-80D4-64FDC908700B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

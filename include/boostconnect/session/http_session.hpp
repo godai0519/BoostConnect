@@ -68,7 +68,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "../../../src/session/http_session.cpp"
+#include <boostconnect/session/impl/http_session.ipp>
 #endif
 
 #endif

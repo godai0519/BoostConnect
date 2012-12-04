@@ -33,7 +33,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "../../../src/connection_type/sync_connection.cpp"
+#include <boostconnect/connection_type/impl/sync_connection.ipp>
 #endif
 
 #endif

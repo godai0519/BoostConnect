@@ -45,7 +45,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "../../../src/connection_type/async_connection.cpp"
+#include <boostconnect/connection_type/impl/async_connection.ipp>
 #endif
 
 #endif
