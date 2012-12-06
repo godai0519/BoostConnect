@@ -1,5 +1,4 @@
 ﻿#define USE_SSL_BOOSTCONNECT
-#define BOOSTCONNECT_LIB_BUILD
 
 #include <iostream>
 #include <boostconnect/connection_type/async_connection.hpp>
@@ -69,7 +68,7 @@ int main()
     
 
     bstcon::client::connection_ptr connection = client(
-        "www.hatena.ne.jp",
+        (std::string)"www.hatena.ne.jp",
         [&connection,request_buf1,request_buf2](bstcon::client::connection_ptr, boost::system::error_code ec)->void
         {
             auto connection_auto = connection;

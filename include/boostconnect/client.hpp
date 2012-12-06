@@ -5,8 +5,8 @@
 // クライアント接続のメイン管理クラス
 //
 
-#ifndef BOOSTCONNECT_CLIENT
-#define BOOSTCONNECT_CLIENT
+#ifndef BOOSTCONNECT_CLIENT_HPP
+#define BOOSTCONNECT_CLIENT_HPP
 
 #include <memory>
 #include <map>
@@ -47,64 +47,25 @@ public:
     //現在のasync,sync判断は美しくない！
 
     //TCP
-    client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync)
-        : connection_type_(connection_type), io_service_(io_service)
-#ifdef USE_SSL_BOOSTCONNECT
-        , ctx_(nullptr)
-#endif
-    {}
+    client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync);
     
 #ifdef USE_SSL_BOOSTCONNECT
     //SSL
     typedef boost::asio::ssl::context context;
-    client(io_service &io_service,context &ctx,const connection_type::connection_type& connection_type=connection_type::sync) : io_service_(io_service), connection_type_(connection_type), ctx_(&ctx){}
+    client(io_service &io_service,context &ctx,const connection_type::connection_type& connection_type=connection_type::sync);
 #endif
     
     template<typename T>
     connection_ptr operator() (
         const T& host,
         ConnectionHandler handler
-        )
-    {
-        auto connection = crerate_connection();
-        connection->connect(host, handler);
+        );
 
-        return connection;
-    }
-
-    const std::string service_protocol() const
-    {
-#ifdef USE_SSL_BOOSTCONNECT
-        return (ctx_==nullptr) ? "http" : "https";
-#endif
-        return "http";
-    }
+    const std::string service_protocol() const;
 
 protected:
-    inline socket_ptr create_socket()
-    {
-        socket_ptr socket;
-
-#ifdef USE_SSL_BOOSTCONNECT
-    if(ctx_ != nullptr)
-            socket.reset(new bstcon::application_layer::ssl_socket(io_service_,*ctx_));
-    else
-#endif
-            socket.reset(new bstcon::application_layer::tcp_socket(io_service_));
-
-        return socket;
-    }
-    inline const connection_ptr crerate_connection()
-    {
-        connection_ptr connection;
-
-        if(connection_type_ == connection_type::sync)
-            connection.reset(new bstcon::connection_type::sync_connection(create_socket()));
-        else 
-            connection.reset(new bstcon::connection_type::async_connection(create_socket()));
-
-        return connection;
-    }
+    inline socket_ptr create_socket();
+    inline const connection_ptr crerate_connection();
 
 private:
 #ifdef USE_SSL_BOOSTCONNECT
@@ -115,5 +76,9 @@ private:
 };
 
 } // namespace bstcon
+
+#ifdef BOOSTCONNECT_LIB_BUILD
+#include <boostconnect/impl/client.ipp>
+#endif
 
 #endif

@@ -1,3 +1,6 @@
+#ifndef BOOSTCONNECT_APPLAYER_TCP_SOCKET_IPP
+#define BOOSTCONNECT_APPLAYER_TCP_SOCKET_IPP
+
 #include <boostconnect/application_layer/tcp_socket.hpp>
 
 namespace bstcon{
@@ -62,3 +65,5 @@ void tcp_socket::shutdown(shutdown_type what)
 
 } // namespace application_layer
 } // namespace bstcon
+
+#endif

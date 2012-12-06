@@ -1,3 +1,6 @@
+#ifndef BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_IPP
+#define BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_IPP
+
 #include <boostconnect/connection_type/async_connection.hpp>
 
 namespace bstcon{
@@ -105,3 +108,5 @@ void async_connection::handle_read(const error_code& ec, EndHandler end_handler)
 
 } // namespace connection_type
 } // namespace bstcon
+
+#endif

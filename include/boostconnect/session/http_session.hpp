@@ -5,8 +5,8 @@
 // HTTP通信のセッションを管理
 //
 
-#ifndef BOOSTCONNECT_SESSION_HTTP
-#define BOOSTCONNECT_SESSION_HTTP
+#ifndef BOOSTCONNECT_SESSION_HTTP_HPP
+#define BOOSTCONNECT_SESSION_HTTP_HPP
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/karma.hpp>

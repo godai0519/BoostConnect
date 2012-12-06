@@ -1,7 +1,8 @@
-#define USE_SSL_BOOSTCONNECT
-#include <boostconnect/application_layer/ssl_socket.hpp>
-
 #ifdef USE_SSL_BOOSTCONNECT
+#ifndef BOOSTCONNECT_APPLAYER_SSL_SOCKET_IPP
+#define BOOSTCONNECT_APPLAYER_SSL_SOCKET_IPP
+
+#include <boostconnect/application_layer/ssl_socket.hpp>
 
 namespace bstcon{
 namespace application_layer{
@@ -57,4 +58,5 @@ void ssl_socket::shutdown(shutdown_type what)
 } // namespace application_layer
 } // namespace bstcon
 
+#endif
 #endif

@@ -5,8 +5,8 @@
 // Sessionの寿命を管理するmanager
 //
 
-#ifndef BOOSTCONNECT_MANAGER
-#define BOOSTCONNECT_MANAGER
+#ifndef BOOSTCONNECT_MANAGER_HPP
+#define BOOSTCONNECT_MANAGER_HPP
 
 #include <set>
 #include <boost/shared_ptr.hpp>
@@ -19,20 +19,21 @@ public:
     typedef boost::shared_ptr<ManagedType> ManagedPtr;
     typedef std::set<ManagedPtr> ManagedSet;
 
-    const ManagedSet& data() const { return data_; }
-    void run(ManagedPtr& object){
-        data_.insert(object);
-        return;
-    }
-    void stop(ManagedPtr& object){
-        data_.erase(object);
-        return;
-    }
+    manager();
+    virtual ~manager();
+
+    const ManagedSet& data() const;
+    void run(ManagedPtr& object);
+    void stop(ManagedPtr& object);
 
 private:
     ManagedSet data_;
 };
     
 } // namespace bstcon
+
+#ifdef BOOSTCONNECT_LIB_BUILD
+#include <boostconnect/impl/manager.ipp>
+#endif
 
 #endif

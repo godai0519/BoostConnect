@@ -1,3 +1,6 @@
+#ifndef BOOSTCONNECT_SESSION_BASE_IPP
+#define BOOSTCONNECT_SESSION_BASE_IPP
+
 #include <boostconnect/session/session_base.hpp>
 
 namespace bstcon{
@@ -30,4 +33,6 @@ session_common<Derived>::~session_common()
 
 #ifndef BOOSTCONNECT_LIB_BUILD
 #include <boostconnect/session/http_session.hpp>
+#endif
+
 #endif

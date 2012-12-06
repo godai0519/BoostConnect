@@ -18,3 +18,16 @@
 #include <boostconnect/session/impl/session_base.ipp>
 #include <boostconnect/session/http_session.hpp>
 #include <boostconnect/session/impl/http_session.ipp>
+
+#include <boostconnect/system/error_code.hpp>
+#include <boostconnect/system/impl/error_code.ipp>
+
+#include <boostconnect/request.hpp>
+#include <boostconnect/response.hpp>
+
+#include <boostconnect/manager.hpp>
+#include <boostconnect/impl/manager.ipp>
+#include <boostconnect/client.hpp>
+#include <boostconnect/impl/client.ipp>
+#include <boostconnect/server.hpp>
+#include <boostconnect/impl/server.ipp>

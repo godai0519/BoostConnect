@@ -1,3 +1,6 @@
+#ifndef BOOSTCONNECT_SESSION_HTTP_IPP
+#define BOOSTCONNECT_SESSION_HTTP_IPP
+
 #include <boostconnect/session/http_session.hpp>
 #include <boostconnect/application_layer/tcp_socket.hpp>
 #include <boostconnect/application_layer/ssl_socket.hpp>
@@ -225,3 +228,5 @@ const int http_session::request_header_parser(const std::string& request_str,bst
 
 } // namespace session
 } // namespace bstcon
+
+#endif

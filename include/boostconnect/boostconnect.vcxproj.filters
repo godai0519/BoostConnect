@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application_layer">
+      <UniqueIdentifier>{7b9a71b7-9318-4417-b3d8-3e2f7022e8e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\connection_type">
+      <UniqueIdentifier>{d36f7781-c3cc-47ed-81c6-ddfc5f0bafe5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\system">
+      <UniqueIdentifier>{f73b34bc-de0c-4344-af9b-f7f2c42c5eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\session">
+      <UniqueIdentifier>{4825fe2d-122b-4aae-8e46-8c179cded422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application_layer\impl">
+      <UniqueIdentifier>{2ada9d82-7dc7-4143-b495-ee595c3c54fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\connection_type\impl">
+      <UniqueIdentifier>{6722db25-2392-4451-aca8-da7f9d5893e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\session\impl">
+      <UniqueIdentifier>{81f07182-5f84-4ba6-8e0e-c70202b036a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\system\impl">
+      <UniqueIdentifier>{118706a9-3620-4df4-a872-5d87c567438f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\impl">
+      <UniqueIdentifier>{99f9dd33-2b07-4f5f-b547-ce79ec4e7ef9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="client.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\socket_base.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="request.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="response.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="server.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\ssl_socket.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\tcp_socket.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="connection_type\connection_base.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="connection_type\async_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="connection_type\sync_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="session\http_session.hpp">
+      <Filter>ヘッダー ファイル\session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\session_base.hpp">
+      <Filter>ヘッダー ファイル\session</Filter>
+    </ClInclude>
+    <ClInclude Include="system\error_code.hpp">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="application_layer\impl\ssl_socket.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+    <None Include="application_layer\impl\tcp_socket.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+    <None Include="application_layer\impl\socket_base.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+    <None Include="connection_type\impl\async_connection.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="connection_type\impl\connection_base.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="connection_type\impl\sync_connection.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="session\impl\http_session.ipp">
+      <Filter>ヘッダー ファイル\session\impl</Filter>
+    </None>
+    <None Include="session\impl\session_base.ipp">
+      <Filter>ヘッダー ファイル\session\impl</Filter>
+    </None>
+    <None Include="system\impl\error_code.ipp">
+      <Filter>ヘッダー ファイル\system\impl</Filter>
+    </None>
+    <None Include="impl\manager.ipp">
+      <Filter>ヘッダー ファイル\impl</Filter>
+    </None>
+    <None Include="impl\client.ipp">
+      <Filter>ヘッダー ファイル\impl</Filter>
+    </None>
+    <None Include="impl\server.ipp">
+      <Filter>ヘッダー ファイル\impl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\boostconnect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

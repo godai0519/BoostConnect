@@ -5,8 +5,8 @@
 // ソケットラッパーベースクラス
 //
 
-#ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE
-#define BOOSTCONNECT_APPLAYER_SOCKET_BASE
+#ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE_HPP
+#define BOOSTCONNECT_APPLAYER_SOCKET_BASE_HPP
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>

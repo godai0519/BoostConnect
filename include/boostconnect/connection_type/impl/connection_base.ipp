@@ -1,3 +1,6 @@
+#ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
+#define BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
+
 #include <boostconnect/connection_type/connection_base.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
@@ -387,7 +390,4 @@ void connection_base::reader::async_read_end(Socket& socket,const error_code &ec
 } // namespace connection_type
 } // namespace bstcon
 
-#ifndef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/application_layer/tcp_socket.hpp>
-#include <boostconnect/application_layer/ssl_socket.hpp>
 #endif

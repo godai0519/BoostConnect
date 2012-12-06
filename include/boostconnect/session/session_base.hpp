@@ -5,8 +5,8 @@
 // Session共通設定
 //
 
-#ifndef BOOSTCONNECT_SESSION_BASE
-#define BOOSTCONNECT_SESSION_BASE
+#ifndef BOOSTCONNECT_SESSION_BASE_HPP
+#define BOOSTCONNECT_SESSION_BASE_HPP
 
 #include <boost/bind.hpp>
 #include <boost/function.hpp>

@@ -1,3 +1,6 @@
+#ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
+#define BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
+
 #include <boostconnect/connection_type/sync_connection.hpp>
 
 namespace bstcon{
@@ -76,3 +79,5 @@ void sync_connection::handle_read(const error_code& ec, EndHandler end_handler)
 
 } // namespace connection_type
 } // namespace bstcon
+
+#endif

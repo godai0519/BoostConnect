@@ -1,3 +1,6 @@
+#ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP
+#define BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP
+
 #include <boostconnect/application_layer/socket_base.hpp>
 
 namespace bstcon{
@@ -70,7 +73,4 @@ void socket_common<Socket>::async_write_some(const consuming_buffer& buf,WriteHa
 } // namespace application_layer
 } // namespace bstcon
 
-#ifndef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/application_layer/tcp_socket.hpp>
-#include <boostconnect/application_layer/ssl_socket.hpp>
 #endif
