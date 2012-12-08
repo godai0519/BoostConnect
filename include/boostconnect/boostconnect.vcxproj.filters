@@ -25,37 +25,55 @@
     <Filter Include="ヘッダー ファイル\session">
       <UniqueIdentifier>{4825fe2d-122b-4aae-8e46-8c179cded422}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\application_layer\impl">
+      <UniqueIdentifier>{2ada9d82-7dc7-4143-b495-ee595c3c54fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\connection_type\impl">
+      <UniqueIdentifier>{6722db25-2392-4451-aca8-da7f9d5893e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\session\impl">
+      <UniqueIdentifier>{81f07182-5f84-4ba6-8e0e-c70202b036a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\system\impl">
+      <UniqueIdentifier>{118706a9-3620-4df4-a872-5d87c567438f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\impl">
+      <UniqueIdentifier>{99f9dd33-2b07-4f5f-b547-ce79ec4e7ef9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="connection_type\async_connection.hpp">
-      <Filter>ヘッダー ファイル\connection_type</Filter>
+    <ClInclude Include="application_layer\socket_base.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
-    <ClInclude Include="connection_type\connection_base.hpp">
-      <Filter>ヘッダー ファイル\connection_type</Filter>
-    </ClInclude>
-    <ClInclude Include="connection_type\sync_connection.hpp">
-      <Filter>ヘッダー ファイル\connection_type</Filter>
-    </ClInclude>
-    <ClInclude Include="server.hpp">
+    <ClInclude Include="manager.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="request.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="application_layer\socket_base.hpp">
-      <Filter>ヘッダー ファイル\application_layer</Filter>
+    <ClInclude Include="response.hpp">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="system\error_code.hpp">
-      <Filter>ヘッダー ファイル\system</Filter>
+    <ClInclude Include="server.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="application_layer\ssl_socket.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
     <ClInclude Include="application_layer\tcp_socket.hpp">
       <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
-    <ClInclude Include="application_layer\ssl_socket.hpp">
-      <Filter>ヘッダー ファイル\application_layer</Filter>
+    <ClInclude Include="connection_type\connection_base.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="connection_type\async_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="connection_type\sync_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
     </ClInclude>
     <ClInclude Include="session\http_session.hpp">
       <Filter>ヘッダー ファイル\session</Filter>
@@ -63,11 +81,54 @@
     <ClInclude Include="session\session_base.hpp">
       <Filter>ヘッダー ファイル\session</Filter>
     </ClInclude>
-    <ClInclude Include="response.hpp">
+    <ClInclude Include="system\error_code.hpp">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="config.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="manager.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="application_layer\impl\ssl_socket.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+    <None Include="application_layer\impl\tcp_socket.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+    <None Include="application_layer\impl\socket_base.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+    <None Include="connection_type\impl\async_connection.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="connection_type\impl\connection_base.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="connection_type\impl\sync_connection.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="session\impl\http_session.ipp">
+      <Filter>ヘッダー ファイル\session\impl</Filter>
+    </None>
+    <None Include="session\impl\session_base.ipp">
+      <Filter>ヘッダー ファイル\session\impl</Filter>
+    </None>
+    <None Include="system\impl\error_code.ipp">
+      <Filter>ヘッダー ファイル\system\impl</Filter>
+    </None>
+    <None Include="impl\manager.ipp">
+      <Filter>ヘッダー ファイル\impl</Filter>
+    </None>
+    <None Include="impl\client.ipp">
+      <Filter>ヘッダー ファイル\impl</Filter>
+    </None>
+    <None Include="impl\server.ipp">
+      <Filter>ヘッダー ファイル\impl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\boostconnect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
