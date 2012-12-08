@@ -1,3 +1,10 @@
+//
+// ssl_socket.ipp
+// ~~~~~~~~~~
+//
+// ssl_socket‚ÌŽÀ‘•
+//
+
 #ifdef USE_SSL_BOOSTCONNECT
 #ifndef BOOSTCONNECT_APPLAYER_SSL_SOCKET_IPP
 #define BOOSTCONNECT_APPLAYER_SSL_SOCKET_IPP

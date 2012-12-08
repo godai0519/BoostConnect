@@ -1,4 +1,11 @@
-﻿#ifndef BOOSTCONNECT_SYSTEM_ERROR_CODE_IPP
+﻿//
+// error_code.ipp
+// ~~~~~~~~~~
+//
+// error_codeの実装
+//
+
+#ifndef BOOSTCONNECT_SYSTEM_ERROR_CODE_IPP
 #define BOOSTCONNECT_SYSTEM_ERROR_CODE_IPP
 
 #include "../error_code.hpp"

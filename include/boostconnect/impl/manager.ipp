@@ -1,3 +1,10 @@
+//
+// manager.ipp
+// ~~~~~~~~~~
+//
+// manager‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_MANAGER_IPP
 #define BOOSTCONNECT_MANAGER_IPP
 

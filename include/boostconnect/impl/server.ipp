@@ -1,3 +1,10 @@
+//
+// server.ipp
+// ~~~~~~~~~~
+//
+// server‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_SERVER_IPP
 #define BOOSTCONNECT_SERVER_IPP
 

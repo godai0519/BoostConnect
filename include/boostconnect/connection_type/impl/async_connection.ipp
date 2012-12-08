@@ -1,3 +1,10 @@
+//
+// async_connection.ipp
+// ~~~~~~~~~~
+//
+// async_connection‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_IPP
 #define BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_IPP
 

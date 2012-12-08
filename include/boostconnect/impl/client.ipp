@@ -1,3 +1,10 @@
+//
+// client.ipp
+// ~~~~~~~~~~
+//
+// client‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_CLIENT_IPP
 #define BOOSTCONNECT_CLIENT_IPP
 

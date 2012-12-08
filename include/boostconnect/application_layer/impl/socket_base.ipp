@@ -1,3 +1,10 @@
+//
+// socket_base.ipp
+// ~~~~~~~~~~
+//
+// socket_base‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP
 #define BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP
 

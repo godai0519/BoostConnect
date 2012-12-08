@@ -1,3 +1,10 @@
+//
+// connection_base.ipp
+// ~~~~~~~~~~
+//
+// connection_base‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
 #define BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
 

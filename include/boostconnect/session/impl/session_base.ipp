@@ -1,3 +1,10 @@
+//
+// session_base.ipp
+// ~~~~~~~~~~
+//
+// session_base‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_SESSION_BASE_IPP
 #define BOOSTCONNECT_SESSION_BASE_IPP
 

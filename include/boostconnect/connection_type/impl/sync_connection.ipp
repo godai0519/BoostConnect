@@ -1,3 +1,10 @@
+//
+// sync_connection.ipp
+// ~~~~~~~~~~
+//
+// sync_connection‚ÌŽÀ‘•
+//
+
 #ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
 #define BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
 
