@@ -1,7 +1,9 @@
 #ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP
 #define BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP
 
-#include <boostconnect/application_layer/socket_base.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include "../socket_base.hpp"
 
 namespace bstcon{
 namespace application_layer{

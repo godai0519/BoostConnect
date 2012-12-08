@@ -8,11 +8,10 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_HPP
 #define BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_HPP
 
-#include <memory>
 #include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "connection_base.hpp"
-#include "../system/error_code.hpp"
 
 namespace bstcon{
 namespace connection_type{
@@ -45,7 +44,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/connection_type/impl/async_connection.ipp>
+#include "impl/async_connection.ipp"
 #endif
 
 #endif

@@ -1,7 +1,10 @@
 #ifndef BOOSTCONNECT_SERVER_IPP
 #define BOOSTCONNECT_SERVER_IPP
 
-#include <boostconnect/server.hpp>
+#include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
+#include "../server.hpp"
 
 namespace bstcon{
 

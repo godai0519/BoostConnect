@@ -33,7 +33,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/impl/manager.ipp>
+#include "impl/manager.ipp"
 #endif
 
 #endif

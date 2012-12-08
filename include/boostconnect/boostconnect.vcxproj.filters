@@ -84,6 +84,9 @@
     <ClInclude Include="system\error_code.hpp">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="config.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_layer\impl\ssl_socket.ipp">

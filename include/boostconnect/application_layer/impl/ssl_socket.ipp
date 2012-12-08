@@ -2,7 +2,9 @@
 #ifndef BOOSTCONNECT_APPLAYER_SSL_SOCKET_IPP
 #define BOOSTCONNECT_APPLAYER_SSL_SOCKET_IPP
 
-#include <boostconnect/application_layer/ssl_socket.hpp>
+#include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
+#include "../ssl_socket.hpp"
 
 namespace bstcon{
 namespace application_layer{

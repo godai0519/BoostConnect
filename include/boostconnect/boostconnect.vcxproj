@@ -15,6 +15,7 @@
     <ClInclude Include="application_layer\ssl_socket.hpp" />
     <ClInclude Include="application_layer\tcp_socket.hpp" />
     <ClInclude Include="client.hpp" />
+    <ClInclude Include="config.hpp" />
     <ClInclude Include="connection_type\async_connection.hpp" />
     <ClInclude Include="connection_type\connection_base.hpp" />
     <ClInclude Include="connection_type\sync_connection.hpp" />

@@ -1,7 +1,8 @@
 #ifndef BOOSTCONNECT_APPLAYER_TCP_SOCKET_IPP
 #define BOOSTCONNECT_APPLAYER_TCP_SOCKET_IPP
 
-#include <boostconnect/application_layer/tcp_socket.hpp>
+#include <boost/asio.hpp>
+#include "../tcp_socket.hpp"
 
 namespace bstcon{
 namespace application_layer{

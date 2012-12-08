@@ -1,7 +1,12 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
 #define BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
 
-#include <boostconnect/connection_type/sync_connection.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include "../sync_connection.hpp"
 
 namespace bstcon{
 namespace connection_type{

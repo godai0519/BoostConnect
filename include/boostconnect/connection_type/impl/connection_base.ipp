@@ -1,8 +1,11 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
 #define BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
 
-#include <boostconnect/connection_type/connection_base.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/include/std_pair.hpp>
+#include <boostconnect/connection_type/connection_base.hpp>
 
 namespace bstcon{
 namespace connection_type{

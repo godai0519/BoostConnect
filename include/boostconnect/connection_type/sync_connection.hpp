@@ -8,8 +8,8 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_HPP
 #define BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_HPP
 
-#include <memory>
 #include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
 #include "connection_base.hpp"
 
 namespace bstcon{
@@ -33,7 +33,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/connection_type/impl/sync_connection.ipp>
+#include "impl/sync_connection.ipp"
 #endif
 
 #endif

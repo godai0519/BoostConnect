@@ -9,7 +9,6 @@
 #define BOOSTCONNECT_APPLAYER_SOCKET_BASE_HPP
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/function.hpp>
 
 #ifdef USE_SSL_BOOSTCONNECT
@@ -103,7 +102,7 @@ protected:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/application_layer/impl/socket_base.ipp>
+#include "impl/socket_base.ipp"
 #endif
 
 #endif

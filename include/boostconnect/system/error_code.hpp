@@ -95,7 +95,7 @@ void inline throw_error(error_code& ec, const std::string& what_arg="");
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/system/impl/error_code.ipp>
+#include "impl/error_code.ipp"
 #endif
 
 #endif

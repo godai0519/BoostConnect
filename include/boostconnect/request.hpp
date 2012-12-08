@@ -14,7 +14,8 @@
 
 namespace bstcon{
     
-struct request : boost::noncopyable{
+struct request : boost::noncopyable
+{
     typedef std::string string_type;
     typedef std::map<string_type,string_type> header_type;
     
@@ -26,7 +27,8 @@ struct request : boost::noncopyable{
     string_type body;
 };
 
-struct http_request : request{
+struct http_request : request
+{
     typedef std::string string_type;
     typedef std::map<string_type,string_type> header_type;
     
@@ -36,7 +38,6 @@ struct http_request : request{
     header_type header;
     
     string_type body;
-
 };
 
 } // namespace bstcon

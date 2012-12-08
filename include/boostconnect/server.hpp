@@ -8,6 +8,9 @@
 #ifndef BOOSTCONNECT_SERVER_HPP
 #define BOOSTCONNECT_SERVER_HPP
 
+#include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
 #include "manager.hpp"
 #include "session/session_base.hpp"
 #include "session/http_session.hpp"
@@ -50,7 +53,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/impl/server.ipp>
+#include "impl/server.ipp"
 #endif
 
 #endif

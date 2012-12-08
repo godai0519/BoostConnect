@@ -1,9 +1,14 @@
 #ifndef BOOSTCONNECT_SESSION_HTTP_IPP
 #define BOOSTCONNECT_SESSION_HTTP_IPP
 
-#include <boostconnect/session/http_session.hpp>
-#include <boostconnect/application_layer/tcp_socket.hpp>
-#include <boostconnect/application_layer/ssl_socket.hpp>
+#include <boost/asio.hpp>
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/karma.hpp>
+#include <boost/fusion/include/std_pair.hpp>
+
+#include "../http_session.hpp"
+#include "../../application_layer/tcp_socket.hpp"
+#include "../../application_layer/ssl_socket.hpp"
 
 namespace bstcon{
 namespace session{

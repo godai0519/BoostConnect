@@ -1,7 +1,7 @@
 #ifndef BOOSTCONNECT_MANAGER_IPP
 #define BOOSTCONNECT_MANAGER_IPP
 
-#include <boostconnect/manager.hpp>
+#include "../manager.hpp"
 
 namespace bstcon{
     

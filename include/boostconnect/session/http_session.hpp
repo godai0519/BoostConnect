@@ -8,10 +8,7 @@
 #ifndef BOOSTCONNECT_SESSION_HTTP_HPP
 #define BOOSTCONNECT_SESSION_HTTP_HPP
 
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/karma.hpp>
-#include <boost/fusion/include/std_pair.hpp>
-
+#include <boost/asio.hpp>
 #include "session_base.hpp"
 #include "../application_layer/socket_base.hpp"
 
@@ -68,7 +65,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/session/impl/http_session.ipp>
+#include "impl/http_session.ipp"
 #endif
 
 #endif

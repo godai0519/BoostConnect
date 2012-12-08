@@ -8,10 +8,9 @@
 #ifndef BOOSTCONNECT_CLIENT_HPP
 #define BOOSTCONNECT_CLIENT_HPP
 
-#include <memory>
-#include <map>
-#include <boost/smart_ptr.hpp>
 #include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
+
 #include "manager.hpp"
 #include "application_layer/socket_base.hpp"
 #include "application_layer/tcp_socket.hpp"
@@ -78,7 +77,7 @@ private:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/impl/client.ipp>
+#include "impl/client.ipp"
 #endif
 
 #endif

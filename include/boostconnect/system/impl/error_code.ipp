@@ -1,7 +1,7 @@
 ﻿#ifndef BOOSTCONNECT_SYSTEM_ERROR_CODE_IPP
 #define BOOSTCONNECT_SYSTEM_ERROR_CODE_IPP
 
-#include <boostconnect/system/error_code.hpp>
+#include "../error_code.hpp"
 
 namespace bstcon{
 namespace system{

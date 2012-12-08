@@ -1,7 +1,7 @@
 #ifndef BOOSTCONNECT_CLIENT_IPP
 #define BOOSTCONNECT_CLIENT_IPP
 
-#include <boostconnect/client.hpp>
+#include "../client.hpp"
 
 namespace bstcon{
 

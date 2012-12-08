@@ -1,7 +1,13 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_IPP
 #define BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_IPP
 
-#include <boostconnect/connection_type/async_connection.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include "../async_connection.hpp"
 
 namespace bstcon{
 namespace connection_type{
@@ -21,7 +27,7 @@ void async_connection::close()
     socket_->close();
     return;
 }
-    
+
 async_connection::connection_ptr async_connection::connect(const std::string& host,ConnectionHandler handler)
 {
     boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());

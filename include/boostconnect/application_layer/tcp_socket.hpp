@@ -8,6 +8,7 @@
 #ifndef BOOSTCONNECT_APPLAYER_TCP_SOCKET_HPP
 #define BOOSTCONNECT_APPLAYER_TCP_SOCKET_HPP
 
+#include <boost/asio.hpp>
 #include "socket_base.hpp"
 
 namespace bstcon{
@@ -16,7 +17,7 @@ namespace application_layer{
 class tcp_socket : public socket_common<socket_base::tcp_socket_type>
 {
     typedef socket_common<socket_base::tcp_socket_type> my_base;
-public:    
+public:
     tcp_socket(io_service& io_service);
     virtual ~tcp_socket();
     
@@ -44,7 +45,7 @@ public:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/application_layer/impl/tcp_socket.ipp>
+#include "impl/tcp_socket.ipp"
 #endif
 
 #endif

@@ -8,12 +8,9 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_HPP
 #define BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_HPP
 
-#include <memory>
 #include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix.hpp>
-#include <boost/lexical_cast.hpp>
 #include "../application_layer/socket_base.hpp"
 #include "../response.hpp"
 
@@ -138,7 +135,7 @@ class connection_common : public connection_base, public boost::enable_shared_fr
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/connection_type/impl/connection_base.ipp>
+#include "impl/connection_base.ipp"
 #endif
 
 #endif

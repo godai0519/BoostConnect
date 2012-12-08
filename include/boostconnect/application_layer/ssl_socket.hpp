@@ -10,6 +10,7 @@
 #define BOOSTCONNECT_APPLAYER_SSL_SOCKET_HPP
 
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include "socket_base.hpp"
 
 namespace bstcon{
@@ -41,7 +42,7 @@ public:
 } // namespace bstcon
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include <boostconnect/application_layer/impl/ssl_socket.ipp>
+#include "impl/ssl_socket.ipp"
 #endif
 
 #endif
