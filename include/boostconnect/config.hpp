@@ -1,0 +1,5 @@
+#define SSL_ENABLE 1
+
+#if SSL_ENABLE
+#define USE_SSL_BOOSTCONNECT
+#endif
