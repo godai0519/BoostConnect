@@ -14,7 +14,8 @@
 
 namespace bstcon{
 
-struct response : boost::noncopyable{
+struct response : boost::noncopyable
+{
     typedef std::string string_type;
     typedef std::map<string_type,string_type> header_type;
 

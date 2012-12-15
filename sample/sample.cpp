@@ -68,7 +68,7 @@ int main()
     
 
     bstcon::client::connection_ptr connection = client(
-        "www.hatena.ne.jp",
+        (std::string)"www.hatena.ne.jp",
         [&connection,request_buf1,request_buf2](bstcon::client::connection_ptr, boost::system::error_code ec)->void
         {
             auto connection_auto = connection;

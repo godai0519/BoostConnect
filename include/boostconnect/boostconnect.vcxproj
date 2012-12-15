@@ -15,6 +15,7 @@
     <ClInclude Include="application_layer\ssl_socket.hpp" />
     <ClInclude Include="application_layer\tcp_socket.hpp" />
     <ClInclude Include="client.hpp" />
+    <ClInclude Include="config.hpp" />
     <ClInclude Include="connection_type\async_connection.hpp" />
     <ClInclude Include="connection_type\connection_base.hpp" />
     <ClInclude Include="connection_type\sync_connection.hpp" />
@@ -26,18 +27,35 @@
     <ClInclude Include="session\session_base.hpp" />
     <ClInclude Include="system\error_code.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="application_layer\impl\socket_base.ipp" />
+    <None Include="application_layer\impl\ssl_socket.ipp" />
+    <None Include="application_layer\impl\tcp_socket.ipp" />
+    <None Include="connection_type\impl\async_connection.ipp" />
+    <None Include="connection_type\impl\connection_base.ipp" />
+    <None Include="connection_type\impl\sync_connection.ipp" />
+    <None Include="impl\client.ipp" />
+    <None Include="impl\manager.ipp" />
+    <None Include="impl\server.ipp" />
+    <None Include="session\impl\http_session.ipp" />
+    <None Include="session\impl\session_base.ipp" />
+    <None Include="system\impl\error_code.ipp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\boostconnect.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{16641C79-954C-4833-80D4-64FDC908700B}</ProjectGuid>
     <RootNamespace>BoostConnect</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -53,14 +71,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\openssl\build\debug\include;C:\boost\include\boost-1_51</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_52;C:\openssl\build\debug\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\openssl\build\debug\lib;C:\boost\lib</LibraryPath>
+    <LibraryPath>C:\boost\lib;C:\openssl\build\debug\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <TargetName>lib$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\openssl\build\release\include;C:\boost\include\boost-1_51;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\openssl\build\release\lib;C:\boost\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_52;C:\openssl\build\release\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\boost\lib;C:\openssl\build\release\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <TargetName>lib$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
