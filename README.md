@@ -8,6 +8,10 @@
 任意のHTTPサーバを立てることが出来るサーバーを提供しています．  
 (本当はもっと機能を増やしたかったりしますが)
 
+このライブラリはライブラリとして使用(事前に.aや.libを作成)する方法と，ヘッダーのincludeのみで使用する方法が選べます．  
+それぞれの方法については「ライブラリとして使用」・「ヘッダーとして利用」の項を参照してください．  
+ただしどちらを選んだ場合でも，同じ機能を利用することができます．しかし，ヘッダーとして利用する場合は毎回のコンパイル時間がめちゃくちゃ長くなります．
+
 必要なもの
 ----------
 +   [Boost C++ Library](http://www.boost.org/):
@@ -18,6 +22,22 @@
       `#define USE_SSL_BOOSTCONNECT`によってSSLが有効になります．
 
 SSL通信をしない場合はOpenSSLは必要ありません！
+
+ライブラリとして使用
+--------------------
+生のままBoostConnectを使用すると，毎回のようにコンパイル時間が長くなり，大変なのです．  
+そこで.a(Windowsでは.lib)としてlibrary化することができるようにしました．  
+
+Windowsの場合はBoostConnect.slnに存在しているboostconnectプロジェクトのインクルードパス・ライブラリパスを適宜変更の上，コンパイルさせてください．  
+Linuxの場合はmakeを叩くだけで行けます（多分
+
+どちらでビルドしてもlibディレクトリ下にlibboostconnect.*というライブラリができますので，利用する際にこれをリンクしてください．
+
+ヘッダーとして利用
+------------------
+ヘッダーのincludeを行う前に`#define BOOSTCONNECT_LIB_BUILD`を書いてください．  
+これだけでOKです．
+
 
 使い方
 -------
@@ -31,9 +51,9 @@ SSL通信をしない場合はOpenSSLは必要ありません！
 どちらもコンストラクタで`boost::asio::io_service`を渡します．  
 この時，第二引数に`boost::asio::ssl::context`を渡すと暗黙的にSSL通信を行うことになります．
 
-サンプルの詳細な説明は以下に提示しますから，見るとわかるかも知れません．
+サンプルの詳細な説明は以下に提示しますから，見るとわかるかも知れません．  
 サンプルはVC10以降の場合は付属の.sln，gccの場合は`g++ -std=c++11 ./sample/sample.cpp -I./include/ -lssl -lcrypto -lboost_thread -lboost_system`でコンパイルできるはずです.
-clang++も`clang++ -std=c++11 ./sample/sample.cpp -I./include/ -lssl -lcrypto -lboost_thread -lboost_system`で出来ましたよっと．
+clang++も`clang++ -std=c++11 ./sample/sample.cpp -I./include/ -lssl -lcrypto -lboost_thread -lboost_system`で出来ましたよっ
 
 クライアント
 -----------
