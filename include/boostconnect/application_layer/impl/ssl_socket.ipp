@@ -25,7 +25,7 @@ ssl_socket::~ssl_socket()
 
 const std::string ssl_socket::service_protocol() const
 {
-    return "https";
+    return "443";
 }
 
 //SSL通信のコネクション確立(TCPレイヤーでコネクションを行う)
