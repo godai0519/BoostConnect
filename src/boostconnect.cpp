@@ -11,6 +11,15 @@
 #include <boostconnect/request.hpp>
 #include <boostconnect/response.hpp>
 
+#include <boostconnect/utility/impl/radix.ipp>
+#include <boostconnect/utility/impl/percent_encoder.ipp>
+#include <boostconnect/utility/impl/syntax.ipp>
+
+#include <boostconnect/content/content_base.hpp>
+#include <boostconnect/content/text.hpp>
+#include <boostconnect/content/binary.hpp>
+#include <boostconnect/content/urlencoded.hpp>
+
 #include <boostconnect/application_layer/impl/socket_base.ipp>
 #include <boostconnect/application_layer/impl/tcp_socket.ipp>
 #include <boostconnect/application_layer/impl/ssl_socket.ipp>
