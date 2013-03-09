@@ -15,10 +15,10 @@
 #include <boostconnect/utility/impl/percent_encoder.ipp>
 #include <boostconnect/utility/impl/syntax.ipp>
 
-#include <boostconnect/content/content_base.hpp>
-#include <boostconnect/content/text.hpp>
-#include <boostconnect/content/binary.hpp>
-#include <boostconnect/content/urlencoded.hpp>
+#include <boostconnect/content/impl/text.ipp>
+#include <boostconnect/content/impl/binary.ipp>
+#include <boostconnect/content/impl/urlencoded.ipp>
+#include <boostconnect/content/impl/multipart_form_data.ipp>
 
 #include <boostconnect/application_layer/impl/socket_base.ipp>
 #include <boostconnect/application_layer/impl/tcp_socket.ipp>
