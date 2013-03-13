@@ -119,3 +119,52 @@ int main()
     return 0;
 }
 
+//#include <boost/make_shared.hpp>
+//#include <boostconnect/content/multipart_form_data.hpp>
+//#include <boostconnect/content/multipart_mixed.hpp>
+//#include <boostconnect/content/text.hpp>
+//
+//int main()
+//{
+//    using namespace bstcon::content;
+//    
+//    std::vector<multipart::data_set> data_inner;
+//    data_inner.push_back(
+//        multipart_mixed::make_data(
+//            boost::make_shared<text>("DDD")
+//        )
+//    );
+//    data_inner.push_back(
+//        multipart_mixed::make_data(
+//            boost::make_shared<text>("EEE")
+//        )
+//    );
+//
+//    std::vector<multipart::data_set> data;
+//    data.push_back(
+//        multipart_form_data::make_data(
+//            boost::make_shared<text>("AAA"), "aaa", "aaa.txt"
+//        )
+//    );
+//    data.push_back(
+//        multipart_form_data::make_data(
+//            boost::make_shared<text>("BBB"), "bbb", "bbb.txt"
+//        )
+//    );
+//    data.push_back(
+//        multipart_form_data::make_data(
+//            boost::make_shared<text>("CCC"), "ccc", "ccc.txt"
+//        )
+//    );
+//
+//    data.push_back(
+//        multipart_form_data::make_data(
+//            boost::make_shared<multipart_mixed>(data_inner), "inner"
+//        )
+//    );
+//
+//    multipart_form_data raw(data);
+//    std::cout << raw.get_body() << std::endl;
+//
+//    return 0;
+//}

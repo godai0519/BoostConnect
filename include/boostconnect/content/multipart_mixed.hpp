@@ -1,12 +1,12 @@
 //
-// multipart_form_data.hpp
+// multipart_mixed.hpp
 // ~~~~~~~~~~
 //
 // 
 //
 
-#ifndef BOOSTCONNECT_CONTENT_MULTIPART_FORM_DATA_HPP
-#define BOOSTCONNECT_CONTENT_MULTIPART_FORM_DATA_HPP
+#ifndef BOOSTCONNECT_CONTENT_MULTIPART_MIXED_HPP
+#define BOOSTCONNECT_CONTENT_MULTIPART_MIXED_HPP
 
 #include <string>
 #include <vector>
@@ -17,23 +17,22 @@
 namespace bstcon{
 namespace content{
 
-struct multipart_form_data : public multipart
+struct multipart_mixed : public multipart
 {
     static data_set make_data(
         const boost::shared_ptr<content_base>& data,
-        const std::string& name, const std::string& filename="",
         std::map<std::string, std::string> header = std::map<std::string, std::string>()
         );
 
-    explicit multipart_form_data(const std::vector<data_set>& data);
-    virtual ~multipart_form_data();
+    explicit multipart_mixed(const std::vector<data_set>& data);
+    virtual ~multipart_mixed();
 };
 
 }
 }
 
 #ifdef BOOSTCONNECT_LIB_BUILD
-#include "impl/multipart_form_data.ipp"
+#include "impl/multipart_mixed.ipp"
 #endif
 
 #endif

@@ -18,6 +18,8 @@
 #include <boostconnect/content/impl/text.ipp>
 #include <boostconnect/content/impl/binary.ipp>
 #include <boostconnect/content/impl/urlencoded.ipp>
+#include <boostconnect/content/impl/multipart.ipp>
+#include <boostconnect/content/impl/multipart_mixed.ipp>
 #include <boostconnect/content/impl/multipart_form_data.ipp>
 
 #include <boostconnect/application_layer/impl/socket_base.ipp>

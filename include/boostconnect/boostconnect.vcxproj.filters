@@ -123,6 +123,12 @@
     <ClInclude Include="content\multipart_form_data.hpp">
       <Filter>ヘッダー ファイル\content</Filter>
     </ClInclude>
+    <ClInclude Include="content\multipart.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="content\multipart_mixed.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_layer\impl\ssl_socket.ipp">
@@ -180,6 +186,12 @@
       <Filter>ヘッダー ファイル\content\impl</Filter>
     </None>
     <None Include="content\impl\multipart_form_data.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="content\impl\multipart.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="content\impl\multipart_mixed.ipp">
       <Filter>ヘッダー ファイル\content\impl</Filter>
     </None>
   </ItemGroup>

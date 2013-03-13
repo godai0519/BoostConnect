@@ -21,7 +21,9 @@
     <ClInclude Include="connection_type\sync_connection.hpp" />
     <ClInclude Include="content\binary.hpp" />
     <ClInclude Include="content\content_base.hpp" />
+    <ClInclude Include="content\multipart.hpp" />
     <ClInclude Include="content\multipart_form_data.hpp" />
+    <ClInclude Include="content\multipart_mixed.hpp" />
     <ClInclude Include="content\text.hpp" />
     <ClInclude Include="content\urlencoded.hpp" />
     <ClInclude Include="manager.hpp" />
@@ -43,7 +45,9 @@
     <None Include="connection_type\impl\connection_base.ipp" />
     <None Include="connection_type\impl\sync_connection.ipp" />
     <None Include="content\impl\binary.ipp" />
+    <None Include="content\impl\multipart.ipp" />
     <None Include="content\impl\multipart_form_data.ipp" />
+    <None Include="content\impl\multipart_mixed.ipp" />
     <None Include="content\impl\text.ipp" />
     <None Include="content\impl\urlencoded.ipp" />
     <None Include="impl\client.ipp" />
