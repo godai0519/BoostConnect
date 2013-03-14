@@ -184,7 +184,7 @@ void connection_base::reader::read_chunk_body(Socket& socket,const std::size_t c
     response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk/*+2*/);
     read_buf_.consume(chunk+2); //—¬‚·
 
-    chunk_handler(response_,ec);
+    if(!chunk_handler(response_,ec)) return;
 
     read_chunk_size(socket,handler,chunk_handler);
     return;
@@ -366,7 +366,7 @@ void connection_base::reader::async_read_chunk_body(Socket& socket,const std::si
         response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk);
         read_buf_.consume(chunk+2); //—¬‚·
 
-        chunk_handler(response_,ec);
+        if(!chunk_handler(response_,ec)) return;
                 
         //chunkŽæ“¾‚É‚à‚Ç‚é‚æ
         boost::asio::async_read_until(socket,
