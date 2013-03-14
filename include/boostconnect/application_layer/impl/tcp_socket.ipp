@@ -21,7 +21,7 @@ tcp_socket::~tcp_socket(){}
    
 const std::string tcp_socket::service_protocol() const
 {
-    return "http";
+    return "80";
 }
 
 //TCP通信のコネクション確立

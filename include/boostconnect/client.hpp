@@ -61,6 +61,7 @@ public:
         );
 
     const std::string service_protocol() const;
+    void set_connection_type(const connection_type::connection_type& connection_type);
 
 protected:
     inline socket_ptr create_socket();

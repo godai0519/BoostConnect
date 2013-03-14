@@ -27,7 +27,7 @@ public:
     typedef boost::shared_ptr<bstcon::response> response_type;
 
     typedef boost::function<void(connection_ptr,error_code)> ConnectionHandler;
-    typedef boost::function<void(response_type,error_code)> ChunkHandler;
+    typedef boost::function<bool(response_type,error_code)> ChunkHandler;
     typedef boost::function<void(response_type,error_code)> EndHandler;
     
     connection_base();
@@ -39,8 +39,8 @@ public:
     
     virtual response_type send(
         boost::shared_ptr<boost::asio::streambuf>,
-        EndHandler = [](response_type,error_code)->void{},
-        ChunkHandler = [](response_type,error_code)->void{}
+        EndHandler = [](response_type,error_code)->bool{ return true; },
+        ChunkHandler = [](response_type,error_code)->bool{ return true; }
         ) = 0;
 
     virtual void close();

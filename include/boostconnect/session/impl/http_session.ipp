@@ -225,7 +225,7 @@ const int http_session::request_header_parser(const std::string& request_str,bst
         it,
         request_str.cend(),
         +(qi::char_-' ') >> ' ' >> +(qi::char_-' ') >> ' ' >> +(qi::char_-"\r\n") >> "\r\n",
-        request_containar.method, request_containar.uri, request_containar.http_version
+        request_containar.method, request_containar.path, request_containar.http_version
         );
 
     qi::parse(

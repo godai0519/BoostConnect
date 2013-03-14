@@ -53,16 +53,21 @@ const std::string client::service_protocol() const
     return "http";
 }
 
+void client::set_connection_type(const connection_type::connection_type& connection_type)
+{
+    connection_type_ = connection_type;
+}
+
 inline client::socket_ptr client::create_socket()
 {
     socket_ptr socket;
 
 #ifdef USE_SSL_BOOSTCONNECT
 if(ctx_ != nullptr)
-        socket.reset(new bstcon::application_layer::ssl_socket(io_service_,*ctx_));
+    socket.reset(new bstcon::application_layer::ssl_socket(io_service_,*ctx_));
 else
 #endif
-        socket.reset(new bstcon::application_layer::tcp_socket(io_service_));
+    socket.reset(new bstcon::application_layer::tcp_socket(io_service_));
 
     return socket;
 }
