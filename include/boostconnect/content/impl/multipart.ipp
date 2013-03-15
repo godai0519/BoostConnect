@@ -18,7 +18,7 @@ namespace bstcon{
 namespace content{
     
 multipart::multipart(const std::string& multipart_type, const std::vector<data_set>& data)
-    : multipart_type_(multipart_type), raw_(data), generated_(false)
+    : content_base("multipart/" + multipart_type), raw_(data), generated_(false)
 {
 }
 
@@ -29,7 +29,7 @@ multipart::~multipart() // = default;
 std::string multipart::get_content_type() const
 {
     if(boundary_.empty()) refresh_boundary();
-    return "multipart/" + multipart_type_ + "; boundary=\"" + boundary_ + "\"";
+    return content_base::get_content_type() + "; boundary=\"" + boundary_ + "\"";
 }
 std::string multipart::get_body() const
 {
@@ -63,6 +63,11 @@ void multipart::refresh_boundary() const
 {
     boundary_ = "--------------------" + nonce();
     return;
+}
+
+void multipart::set_multipart_type(const std::string& multipart_type)
+{
+    this->set_type("multipart/" + multipart_type);
 }
 
 void multipart::set_data(const std::vector<data_set>& data)

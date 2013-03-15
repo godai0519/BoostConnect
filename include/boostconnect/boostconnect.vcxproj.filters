@@ -194,6 +194,9 @@
     <None Include="content\impl\multipart_mixed.ipp">
       <Filter>ヘッダー ファイル\content\impl</Filter>
     </None>
+    <None Include="content\impl\content_base.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\boostconnect.cpp">
