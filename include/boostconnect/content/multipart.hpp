@@ -34,7 +34,7 @@ public:
         boost::shared_ptr<content_base> data_;
     };
 
-    explicit multipart(const std::string& multipart_type, const std::vector<data_set>& data);
+    multipart(const std::string& multipart_type, const std::vector<data_set>& data);
     virtual ~multipart();
     
     std::string get_content_type() const;
@@ -53,7 +53,6 @@ private:
     mutable bool generated_;
     
     std::vector<data_set> raw_;
-    std::string multipart_type_;
 };
 
 }

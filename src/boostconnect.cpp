@@ -15,6 +15,7 @@
 #include <boostconnect/utility/impl/percent_encoder.ipp>
 #include <boostconnect/utility/impl/syntax.ipp>
 
+#include <boostconnect/content/impl/content_base.ipp>
 #include <boostconnect/content/impl/text.ipp>
 #include <boostconnect/content/impl/binary.ipp>
 #include <boostconnect/content/impl/urlencoded.ipp>

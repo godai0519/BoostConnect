@@ -2,7 +2,7 @@
 // urlencoded.hpp
 // ~~~~~~~~~~
 //
-// サーバー接続のメイン管理クラス
+// 
 //
 
 #ifndef BOOSTCONNECT_CONTENT_URLENCODED_HPP
@@ -22,17 +22,12 @@ public:
     explicit urlencoded(const std::map<std::string, std::string>& data, const std::string& type = "application/x-www-form-urlencoded");
     virtual ~urlencoded();
 
-    std::string get_content_type() const;
     std::string get_body() const;
-
-    void set_content_type(const std::string& type);
     void set_body(const std::map<std::string, std::string>& data);
 
 private:
-    std::string type_;
-    std::map<std::string, std::string> data_;
-
     const bstcon::utility::generator gen_;
+    std::map<std::string, std::string> data_;
 };
 
 }

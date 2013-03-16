@@ -17,29 +17,20 @@ namespace bstcon{
 namespace content{
 
 binary::binary(const std::string& data, const std::string& type)
-    : data_(data), type_(type)
+    : content_base(type), data_(data)
 {
 }
 binary::binary(const std::vector<char>& data, const std::string& type)
-    : data_(data.cbegin(), data.cend()), type_(type)
+    : content_base(type), data_(data.cbegin(), data.cend())
 {
 }
 binary::~binary()
 {
 }
 
-std::string binary::get_content_type() const
-{
-    return type_;
-}
 std::string binary::get_body() const
 {
     return data_;
-}
-    
-void binary::set_content_type(const std::string& type)
-{
-    this->type_ = type;
 }
 void binary::set_body(const std::string& data)
 {
