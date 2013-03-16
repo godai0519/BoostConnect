@@ -20,14 +20,10 @@ public:
     explicit text(const std::string& data, const std::string& type = "text/plain");
     virtual ~text();
 
-    std::string get_content_type() const;
     std::string get_body() const;
-
-    void set_content_type(const std::string& type);
     void set_body(const std::string& data);
 
 private:
-    std::string type_;
     std::string data_;
 };
 

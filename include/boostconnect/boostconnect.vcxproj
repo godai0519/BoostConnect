@@ -45,6 +45,7 @@
     <None Include="connection_type\impl\connection_base.ipp" />
     <None Include="connection_type\impl\sync_connection.ipp" />
     <None Include="content\impl\binary.ipp" />
+    <None Include="content\impl\content_base.ipp" />
     <None Include="content\impl\multipart.ipp" />
     <None Include="content\impl\multipart_form_data.ipp" />
     <None Include="content\impl\multipart_mixed.ipp" />

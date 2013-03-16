@@ -22,15 +22,11 @@ public:
     explicit binary(const std::vector<char>& data, const std::string& type = "application/octet-stream");
     virtual ~binary();
 
-    std::string get_content_type() const;
-    std::string get_body() const;
-    
-    void set_content_type(const std::string& type);
+    std::string get_body() const;    
     void set_body(const std::string& data);
     void set_body(const std::vector<char>& data);
 
 private:
-    std::string type_;
     std::string data_;
 };
 
