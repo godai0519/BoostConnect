@@ -1,8 +1,8 @@
-//
+ï»¿//
 // sync_connection.ipp
 // ~~~~~~~~~~
 //
-// sync_connection‚ÌÀ‘•
+// sync_connectionã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP

@@ -1,8 +1,8 @@
-//
+ï»¿//
 // client.ipp
 // ~~~~~~~~~~
 //
-// client‚ÌÀ‘•
+// clientã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_CLIENT_IPP

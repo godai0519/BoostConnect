@@ -1,8 +1,8 @@
-//
+ï»¿//
 // manager.ipp
 // ~~~~~~~~~~
 //
-// manager‚ÌÀ‘•
+// managerã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_MANAGER_IPP

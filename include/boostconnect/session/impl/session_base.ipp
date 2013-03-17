@@ -1,8 +1,8 @@
-//
+ï»¿//
 // session_base.ipp
 // ~~~~~~~~~~
 //
-// session_base‚ÌÀ‘•
+// session_baseã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_SESSION_BASE_IPP
