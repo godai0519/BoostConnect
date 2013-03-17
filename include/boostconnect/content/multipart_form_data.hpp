@@ -22,7 +22,11 @@ struct multipart_form_data : public multipart
     static data_set make_data(
         const boost::shared_ptr<content_base>& data,
         const std::string& name, const std::string& filename="",
+#ifdef _MSC_VER
         std::map<std::string, std::string> header = std::map<std::string, std::string>()
+#else
+        std::map<std::string, std::string> header = {}
+#endif
         );
 
     explicit multipart_form_data(const std::vector<data_set>& data);

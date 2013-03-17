@@ -23,7 +23,14 @@ public:
     class data_set
     {
     public:
-        explicit data_set(const boost::shared_ptr<content_base>& data, const std::map<std::string, std::string>& header = std::map<std::string, std::string>());
+        explicit data_set(
+            const boost::shared_ptr<content_base>& data,
+#ifdef _MSC_VER
+            const std::map<std::string, std::string>& header = std::map<std::string, std::string>()
+#else
+            const std::map<std::string, std::string>& header = {}
+#endif
+        );
         virtual ~data_set();
 
         std::map<std::string, std::string> header() const;

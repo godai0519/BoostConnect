@@ -21,7 +21,11 @@ struct multipart_mixed : public multipart
 {
     static data_set make_data(
         const boost::shared_ptr<content_base>& data,
+#ifdef _MSC_VER
         std::map<std::string, std::string> header = std::map<std::string, std::string>()
+#else
+        std::map<std::string, std::string> header = {}
+#endif
         );
 
     explicit multipart_mixed(const std::vector<data_set>& data);

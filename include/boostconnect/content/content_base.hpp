@@ -17,7 +17,14 @@ namespace content{
 class content_base
 {
 public:
-    content_base(const std::string& type, const std::map<std::string, std::string>& attr = std::map<std::string, std::string>());
+    explicit content_base(
+        const std::string& type,
+#ifdef _MSC_VER
+        const std::map<std::string, std::string>& attr = std::map<std::string, std::string>()
+#else
+        const std::map<std::string, std::string>& attr = {}
+#endif
+    );
     virtual ~content_base();
 
     virtual std::string get_content_type() const;
@@ -38,3 +45,4 @@ private:
 }
 
 #endif
+
