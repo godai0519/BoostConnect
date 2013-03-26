@@ -323,24 +323,27 @@ void connection_base::reader::async_read_chunk_size(Socket& socket,const error_c
         {
             boost::asio::async_read(socket,
                 read_buf_,
+                boost::asio::transfer_at_least(0),
                 boost::bind(&reader::async_read_end<Socket>,this,
                     boost::ref(socket),
                     boost::asio::placeholders::error,
                     boost::asio::placeholders::bytes_transferred,
                     handler));
         }
-
-        //chunk量読み出し
-        boost::asio::async_read(socket,
-            read_buf_,
-            boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf_.data())),
-            boost::bind(&reader::async_read_chunk_body<Socket>,this,
-                boost::ref(socket),
-                chunk,
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred,
-                handler,
-                chunk_handler));
+        else
+        {
+            //chunk量読み出し
+            boost::asio::async_read(socket,
+                read_buf_,
+                boost::asio::transfer_at_least(chunk+2-boost::asio::buffer_size(read_buf_.data())),
+                boost::bind(&reader::async_read_chunk_body<Socket>,this,
+                    boost::ref(socket),
+                    chunk,
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred,
+                    handler,
+                    chunk_handler));
+        }
     }
 
     return;
@@ -385,15 +388,7 @@ void connection_base::reader::async_read_chunk_body(Socket& socket,const std::si
 template<class Socket>
 void connection_base::reader::async_read_end(Socket& socket,const error_code &ec,const std::size_t,EndHandler handler)
 {
-    if(read_buf_.size() != 0)
-    {
-        //終わってない…だと？
-        handler(ec);
-        boost::asio::detail::throw_error(ec,"async_not_end");
-    }
-
-    handler(ec);
-            
+    handler(ec);            
     return; //空なら終わりだ
 }
 
