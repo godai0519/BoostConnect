@@ -1,12 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "sample\sample.vcxproj", "{EE6486AA-E297-45E8-BBEB-D54B5FD990DE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boostconnect", "include\boostconnect\boostconnect.vcxproj", "{16641C79-954C-4833-80D4-64FDC908700B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "example\server\server.vcxproj", "{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{16641C79-954C-4833-80D4-64FDC908700B} = {16641C79-954C-4833-80D4-64FDC908700B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boostconnect", "include\boostconnect\boostconnect.vcxproj", "{16641C79-954C-4833-80D4-64FDC908700B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{085DB4C9-B43F-4A7E-9713-011DD89BE532}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "async_client", "example\client\async_client\async_client.vcxproj", "{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14}"
+	ProjectSection(ProjectDependencies) = postProject
+		{16641C79-954C-4833-80D4-64FDC908700B} = {16641C79-954C-4833-80D4-64FDC908700B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sync_client", "example\client\sync_client\sync_client.vcxproj", "{F5E52272-9867-4F53-A4DF-AA0AE2C91198}"
+	ProjectSection(ProjectDependencies) = postProject
+		{16641C79-954C-4833-80D4-64FDC908700B} = {16641C79-954C-4833-80D4-64FDC908700B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ssl_client", "example\ssl_client\ssl_client.vcxproj", "{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{16641C79-954C-4833-80D4-64FDC908700B} = {16641C79-954C-4833-80D4-64FDC908700B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,16 +31,34 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EE6486AA-E297-45E8-BBEB-D54B5FD990DE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EE6486AA-E297-45E8-BBEB-D54B5FD990DE}.Debug|Win32.Build.0 = Debug|Win32
-		{EE6486AA-E297-45E8-BBEB-D54B5FD990DE}.Release|Win32.ActiveCfg = Release|Win32
-		{EE6486AA-E297-45E8-BBEB-D54B5FD990DE}.Release|Win32.Build.0 = Release|Win32
 		{16641C79-954C-4833-80D4-64FDC908700B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{16641C79-954C-4833-80D4-64FDC908700B}.Debug|Win32.Build.0 = Debug|Win32
 		{16641C79-954C-4833-80D4-64FDC908700B}.Release|Win32.ActiveCfg = Release|Win32
 		{16641C79-954C-4833-80D4-64FDC908700B}.Release|Win32.Build.0 = Release|Win32
+		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Debug|Win32.Build.0 = Debug|Win32
+		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Release|Win32.ActiveCfg = Release|Win32
+		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Release|Win32.Build.0 = Release|Win32
+		{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14}.Debug|Win32.ActiveCfg = Debug|Win32
+		{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14}.Debug|Win32.Build.0 = Debug|Win32
+		{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14}.Release|Win32.ActiveCfg = Release|Win32
+		{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14}.Release|Win32.Build.0 = Release|Win32
+		{F5E52272-9867-4F53-A4DF-AA0AE2C91198}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F5E52272-9867-4F53-A4DF-AA0AE2C91198}.Debug|Win32.Build.0 = Debug|Win32
+		{F5E52272-9867-4F53-A4DF-AA0AE2C91198}.Release|Win32.ActiveCfg = Release|Win32
+		{F5E52272-9867-4F53-A4DF-AA0AE2C91198}.Release|Win32.Build.0 = Release|Win32
+		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Debug|Win32.Build.0 = Debug|Win32
+		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Release|Win32.ActiveCfg = Release|Win32
+		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B} = {085DB4C9-B43F-4A7E-9713-011DD89BE532}
+		{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14} = {085DB4C9-B43F-4A7E-9713-011DD89BE532}
+		{F5E52272-9867-4F53-A4DF-AA0AE2C91198} = {085DB4C9-B43F-4A7E-9713-011DD89BE532}
+		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B} = {085DB4C9-B43F-4A7E-9713-011DD89BE532}
 	EndGlobalSection
 EndGlobal

@@ -1,8 +1,8 @@
-//
+ï»¿//
 // content_base.hpp
 // ~~~~~~~~~~
 //
-// ƒT[ƒo[Ú‘±‚ÌƒƒCƒ“ŠÇ—ƒNƒ‰ƒX
+// ã‚µãƒ¼ãƒãƒ¼æ¥ç¶šã®ãƒ¡ã‚¤ãƒ³ç®¡ç†ã‚¯ãƒ©ã‚¹
 //
 
 #ifndef BOOSTCONNECT_CONTENT_BASE_HPP
@@ -17,7 +17,14 @@ namespace content{
 class content_base
 {
 public:
-    content_base(const std::string& type, const std::map<std::string, std::string>& attr = std::map<std::string, std::string>());
+    explicit content_base(
+        const std::string& type,
+#ifdef _MSC_VER
+        const std::map<std::string, std::string>& attr = std::map<std::string, std::string>()
+#else
+        const std::map<std::string, std::string>& attr = {}
+#endif
+    );
     virtual ~content_base();
 
     virtual std::string get_content_type() const;
@@ -38,3 +45,4 @@ private:
 }
 
 #endif
+

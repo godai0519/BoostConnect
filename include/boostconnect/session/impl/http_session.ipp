@@ -1,8 +1,8 @@
-//
+ï»¿//
 // http_session.ipp
 // ~~~~~~~~~~
 //
-// http_session‚ÌÀ‘•
+// http_sessionã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_SESSION_HTTP_IPP
@@ -43,7 +43,7 @@ http_session::~http_session()
 
 void http_session::start(RequestHandler handler,CloseHandler c_handler)
 {
-    if(socket_busy_) return; //—áŠO—\’è
+    if(socket_busy_) return; //ä¾‹å¤–äºˆå®š
     socket_busy_ = true;
     handler_ = handler;
     c_handler_ = c_handler;
@@ -82,7 +82,7 @@ void http_session::handle_handshake(const error_code& ec)
         read_timer_.async_wait(
             boost::bind(&http_session::read_timeout,shared_from_this(),boost::asio::placeholders::error));
     }
-    //else delete this; //—áŠO
+    //else delete this; //ä¾‹å¤–
 }
 
 void http_session::read_timeout(const error_code& ec)
@@ -97,14 +97,14 @@ void http_session::handle_header_read(const error_code& ec,std::size_t)
     {
         std::string request_str(boost::asio::buffer_cast<const char*>(read_buf_->data()));
 
-        //ƒŠƒNƒGƒXƒgƒwƒbƒ_[‚Ìƒp[ƒX
+        //ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ˜ãƒƒãƒ€ãƒ¼ã®ãƒ‘ãƒ¼ã‚¹
         request_str.erase(0,request_header_parser(request_str,request_));
         request_.body.append(request_str);
         
         size_t byte = int_parser(find_return_or_default(request_.header,"Content-Length","0"));
         if( byte != 0 )
         {
-            //’·‚³‚ª‚ ‚é
+            //é•·ã•ãŒã‚ã‚‹
             read_buf_.reset(new boost::asio::streambuf());
 
             boost::asio::async_read(
@@ -117,12 +117,12 @@ void http_session::handle_header_read(const error_code& ec,std::size_t)
         }
         else
         {
-            //’·‚³‚ª‚È‚¢ -> ’·‚³‚ª•ª‚©‚ç‚È‚¢‚È‚ç‚±‚Ìæ“Ç‚İ‚Ş‚Ì‚ÍŠë‚È‚¢
+            //é•·ã•ãŒãªã„ -> é•·ã•ãŒåˆ†ã‹ã‚‰ãªã„ãªã‚‰ã“ã®å…ˆèª­ã¿è¾¼ã‚€ã®ã¯å±ãªã„
             handle_request_read_complete();
         }
     }
     else std::cout << ec.message() << std::endl;
-    //else delete this; //—áŠO
+    //else delete this; //ä¾‹å¤–
 }
 
 void http_session::handle_body_read(const error_code& ec,std::size_t sz)
@@ -134,7 +134,7 @@ void http_session::handle_body_read(const error_code& ec,std::size_t sz)
 
         handle_request_read_complete();
     }
-    //else delete this; //—áŠO
+    //else delete this; //ä¾‹å¤–
 }
 
 void http_session::handle_request_read_complete()
@@ -156,7 +156,7 @@ void http_session::handle_request_read_complete()
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     }
-    //else delete this; //ƒp[ƒX¸”s
+    //else delete this; //ãƒ‘ãƒ¼ã‚¹å¤±æ•—
 }
 
 void http_session::handle_write(const error_code& ec,std::size_t sz)
@@ -173,7 +173,7 @@ void http_session::handle_write(const error_code& ec,std::size_t sz)
             return;
         }
     }
-    //else delete this; //—áŠO
+    //else delete this; //ä¾‹å¤–
 }
 
 

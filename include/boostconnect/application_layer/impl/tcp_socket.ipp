@@ -1,8 +1,8 @@
-//
+ï»¿//
 // tcp_socket.ipp
 // ~~~~~~~~~~
 //
-// tcp_socket‚ÌÀ‘•
+// tcp_socketã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_APPLAYER_TCP_SOCKET_IPP
@@ -24,7 +24,7 @@ const std::string tcp_socket::service_protocol() const
     return "80";
 }
 
-//TCP’ÊM‚ÌƒRƒlƒNƒVƒ‡ƒ“Šm—§
+//TCPé€šä¿¡ã®ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ç¢ºç«‹
 tcp_socket::error_code& tcp_socket::connect(endpoint_type& begin,error_code& ec)
 {
     ec = socket_.connect(begin,ec);
@@ -37,7 +37,7 @@ void tcp_socket::async_connect(endpoint_type& begin,ConnectHandler handler)
 }
     
 #ifdef USE_SSL_BOOSTCONNECT
-//TCP’ÊM‚Å‚ÍHandshake‚ğs‚í‚È‚¢ -> Handler‚ğ’¼ÚŒÄ‚Ño‚·
+//TCPé€šä¿¡ã§ã¯Handshakeã‚’è¡Œã‚ãªã„ -> Handlerã‚’ç›´æ¥å‘¼ã³å‡ºã™
 void tcp_socket::handshake(handshake_type)
 {
     return;
@@ -59,7 +59,7 @@ void tcp_socket::async_handshake(HandshakeHandler handler)
 }
 #endif
 
-//TCPƒŒƒCƒ„[‚Ìˆ—
+//TCPãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç†
 void tcp_socket::close()
 {
     socket_.close();

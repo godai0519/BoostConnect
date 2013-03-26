@@ -1,8 +1,8 @@
-//
+ï»¿//
 // ssl_socket.ipp
 // ~~~~~~~~~~
 //
-// ssl_socket‚ÌÀ‘•
+// ssl_socketã®å®Ÿè£…
 //
 
 #ifdef USE_SSL_BOOSTCONNECT
@@ -28,7 +28,7 @@ const std::string ssl_socket::service_protocol() const
     return "443";
 }
 
-//SSL’ÊM‚ÌƒRƒlƒNƒVƒ‡ƒ“Šm—§(TCPƒŒƒCƒ„[‚ÅƒRƒlƒNƒVƒ‡ƒ“‚ğs‚¤)
+//SSLé€šä¿¡ã®ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ç¢ºç«‹(TCPãƒ¬ã‚¤ãƒ¤ãƒ¼ã§ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‚’è¡Œã†)
 ssl_socket::error_code& ssl_socket::connect(endpoint_type& begin,error_code& ec)
 {
     ec = socket_.lowest_layer().connect(begin,ec);
@@ -51,7 +51,7 @@ void ssl_socket::async_handshake(handshake_type type,HandshakeHandler handler)
     return;
 }
     
-//[(SSLƒŒƒCƒ„[‚Ìˆ— ->] TCPƒŒƒCƒ„[‚Ìˆ—
+//[(SSLãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç† ->] TCPãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç†
 void ssl_socket::close()
 {
     socket_.lowest_layer().close();

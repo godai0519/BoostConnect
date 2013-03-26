@@ -1,5 +1,4 @@
-
-CC = clang++
+﻿CC = clang++
 BOOSTCONNECT_ROOT = ./
 
 CXXFLAGS = -std=c++11

@@ -1,8 +1,8 @@
-//
+ï»¿//
 // server.ipp
 // ~~~~~~~~~~
 //
-// server‚ÌÀ‘•
+// serverã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_SERVER_IPP

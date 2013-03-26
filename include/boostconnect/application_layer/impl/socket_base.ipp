@@ -1,8 +1,8 @@
-//
+ï»¿//
 // socket_base.ipp
 // ~~~~~~~~~~
 //
-// socket_base‚ÌÀ‘•
+// socket_baseã®å®Ÿè£…
 //
 
 #ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP
@@ -15,7 +15,7 @@
 namespace bstcon{
 namespace application_layer{
     
-//‚±‚¢‚Â‚ç‚Í–³‹‚Ì•ûj‚Å(‚Æ‚¢‚¤‚©ƒCƒ“ƒ^[ƒtƒF[ƒX)
+//ã“ã„ã¤ã‚‰ã¯ç„¡è¦–ã®æ–¹é‡ã§(ã¨ã„ã†ã‹ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹)
 socket_base::socket_base(){}
 socket_base::~socket_base(){}
 

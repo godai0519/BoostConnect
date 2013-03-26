@@ -1,8 +1,8 @@
-//
+﻿//
 // radix.hpp
 // ~~~~~~~~~~
 //
-// ��ϊ��p
+// 基数変換用
 //
 
 #ifndef BOOSTCONNECT_UTILITY_RADIX_HPP
