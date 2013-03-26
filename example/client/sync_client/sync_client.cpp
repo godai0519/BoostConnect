@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <boostconnect/config.hpp>
 #include <boostconnect/connection_type/async_connection.hpp>
 #include <boostconnect/client.hpp>
 
