@@ -2,7 +2,7 @@
 // session_base.ipp
 // ~~~~~~~~~~
 //
-// session_baseの実装
+// Provide Connection's Session for HTTP(etc.)
 //
 
 #ifndef BOOSTCONNECT_SESSION_BASE_IPP

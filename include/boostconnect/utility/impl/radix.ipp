@@ -1,4 +1,11 @@
-﻿#ifndef BOOSTCONNECT_UTILITY_RADIX_IPP
+﻿//
+// radix.ipp
+// ~~~~~~~~~~
+//
+// Radix Converter
+//
+
+#ifndef BOOSTCONNECT_UTILITY_RADIX_IPP
 #define BOOSTCONNECT_UTILITY_RADIX_IPP
 
 #include <string>

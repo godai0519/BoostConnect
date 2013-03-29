@@ -2,7 +2,7 @@
 // client.hpp
 // ~~~~~~~~~~
 //
-// クライアント接続のメイン管理クラス
+// Main Client Connection provide class
 //
 
 #ifndef BOOSTCONNECT_CLIENT_HPP

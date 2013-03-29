@@ -2,7 +2,7 @@
 // server.ipp
 // ~~~~~~~~~~
 //
-// serverの実装
+// Main Sever Connection provide class
 //
 
 #ifndef BOOSTCONNECT_SERVER_IPP

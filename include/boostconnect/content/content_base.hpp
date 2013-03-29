@@ -2,7 +2,7 @@
 // content_base.hpp
 // ~~~~~~~~~~
 //
-// サーバー接続のメイン管理クラス
+// Provide common function for HTTPs body make
 //
 
 #ifndef BOOSTCONNECT_CONTENT_BASE_HPP

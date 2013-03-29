@@ -2,7 +2,7 @@
 // session_base.hpp
 // ~~~~~~~~~~
 //
-// Session共通設定
+// Provide Connection's Session for HTTP(etc.)
 //
 
 #ifndef BOOSTCONNECT_SESSION_BASE_HPP

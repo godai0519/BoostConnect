@@ -2,7 +2,7 @@
 // ssl_socket.hpp
 // ~~~~~~~~~~
 //
-// SSL通信で特別に行われることを行う
+// Specialization from socket_base to SSL connection
 //
 
 #ifdef USE_SSL_BOOSTCONNECT

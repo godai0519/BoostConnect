@@ -2,7 +2,7 @@
 // urlencoded.hpp
 // ~~~~~~~~~~
 //
-// 
+// For application/x-www-form-urlencoded Data
 //
 
 #ifndef BOOSTCONNECT_CONTENT_URLENCODED_HPP

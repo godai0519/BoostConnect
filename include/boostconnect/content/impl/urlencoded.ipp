@@ -2,7 +2,7 @@
 // urlencoded.ipp
 // ~~~~~~~~~~
 //
-// 
+// For application/x-www-form-urlencoded Data
 //
 
 #ifndef BOOSTCONNECT_CONTENT_URLENCODED_IPP

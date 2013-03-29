@@ -2,7 +2,7 @@
 // async_connection.hpp
 // ~~~~~~~~~~
 //
-// 非同期のためのクラス群
+// Specialization from connection_base to ASync Connection
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_HPP

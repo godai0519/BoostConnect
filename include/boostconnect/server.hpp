@@ -2,7 +2,7 @@
 // server.hpp
 // ~~~~~~~~~~
 //
-// サーバー接続のメイン管理クラス
+// Main Sever Connection provide class
 //
 
 #ifndef BOOSTCONNECT_SERVER_HPP

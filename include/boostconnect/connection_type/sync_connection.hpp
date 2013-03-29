@@ -2,7 +2,7 @@
 // sync_connection.hpp
 // ~~~~~~~~~~
 //
-// 同期のためのクラス群
+// Specialization from connection_base to Sync Connection
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_HPP

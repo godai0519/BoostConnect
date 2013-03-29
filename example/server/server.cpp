@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <boostconnect/config.hpp>
 #include <boostconnect/server.hpp>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>

@@ -2,7 +2,7 @@
 // radix.hpp
 // ~~~~~~~~~~
 //
-// 基数変換用
+// Radix Converter
 //
 
 #ifndef BOOSTCONNECT_UTILITY_RADIX_HPP

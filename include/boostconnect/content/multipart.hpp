@@ -2,7 +2,7 @@
 // multipart.hpp
 // ~~~~~~~~~~
 //
-// 
+// Provide common for multipart/* Data (Able recursive structure)
 //
 
 #ifndef BOOSTCONNECT_CONTENT_MULTIPART_HPP

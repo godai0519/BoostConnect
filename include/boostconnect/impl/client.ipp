@@ -2,7 +2,7 @@
 // client.ipp
 // ~~~~~~~~~~
 //
-// clientの実装
+// Main Client Connection provide class
 //
 
 #ifndef BOOSTCONNECT_CLIENT_IPP

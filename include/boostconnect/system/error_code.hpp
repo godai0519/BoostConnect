@@ -2,7 +2,7 @@
 // error_code.hpp
 // ~~~~~~~~~~
 //
-// 例外処理とか
+// Provide Error System
 //
 
 #ifndef BOOSTCONNECT_SYSTEM_ERROR_CODE_HPP

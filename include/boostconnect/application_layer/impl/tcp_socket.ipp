@@ -2,7 +2,7 @@
 // tcp_socket.ipp
 // ~~~~~~~~~~
 //
-// tcp_socketの実装
+// Specialization from socket_base to TCP connection
 //
 
 #ifndef BOOSTCONNECT_APPLAYER_TCP_SOCKET_IPP
