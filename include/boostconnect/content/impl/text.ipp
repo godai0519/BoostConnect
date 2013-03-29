@@ -2,7 +2,7 @@
 // text.hpp
 // ~~~~~~~~~~
 //
-// 
+// For text/* Data
 //
 
 #ifndef BOOSTCONNECT_CONTENT_TEXT_IPP

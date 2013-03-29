@@ -2,7 +2,7 @@
 // manager.ipp
 // ~~~~~~~~~~
 //
-// managerの実装
+// Session Manager
 //
 
 #ifndef BOOSTCONNECT_MANAGER_IPP

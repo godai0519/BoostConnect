@@ -2,7 +2,7 @@
 // content_base.ipp
 // ~~~~~~~~~~
 //
-// 
+// Provide common function for HTTP body make
 //
 
 #ifndef BOOSTCONNECT_CONTENT_BASE_IPP

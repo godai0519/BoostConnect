@@ -2,7 +2,7 @@
 // socket_base.ipp
 // ~~~~~~~~~~
 //
-// socket_baseの実装
+// TCP/SSL/TLS sockets wrapper(common) classes
 //
 
 #ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE_IPP

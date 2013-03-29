@@ -2,7 +2,7 @@
 // http_session.hpp
 // ~~~~~~~~~~
 //
-// HTTP通信のセッションを管理
+// Management a HTTP Connection's Session
 //
 
 #ifndef BOOSTCONNECT_SESSION_HTTP_HPP

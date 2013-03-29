@@ -1,4 +1,11 @@
-﻿#ifndef BOOSTCONNECT_UTILITY_SYNTAX_IPP
+﻿//
+// syntax.ipp
+// ~~~~~~~~~~
+//
+// generator for URL Encoding for HTTP and Authorization Field for HTTP
+//
+
+#ifndef BOOSTCONNECT_UTILITY_SYNTAX_IPP
 #define BOOSTCONNECT_UTILITY_SYNTAX_IPP
 
 #include <map>

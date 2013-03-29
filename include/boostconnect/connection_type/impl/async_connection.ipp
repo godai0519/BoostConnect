@@ -2,7 +2,7 @@
 // async_connection.ipp
 // ~~~~~~~~~~
 //
-// async_connectionの実装
+// Specialization from connection_base to ASync Connection
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_ASYNC_CONNECTION_IPP

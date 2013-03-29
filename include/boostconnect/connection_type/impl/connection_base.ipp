@@ -2,7 +2,7 @@
 // connection_base.ipp
 // ~~~~~~~~~~
 //
-// connection_baseの実装
+// Provide Sync/ASync Connection Common Class powered by Boost.Asio
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP

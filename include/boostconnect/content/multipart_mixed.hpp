@@ -2,7 +2,7 @@
 // multipart_mixed.hpp
 // ~~~~~~~~~~
 //
-// 
+// For multipart/mixed Data
 //
 
 #ifndef BOOSTCONNECT_CONTENT_MULTIPART_MIXED_HPP

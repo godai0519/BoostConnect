@@ -2,7 +2,7 @@
 // percent_encoding.hpp
 // ~~~~~~~~~~
 //
-// URL Encoder
+// percent(URL) Encoder
 //
 
 #ifndef BOOSTCONNECT_UTILITY_PERCENT_ENCODER_HPP

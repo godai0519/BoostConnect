@@ -2,7 +2,7 @@
 // manager.hpp
 // ~~~~~~~~~~
 //
-// Sessionの寿命を管理するmanager
+// Session Manager
 //
 
 #ifndef BOOSTCONNECT_MANAGER_HPP

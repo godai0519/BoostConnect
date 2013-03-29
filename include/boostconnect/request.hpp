@@ -2,7 +2,7 @@
 // request.hpp
 // ~~~~~~~~~~
 //
-// リクエストコンテナー
+// Request Containar
 //
 
 #ifndef BOOSTCONNECT_REQUEST

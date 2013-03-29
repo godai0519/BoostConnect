@@ -2,7 +2,7 @@
 // connection_base.hpp
 // ~~~~~~~~~~
 //
-// 同期や非同期判断のための、Boost.Asioを使用したクラス群
+// Provide Sync/ASync Connection Common Class powered by Boost.Asio
 //
 
 #ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_HPP

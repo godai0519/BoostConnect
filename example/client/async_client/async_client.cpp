@@ -8,7 +8,7 @@ int main()
     typedef boost::system::error_code error_code;
     typedef bstcon::client::response_type response_type; // = boost::shared_ptr<bstcon::response>
     typedef bstcon::client::connection_ptr connection_ptr;
-    
+
     // Make: request header and body
     boost::shared_ptr<boost::asio::streambuf> request_keep(new boost::asio::streambuf());
     {
@@ -72,7 +72,7 @@ int main()
                         [](bstcon::client::response_type response, boost::system::error_code ec)->void  // Callback
                         {
                             if(ec && ec != boost::asio::error::eof) throw;
-                            
+
                             // Show second response
                             std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
                             std::cout << response->body + "\n\n" << std::endl;

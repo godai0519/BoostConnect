@@ -1,4 +1,11 @@
-﻿#ifndef BOOSTCONNECT_UTILITY_PERCENT_ENCODER_IPP
+﻿//
+// percent_encoding.ipp
+// ~~~~~~~~~~
+//
+// percent(URL) Encoder
+//
+
+#ifndef BOOSTCONNECT_UTILITY_PERCENT_ENCODER_IPP
 #define BOOSTCONNECT_UTILITY_PERCENT_ENCODER_IPP
 
 #include <boost/format.hpp>

@@ -2,7 +2,7 @@
 // response.hpp
 // ~~~~~~~~~~
 //
-// レスポンスコンテナー
+// Response Containar
 //
 
 #ifndef BOOSTCONNECT_RESPONSE

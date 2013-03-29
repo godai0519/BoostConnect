@@ -2,7 +2,7 @@
 // syntax.hpp
 // ~~~~~~~~~~
 //
-// 
+// generator for URL Encoding for HTTP and Authorization Field for HTTP
 //
 
 #ifndef BOOSTCONNECT_UTILITY_SYNTAX_HPP

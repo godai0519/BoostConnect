@@ -2,7 +2,7 @@
 // urlencode.hpp
 // ~~~~~~~~~~
 //
-// 
+// For application/* Data
 //
 
 #ifndef BOOSTCONNECT_CONTENT_BINARY_HPP

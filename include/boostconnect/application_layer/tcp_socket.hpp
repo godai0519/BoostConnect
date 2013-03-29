@@ -2,7 +2,7 @@
 // tcp_socket.hpp
 // ~~~~~~~~~~
 //
-// TCP通信で特別に行われることを行う
+// Specialization from socket_base to TCP connection
 //
 
 #ifndef BOOSTCONNECT_APPLAYER_TCP_SOCKET_HPP

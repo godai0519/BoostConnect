@@ -2,7 +2,7 @@
 // socket_base.hpp
 // ~~~~~~~~~~
 //
-// ソケットラッパーベースクラス
+// TCP/SSL/TLS sockets wrapper(common) classes
 //
 
 #ifndef BOOSTCONNECT_APPLAYER_SOCKET_BASE_HPP

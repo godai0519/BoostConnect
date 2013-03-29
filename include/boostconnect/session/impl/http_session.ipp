@@ -2,7 +2,7 @@
 // http_session.ipp
 // ~~~~~~~~~~
 //
-// http_sessionの実装
+// Management a HTTP Connection's Session
 //
 
 #ifndef BOOSTCONNECT_SESSION_HTTP_IPP

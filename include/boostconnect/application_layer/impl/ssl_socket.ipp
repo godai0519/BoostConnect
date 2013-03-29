@@ -2,7 +2,7 @@
 // ssl_socket.ipp
 // ~~~~~~~~~~
 //
-// ssl_socketの実装
+// Specialization from socket_base to SSL connection
 //
 
 #ifdef USE_SSL_BOOSTCONNECT
