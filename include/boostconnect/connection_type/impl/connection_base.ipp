@@ -18,40 +18,36 @@ namespace bstcon{
 namespace connection_type{
     
 //こいつらは無視の方針で(というかインターフェース)
-connection_base::connection_base(){}
-connection_base::~connection_base(){}
+connection_base::connection_base()
+{
+}
+connection_base::~connection_base()
+{
+}
 
 void connection_base::close()
 {
     socket_->close();
 }
 
-inline const connection_base::response_type& connection_base::get_response() const 
-{
-    return reader_->get_response();
-}
-
-connection_base::reader::reader() : response_(new bstcon::response())
+reader::reader() : response_(new bstcon::response())
 {
 }
-connection_base::reader::reader(response_type& response) : response_(response)
-{
-}
-connection_base::reader::~reader()
+reader::~reader()
 {
 }
 
 //Util
-const connection_base::response_type& connection_base::reader::get_response() const 
+const connection_base::response_type& reader::get_response() const 
 {
     return response_;
 }
-const connection_base::response_type& connection_base::reader::reset_response()
+const connection_base::response_type& reader::reset_response()
 {
     response_.reset(new bstcon::response());
     return response_;
 }
-bool connection_base::reader::is_chunked() const
+bool reader::is_chunked() const
 {
     return (response_->header.find("Transfer-Encoding")==response_->header.end())
         ? false
@@ -59,7 +55,7 @@ bool connection_base::reader::is_chunked() const
 }
 
 //レスポンスヘッダ読み込み
-const int connection_base::reader::read_header(const std::string& source)
+const int reader::read_header(const std::string& source)
 {        
     namespace qi = boost::spirit::qi;
 
@@ -79,7 +75,7 @@ const int connection_base::reader::read_header(const std::string& source)
     return std::distance(source.cbegin(),it);
 }
 //チャンクを参照な引数から返し，チャンク文字列の長さを返す
-const int connection_base::reader::chunk_parser(const std::string& source,std::size_t& chunk)
+const int reader::chunk_parser(const std::string& source,std::size_t& chunk)
 {
     namespace qi = boost::spirit::qi;
     const qi::rule<std::string::const_iterator,unsigned int()> rule = qi::hex >> qi::lit("\r\n");
@@ -91,7 +87,7 @@ const int connection_base::reader::chunk_parser(const std::string& source,std::s
 }
 
 template<class Socket>
-void connection_base::reader::read_starter(Socket& socket, EndHandler end_handler, ChunkHandler chunk_handler)
+void reader::read_starter(Socket& socket, EndHandler end_handler, ChunkHandler chunk_handler)
 {
     //ヘッダーのみ
     boost::asio::read_until(socket,read_buf_,"\r\n\r\n");
@@ -140,7 +136,7 @@ void connection_base::reader::read_starter(Socket& socket, EndHandler end_handle
 //chunkを持っている同期通信
 //チャンクサイズの表示行を読み出す
 template<class Socket>
-void connection_base::reader::read_chunk_size(Socket& socket,EndHandler handler,ChunkHandler chunk_handler)
+void reader::read_chunk_size(Socket& socket,EndHandler handler,ChunkHandler chunk_handler)
 {
     error_code ec;
     boost::asio::read_until(socket,read_buf_,"\r\n",ec);
@@ -165,7 +161,7 @@ void connection_base::reader::read_chunk_size(Socket& socket,EndHandler handler,
     
 //chunk指定に基づいて処理
 template<class Socket>
-void connection_base::reader::read_chunk_body(Socket& socket,const std::size_t chunk,EndHandler handler,ChunkHandler chunk_handler)
+void reader::read_chunk_body(Socket& socket,const std::size_t chunk,EndHandler handler,ChunkHandler chunk_handler)
 {
     error_code ec;
     boost::asio::read(socket,read_buf_,
@@ -192,7 +188,7 @@ void connection_base::reader::read_chunk_body(Socket& socket,const std::size_t c
 
 //非同期読み出し開始
 template<class Socket>
-void connection_base::reader::async_read_starter(Socket& socket, EndHandler end_handler, ChunkHandler chunk_handler)
+void reader::async_read_starter(Socket& socket, EndHandler end_handler, ChunkHandler chunk_handler)
 {
     //ただわかりやすくしただけ．渡し逃げ．まあ，ヘッダを読み込み切ってくれれば．
     boost::asio::async_read_until(socket,
@@ -210,7 +206,7 @@ void connection_base::reader::async_read_starter(Socket& socket, EndHandler end_
 
 //ヘッダー処理，処理を各系統へ渡す．
 template<class Socket>
-void connection_base::reader::async_read_header(Socket& socket,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
+void reader::async_read_header(Socket& socket,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
 {
     //レスポンスが帰ってこない？
     if(read_buf_.size()==0)
@@ -268,7 +264,7 @@ void connection_base::reader::async_read_header(Socket& socket,const error_code&
     
 //ここに来る前に最後まで読み切ってるはず
 template<class Socket>
-void connection_base::reader::async_read_all(Socket& socket,const error_code& ec,const std::size_t size,EndHandler handler)
+void reader::async_read_all(Socket& socket,const error_code& ec,const std::size_t size,EndHandler handler)
 {
     if(read_buf_.size()==0) 
     {
@@ -290,7 +286,7 @@ void connection_base::reader::async_read_all(Socket& socket,const error_code& ec
 //チャンク行を読み込み終えてるはずなので，チャンク量を読み出し．
 //(なんか魔導書と似ちゃってるような)
 template<class Socket>
-void connection_base::reader::async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
+void reader::async_read_chunk_size(Socket& socket,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
 {
     if(read_buf_.size()==0)
     {
@@ -351,7 +347,7 @@ void connection_base::reader::async_read_chunk_size(Socket& socket,const error_c
 
 //チャンクの表示量を読みだし終えてるはずだけど．
 template<class Socket>
-void connection_base::reader::async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
+void reader::async_read_chunk_body(Socket& socket,const std::size_t chunk,const error_code& ec,const std::size_t,EndHandler handler,ChunkHandler chunk_handler)
 {
     if(read_buf_.size()==0)
     {
@@ -386,9 +382,9 @@ void connection_base::reader::async_read_chunk_body(Socket& socket,const std::si
 
 //最後，ここまで．
 template<class Socket>
-void connection_base::reader::async_read_end(Socket& socket,const error_code &ec,const std::size_t,EndHandler handler)
+void reader::async_read_end(Socket& socket,const error_code &ec,const std::size_t,EndHandler handler)
 {
-    handler(ec);            
+    handler(ec);
     return; //空なら終わりだ
 }
 

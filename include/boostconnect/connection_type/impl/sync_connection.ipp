@@ -12,6 +12,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include "../sync_connection.hpp"
 
@@ -21,8 +22,8 @@ namespace connection_type{
 sync_connection::sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
 {
     socket_ = socket;
-    reader_.reset(new reader());
 }
+
 sync_connection::~sync_connection()
 {
 }
@@ -51,7 +52,7 @@ sync_connection::connection_ptr sync_connection::connect(const endpoint_type& ep
 {
     // Connect Start
     error_code ec;
-    socket_->lowest_layer().connect(ep,ec);
+    socket_->lowest_layer().connect(ep, ec);
 #ifdef USE_SSL_BOOSTCONNECT
     socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
 #else
@@ -62,10 +63,15 @@ sync_connection::connection_ptr sync_connection::connect(const endpoint_type& ep
     return this->shared_from_this();
 }
 
-sync_connection::response_type sync_connection::send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
+auto sync_connection::send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler) -> std::future<response_type>
 {
-    reader_.reset(new connection_base::reader());
-    response_type response = reader_->get_response();
+    end_handler_ = end_handler;
+
+    const auto p = boost::make_shared<std::promise<response_type>>();
+
+    // TODO: 要検討コード
+    reader_.reset(new reader());
+    // TODO END
 
     error_code ec;
     boost::asio::write(*socket_, *buf, ec);
@@ -74,18 +80,19 @@ sync_connection::response_type sync_connection::send(boost::shared_ptr<boost::as
     {
         reader_->read_starter(
             *socket_,
-            boost::bind(&sync_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, end_handler),
+            boost::bind(&sync_connection::handle_read, shared_from_this(), p, boost::asio::placeholders::error),
             chunk_handler);
     }
-    return response;
+
+    return p->get_future();
 }
 
-void sync_connection::handle_read(const error_code& ec, EndHandler end_handler)
+void sync_connection::handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec)
 {
-    auto response = reader_->get_response();
+    // Event notification to std::future made by std::promise
+    end_handler_(reader_->get_response(), ec);
+    p->set_value(reader_->get_response());
     reader_.reset();
-
-    end_handler(response, ec);
     return;
 }
 

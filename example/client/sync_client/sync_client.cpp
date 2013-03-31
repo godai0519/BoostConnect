@@ -43,35 +43,34 @@ int main()
         }
     );
 
-    // Send First request
-    connection->send(
-        request_keep,
-        [](response_type response, boost::system::error_code ec)->void // Callback
-        {
-            if(ec && ec != boost::asio::error::eof) throw; // can't send request or read response
+    {
+        // Send First request and Wait
+        std::future<response_type> f = connection->send(request_keep);
+        const response_type response = f.get();
 
-            // Show first response
-            std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
-            std::cout << response->body + "\n\n" <<std::endl;
+        //if(ec && ec != boost::asio::error::eof) throw; // can't send request or read response
 
-        });
+        // Show first response
+        std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
+        std::cout << response->body + "\n\n" <<std::endl;
+    }
+
     
     //
     // --- Connection Keeping ---
     //
 
-    // Send Second request (Continue request)
-    connection->send(
-        request_close,
-        [](bstcon::client::response_type response, boost::system::error_code ec)->void  // Callback
-        {
-            if(ec && ec != boost::asio::error::eof) throw; // can't send request or read response
+    {
+        // Send Second request (Continue request) and Wait
+        std::future<response_type> f = connection->send(request_close);
+        const response_type response = f.get();
+    
+        //if(ec && ec != boost::asio::error::eof) throw; // can't send request or read response
                     
-            // Show second response
-            std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
-            std::cout << response->body + "\n\n" << std::endl;
-        }
-    );
+        // Show second response
+        std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
+        std::cout << response->body + "\n\n" << std::endl;
+    }
     
     return 0;
 }

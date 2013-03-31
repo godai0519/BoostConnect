@@ -13,6 +13,7 @@
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include "../async_connection.hpp"
 
@@ -23,7 +24,6 @@ async_connection::async_connection(const boost::shared_ptr<application_layer::so
 {
     socket_ = socket;
     resolver_.reset(new boost::asio::ip::tcp::resolver(socket_->get_io_service()));
-    //reader_.reset(new reader());
 }
 async_connection::~async_connection()
 {
@@ -37,7 +37,7 @@ void async_connection::close()
 
 async_connection::connection_ptr async_connection::connect(const std::string& host,ConnectionHandler handler)
 {
-    boost::asio::ip::tcp::resolver::query query(host,socket_->service_protocol());
+    boost::asio::ip::tcp::resolver::query query(host, socket_->service_protocol());
     resolver_->async_resolve(
         query,
         boost::bind(&async_connection::handle_resolve, shared_from_this(), boost::asio::placeholders::iterator, boost::asio::placeholders::error, handler)
@@ -53,16 +53,19 @@ async_connection::connection_ptr async_connection::connect(const endpoint_type& 
         );
 
     return this->shared_from_this();
-}    
+}
 
-async_connection::response_type async_connection::send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler)
+auto async_connection::send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler) -> std::future<response_type>
 {
-    buf_ = buf; //寿命管理
-    reader_.reset(new connection_base::reader());
-    boost::asio::async_write(*socket_,*buf,
-        boost::bind(&async_connection::handle_write, shared_from_this(), boost::asio::placeholders::error, end_handler, chunk_handler));
+    end_handler_ = end_handler;
 
-    return reader_->get_response();
+    const auto p = boost::make_shared<std::promise<response_type>>();
+    reader_.reset(new reader());
+
+    boost::asio::async_write(*socket_, *buf,
+        boost::bind(&async_connection::handle_write, shared_from_this(), p, boost::asio::placeholders::error, chunk_handler));
+
+    return p->get_future();
 }
 
 void async_connection::handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator, const boost::system::error_code& ec, ConnectionHandler handler)
@@ -96,26 +99,26 @@ void async_connection::handle_connect(const boost::system::error_code& ec, Conne
     else std::cout << "Error Connect!?" << std::endl;
 }
 
-void async_connection::handle_write(const boost::system::error_code& ec, EndHandler end_handler, ChunkHandler chunk_handler)
+void async_connection::handle_write(const boost::shared_ptr<std::promise<response_type>> p, const boost::system::error_code& ec, ChunkHandler chunk_handler)
 {
     buf_.reset();
     if(!ec)
     {
         reader_->async_read_starter(
             *socket_,
-            boost::bind(&async_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, end_handler),
+            boost::bind(&async_connection::handle_read, shared_from_this(), p, boost::asio::placeholders::error),
             chunk_handler
             );
     }
     else std::cout << "Error Write!?" << ec.message() << std::endl;
 }
 
-void async_connection::handle_read(const error_code& ec, EndHandler end_handler)
+void async_connection::handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec)
 {
-    auto response = reader_->get_response();
+    // Event notification to std::future made by std::promise
+    end_handler_(reader_->get_response(), ec);
+    p->set_value(reader_->get_response());
     reader_.reset();
-
-    end_handler(response, ec);
     return;
 }
 

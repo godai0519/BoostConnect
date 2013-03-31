@@ -26,18 +26,19 @@ public:
     connection_ptr connect(const std::string& host,ConnectionHandler handler);
     connection_ptr connect(const endpoint_type& ep,ConnectionHandler handler);
 
-    response_type send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler);
+    std::future<response_type> send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler);
 
 private:
     boost::scoped_ptr<boost::asio::ip::tcp::resolver> resolver_;
     boost::shared_ptr<boost::asio::streambuf> buf_;
+    EndHandler end_handler_;
 
     void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator, const boost::system::error_code& ec, ConnectionHandler handler);
 
     void handle_connect(const boost::system::error_code& ec, ConnectionHandler handler);
-    void handle_write(const boost::system::error_code& ec, EndHandler end_handler, ChunkHandler chunk_handler);
+    void handle_write(const boost::shared_ptr<std::promise<response_type>> p, const boost::system::error_code& ec, ChunkHandler chunk_handler);
 
-    void handle_read(const error_code& ec, EndHandler end_handler);
+    void handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec);
 };
 
 } // namespace connection_type

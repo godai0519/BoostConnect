@@ -23,10 +23,11 @@ public:
     connection_ptr connect(const std::string& host,ConnectionHandler handler);
     connection_ptr connect(const endpoint_type& ep,ConnectionHandler handler);
 
-    response_type send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler);
+    std::future<response_type> send(boost::shared_ptr<boost::asio::streambuf>, EndHandler end_handler, ChunkHandler chunk_handler);
 
 private:
-    void handle_read(const error_code& ec, EndHandler end_handler);
+    EndHandler end_handler_;
+    void handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec);
 };
 
 } // namespace connection_type

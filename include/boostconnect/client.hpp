@@ -32,19 +32,7 @@ public:
     typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
     typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
     typedef bstcon::connection_type::connection_base::ConnectionHandler ConnectionHandler;
-
-
-    //// TODO: C++11にて可変長引数に対応させる
-    //template<class ...Args>
-    //client(boost::asio::io_service &io_service,boost::asio::ip::tcp::endpoint& ep,Args... args)
-    //{
-    //    connector_.reset(new connector(io_service,ep,arg...));
-    //    socket_layer_ = connector_->get_layer();
-    //}
-
-    //コンストラクタの引数でconnection_type_初期化しなくては。
-    //現在のasync,sync判断は美しくない！
-
+   
     //TCP
     client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync);
     
