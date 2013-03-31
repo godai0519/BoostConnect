@@ -60,7 +60,6 @@ auto async_connection::send(boost::shared_ptr<boost::asio::streambuf> buf, EndHa
     end_handler_ = end_handler;
 
     const auto p = boost::make_shared<std::promise<response_type>>();
-    reader_.reset(new reader());
 
     boost::asio::async_write(*socket_, *buf,
         boost::bind(&async_connection::handle_write, shared_from_this(), p, boost::asio::placeholders::error, chunk_handler));
@@ -102,6 +101,7 @@ void async_connection::handle_connect(const boost::system::error_code& ec, Conne
 void async_connection::handle_write(const boost::shared_ptr<std::promise<response_type>> p, const boost::system::error_code& ec, ChunkHandler chunk_handler)
 {
     buf_.reset();
+    reader_.reset(new reader());
     if(!ec)
     {
         reader_->async_read_starter(
