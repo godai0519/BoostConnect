@@ -8,6 +8,7 @@
 #ifndef BOOSTCONNECT_SESSION_HTTP_IPP
 #define BOOSTCONNECT_SESSION_HTTP_IPP
 
+#include <boost/make_shared.hpp>
 #include <boost/asio.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/karma.hpp>
@@ -25,13 +26,13 @@ bstcon::application_layer::socket_base::lowest_layer_type& http_session::lowest_
     return socket_->lowest_layer();
 }
     
-http_session::http_session(io_service& io_service): socket_busy_(false),read_timer_(io_service)
+http_session::http_session(io_service& io_service)
 {
     socket_ = new bstcon::application_layer::tcp_socket(io_service);
 }
 #ifdef USE_SSL_BOOSTCONNECT
 typedef boost::asio::ssl::context context;
-http_session::http_session(io_service& io_service,context& ctx): socket_busy_(false),read_timer_(io_service)
+http_session::http_session(io_service& io_service,context& ctx)
 {
     socket_ = new bstcon::application_layer::ssl_socket(io_service,ctx);
 }
@@ -43,8 +44,9 @@ http_session::~http_session()
 
 void http_session::start(RequestHandler handler,CloseHandler c_handler)
 {
-    if(socket_busy_) return; //例外予定
-    socket_busy_ = true;
+    // mutex利用
+    //if(socket_busy_) return; //例外予定
+    //socket_busy_ = true;
     handler_ = handler;
     c_handler_ = c_handler;
         
@@ -66,70 +68,136 @@ void http_session::end(CloseHandler c_handler)
     return;
 }
 
+std::future<void> http_session::set_headers(int status_code, const std::string& status_message, const std::string& http_version, const std::map<std::string,std::string>& header)
+{
+    namespace karma = boost::spirit::karma;
+
+    auto write_buf = boost::make_shared<boost::asio::streambuf>();
+    std::ostreambuf_iterator<char> os(write_buf.get());
+    bool r = karma::generate(os,
+        "HTTP/" << karma::string << ' ' << karma::int_ << ' ' << karma::string << "\r\n",
+        http_version,
+        status_code,
+        status_message);
+
+    if(!header.empty())
+    {
+        r = r && karma::generate(os,
+            +(karma::string << ": " << karma::string << "\r\n") << "\r\n",
+            header);
+    }
+
+    auto p = boost::make_shared<std::promise<void>>();
+    boost::asio::async_write(*socket_, *write_buf,
+        boost::bind(&http_session::handle_write, shared_from_this(),
+            p, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, write_buf));
+
+
+    return p->get_future();
+}
+
+std::future<void> http_session::set_body(const std::string& body)
+{
+    auto write_buf = boost::make_shared<boost::asio::streambuf>();
+    std::ostream os(write_buf.get());
+    os << body;
+
+    auto p = boost::make_shared<std::promise<void>>();
+    boost::asio::async_write(*socket_, *write_buf,
+        boost::bind(&http_session::handle_end, shared_from_this(),
+            p, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, write_buf));
+
+    return p->get_future();
+}
+
+std::future<void> http_session::set_chunk(const std::string& size, const std::string& body)
+{
+    auto write_buf = boost::make_shared<boost::asio::streambuf>();
+    std::ostream os(write_buf.get());
+    os << size << "\r\n";
+
+    auto p = boost::make_shared<std::promise<void>>();
+    if(size == "0")
+    {
+        boost::asio::async_write(*socket_, *write_buf,
+            boost::bind(&http_session::handle_end, shared_from_this(),
+                p, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, write_buf));
+    }
+    else
+    {
+        os << body << "\r\n";
+        boost::asio::async_write(*socket_, *write_buf,
+            boost::bind(&http_session::handle_write, shared_from_this(),
+                p, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, write_buf));
+    }
+
+    return p->get_future();
+}
 
 void http_session::handle_handshake(const error_code& ec)
 {
     if(!ec)
     {
-        read_buf_.reset(new boost::asio::streambuf());
-        boost::asio::async_read_until(*socket_,*read_buf_.get(),
+        auto read_buf = boost::make_shared<boost::asio::streambuf>();
+
+        boost::asio::async_read_until(*socket_, *read_buf,
             "\r\n\r\n",
             boost::bind(&http_session::handle_header_read,shared_from_this(),
+                read_buf,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
 
-        read_timer_.expires_from_now(boost::posix_time::seconds(5));
-        read_timer_.async_wait(
-            boost::bind(&http_session::read_timeout,shared_from_this(),boost::asio::placeholders::error));
     }
     //else delete this; //例外
 }
 
-void http_session::read_timeout(const error_code& ec)
-{
-    this->end(c_handler_);
-    return;
-}
-
-void http_session::handle_header_read(const error_code& ec,std::size_t)
+void http_session::handle_header_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const error_code& ec, const std::size_t sz)
 {
     if(!ec)
     {
-        std::string request_str(boost::asio::buffer_cast<const char*>(read_buf_->data()));
+        std::string request_str(boost::asio::buffer_cast<const char*>(read_buf->data()));
 
         //リクエストヘッダーのパース
-        request_str.erase(0,request_header_parser(request_str,request_));
+        const int header_size = request_header_parser(request_str,request_);
+        request_str.erase(0,header_size);
         request_.body.append(request_str);
+
+        read_buf->consume(header_size);
         
         size_t byte = int_parser(find_return_or_default(request_.header,"Content-Length","0"));
         if( byte != 0 )
         {
             //長さがある
-            read_buf_.reset(new boost::asio::streambuf());
-
             boost::asio::async_read(
                 *socket_,
-                *read_buf_.get(),
+                *read_buf,
                 boost::asio::transfer_at_least(byte - request_.body.length()),
                 boost::bind(&http_session::handle_body_read,shared_from_this(),
+                    read_buf,
                     boost::asio::placeholders::error,
                     boost::asio::placeholders::bytes_transferred));
         }
         else
         {
-            //長さがない -> 長さが分からないならこの先読み込むのは危ない
+            //長さがない -> とりあえずよんでみる
+            boost::asio::async_read(
+                *socket_,
+                *read_buf,
+                boost::bind(&http_session::handle_body_read,shared_from_this(),
+                    read_buf,
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred));
             handle_request_read_complete();
         }
     }
-    else std::cout << ec.message() << std::endl;
     //else delete this; //例外
 }
 
-void http_session::handle_body_read(const error_code& ec,std::size_t sz)
+void http_session::handle_body_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const error_code& ec,std::size_t sz)
 {
     if(!ec)
     {
-        std::string body_str(boost::asio::buffer_cast<const char*>(read_buf_->data()));
+        std::string body_str(boost::asio::buffer_cast<const char*>(read_buf->data()));
         request_.body.append(body_str);
 
         handle_request_read_complete();
@@ -140,70 +208,75 @@ void http_session::handle_body_read(const error_code& ec,std::size_t sz)
 void http_session::handle_request_read_complete()
 {
     keep_alive_ = 
-        find_return_or_default(request_.header,"Connection","close") == "Keep-Alive" ||
-        find_return_or_default(request_.header,"Proxy-Connection","close") == "Keep-Alive";
+        equal_without_capital(find_return_or_default(request_.header,"Connection","close"),      "Keep-Alive") ||
+        equal_without_capital(find_return_or_default(request_.header,"Proxy-Connection","close"),"Keep-Alive");
+    
+    handler_(request_, shared_from_this());
 
-    response_type response;
-    handler_(request_,response);
-    write_buf_.reset(new boost::asio::streambuf());
-
-    //std::ostream os(write_buf_.get()); //TODO:
-    std::ostreambuf_iterator<char> out(write_buf_.get());
-    if(response_generater(out,response))
-    {
-        boost::asio::async_write(*socket_,*write_buf_.get(),
-            boost::bind(&http_session::handle_write,shared_from_this(),
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
-    }
-    //else delete this; //パース失敗
+    ////std::ostream os(write_buf_.get()); //TODO:
+    //std::ostreambuf_iterator<char> out(write_buf_.get());
+    //if(response_generater(out,response))
+    //{
+    //    boost::asio::async_write(*socket_,*write_buf_.get(),
+    //        boost::bind(&http_session::handle_write,shared_from_this(),
+    //            boost::asio::placeholders::error,
+    //            boost::asio::placeholders::bytes_transferred));
+    //}
+    ////else delete this; //パース失敗
 }
 
-void http_session::handle_write(const error_code& ec,std::size_t sz)
+void http_session::handle_write(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf)
+{
+    p->set_value();
+    return;
+}
+void http_session::handle_end(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf)
 {
     if(!ec)
     {
         if(keep_alive_)
         {
+            p->set_value();
             handle_handshake(error_code());
         }
         else
         {
             this->end(c_handler_);
+            p->set_value();
             return;
         }
     }
-    //else delete this; //例外
+
+    return;
 }
 
-
-template<class OutputIterator>
-bool http_session::response_generater(OutputIterator& sink,const response_type& response) const
-{
-    namespace karma = boost::spirit::karma;
-        
-    bool r = karma::generate(sink,
-        "HTTP/" << karma::string << ' ' << karma::int_ << ' ' << karma::string << "\r\n",
-        response.http_version,
-        response.status_code,
-        response.status_message);
-
-    if(!response.header.empty())
-    {
-        r = r && karma::generate(sink,
-            +(karma::string << ": " << karma::string << "\r\n"),
-            response.header);
-    }
-
-    if(!response.body.empty())
-    {
-        r = r && karma::generate(sink,
-            "\r\n" << karma::string,
-            response.body);
-    }
-
-    return r;
-}
+//template<class OutputIterator>
+//bool http_session::response_generater(OutputIterator& sink,const response_type& response) const
+//{
+//    namespace karma = boost::spirit::karma;
+//        
+//    bool r = karma::generate(sink,
+//        "HTTP/" << karma::string << ' ' << karma::int_ << ' ' << karma::string << "\r\n",
+//        response.http_version,
+//        response.status_code,
+//        response.status_message);
+//
+//    if(!response.header.empty())
+//    {
+//        r = r && karma::generate(sink,
+//            +(karma::string << ": " << karma::string << "\r\n"),
+//            response.header);
+//    }
+//
+//    if(!response.body.empty())
+//    {
+//        r = r && karma::generate(sink,
+//            "\r\n" << karma::string,
+//            response.body);
+//    }
+//
+//    return r;
+//}
 
 const int http_session::int_parser(const std::string& base) const
 {
