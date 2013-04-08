@@ -36,20 +36,18 @@ public:
     std::future<void> set_headers(int status_code, const std::string& status_message, const std::string& http_version="1.0", const std::map<std::string,std::string>& header = std::map<std::string,std::string>());
     std::future<void> set_body(const std::string& body);
     std::future<void> set_chunk(const std::string& size, const std::string& body);
+    
+    const int int_parser(const std::string& base) const;
+    const int request_header_parser(const std::string& request_str, const boost::shared_ptr<bstcon::request>& request_containar) const;
 
 private:
     void handle_handshake(const error_code& ec);
     void handle_header_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const error_code& ec, const std::size_t sz);
-    void handle_body_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const error_code& ec, const std::size_t sz);
-    void handle_request_read_complete();
+    void handle_body_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const boost::shared_ptr<bstcon::request> request, const error_code& ec, const std::size_t sz);
+    void handle_request_read_complete(const boost::shared_ptr<bstcon::request> request);
 
     void handle_write(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf);
     void handle_end(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf);
-
-    const int int_parser(const std::string& base) const;
-    const int request_header_parser(const std::string& request_str,bstcon::request& request_containar) const;
-
-    request_type request_;
 
     bstcon::application_layer::socket_base *socket_;
     RequestHandler handler_;

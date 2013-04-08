@@ -25,7 +25,7 @@ struct session_base : boost::noncopyable
 {
     typedef bstcon::request request_type;
     typedef bstcon::response response_type;
-    typedef boost::function<void(const request_type&, boost::shared_ptr<session_base>)> RequestHandler;
+    typedef boost::function<void(const boost::shared_ptr<request_type>, boost::shared_ptr<session_base>)> RequestHandler;
     typedef boost::function<void(boost::shared_ptr<session_base>)> CloseHandler;
 
     session_base();
