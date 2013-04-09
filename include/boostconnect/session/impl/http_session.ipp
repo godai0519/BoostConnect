@@ -26,21 +26,19 @@ bstcon::application_layer::socket_base::lowest_layer_type& http_session::lowest_
     return socket_->lowest_layer();
 }
     
-http_session::http_session(io_service& io_service)
+http_session::http_session(io_service& io_service, const int deadline_second)
+    : read_timer_(io_service), socket_(new bstcon::application_layer::tcp_socket(io_service)), deadline_second_(deadline_second)
 {
-    socket_ = new bstcon::application_layer::tcp_socket(io_service);
 }
 #ifdef USE_SSL_BOOSTCONNECT
 typedef boost::asio::ssl::context context;
-http_session::http_session(io_service& io_service,context& ctx)
+http_session::http_session(io_service& io_service, context& ctx, const int deadline_second)
+    : read_timer_(io_service), socket_(new bstcon::application_layer::ssl_socket(io_service,ctx)), deadline_second_(deadline_second)
 {
-    socket_ = new bstcon::application_layer::ssl_socket(io_service,ctx);
 }
 #endif
-http_session::~http_session()
-{
-    delete socket_;
-}
+
+http_session::~http_session(){} // = default;
 
 void http_session::start(RequestHandler handler,CloseHandler c_handler)
 {
@@ -179,6 +177,10 @@ void http_session::handle_handshake(const error_code& ec)
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
 
+        read_timer_.expires_from_now(boost::posix_time::seconds(deadline_second_));
+        read_timer_.async_wait(
+            boost::bind(&http_session::read_timeout, shared_from_this(), boost::asio::placeholders::error));
+
     }
     //else delete this; //例外
 }
@@ -213,22 +215,14 @@ void http_session::handle_header_read(const boost::shared_ptr<boost::asio::strea
         }
         else
         {
-            //長さがない -> とりあえずよんでみる
-            boost::asio::async_read(
-                *socket_,
-                *read_buf,
-                boost::asio::transfer_at_least(0),
-                boost::bind(&http_session::handle_body_read,shared_from_this(),
-                    read_buf,
-                    request,
-                    boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
+            //長さがない or 0 -> 読まずにhandle_body_readへ
+            handle_body_read(read_buf, request, ec, sz);
         }
     }
     //else delete this; //例外
 }
 
-void http_session::handle_body_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const boost::shared_ptr<bstcon::request> request, const error_code& ec,std::size_t sz)
+void http_session::handle_body_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const boost::shared_ptr<bstcon::request> request, const error_code& ec, const std::size_t sz)
 {
     if(!ec)
     {
@@ -273,6 +267,12 @@ void http_session::handle_end(const boost::shared_ptr<std::promise<void>> p, con
         }
     }
 
+    return;
+}
+
+void http_session::read_timeout(const error_code& ec)
+{
+    this->end(c_handler_);
     return;
 }
 

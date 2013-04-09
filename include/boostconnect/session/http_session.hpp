@@ -10,6 +10,7 @@
 
 #include <future>
 #include <boost/asio.hpp>
+#include <boost/scoped_ptr.hpp>
 #include "session_base.hpp"
 #include "../application_layer/socket_base.hpp"
 
@@ -22,11 +23,11 @@ public:
     typedef boost::system::error_code error_code;
 
     bstcon::application_layer::socket_base::lowest_layer_type& lowest_layer();    
-    http_session(io_service& io_service);
+    http_session(io_service& io_service, const int deadline_second = 5);
 
 #ifdef USE_SSL_BOOSTCONNECT
     typedef boost::asio::ssl::context context;
-    http_session(io_service& io_service,context& ctx);
+    http_session(io_service& io_service, context& ctx, const int deadline_second = 5);
 #endif
     virtual ~http_session();
 
@@ -49,7 +50,12 @@ private:
     void handle_write(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf);
     void handle_end(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf);
 
-    bstcon::application_layer::socket_base *socket_;
+    void read_timeout(const error_code& ec);
+
+    boost::scoped_ptr<bstcon::application_layer::socket_base> socket_;
+    boost::asio::deadline_timer read_timer_;
+    const int deadline_second_;
+
     RequestHandler handler_;
     CloseHandler c_handler_;
     bool keep_alive_;
