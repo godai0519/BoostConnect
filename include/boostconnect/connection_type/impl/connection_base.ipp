@@ -12,6 +12,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/include/std_pair.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boostconnect/connection_type/connection_base.hpp>
 
 namespace bstcon{
@@ -49,9 +50,10 @@ const connection_base::response_type& reader::reset_response()
 }
 bool reader::is_chunked() const
 {
-    return (response_->header.find("Transfer-Encoding")==response_->header.end())
-        ? false
-        : (response_->header.at("Transfer-Encoding")=="chunked");
+    const auto encoding = get_headers_value("Transfer-Encoding");
+    return encoding
+        ? boost::algorithm::iequals(*encoding, "chunked")
+        : false;
 }
 
 //レスポンスヘッダ読み込み
@@ -233,32 +235,36 @@ void reader::async_read_header(Socket& socket,const error_code& ec,const std::si
                 handler,
                 chunk_handler));
     }
-    else if(response_->header.find("Content-Length")==response_->header.end())
-    {
-        //Content-Lengthが見つからないasync通信
-        //終了条件は暗示的にtransfer_all() = 読めるだけ読み込む
-        boost::asio::async_read(socket,
-            read_buf_,
-            boost::bind(&reader::async_read_all<Socket>,this,
-                boost::ref(socket),
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred,
-                handler));
-    }
     else
     {
-        //Content-LengthをもとにReadを行う，async通信
-        //ここにきたなら"Content-Length"がありますよね
-        boost::asio::async_read(socket,
-            read_buf_,
-            boost::asio::transfer_at_least(boost::lexical_cast<size_t>(response_->header.at("Content-Length"))-boost::asio::buffer_size(read_buf_.data())),
-            boost::bind(&reader::async_read_all<Socket>,this,
-                boost::ref(socket),
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred,
-                handler));
+        const auto content_length = get_headers_value("Content-Length");
+        if(content_length)
+        {
+            //Content-LengthをもとにReadを行う，async通信
+            //ここにきたなら"Content-Length"がありますよね
+            boost::asio::async_read(socket,
+                read_buf_,
+                boost::asio::transfer_at_least(boost::lexical_cast<size_t>(*content_length)-boost::asio::buffer_size(read_buf_.data())),
+                boost::bind(&reader::async_read_all<Socket>,this,
+                    boost::ref(socket),
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred,
+                    handler));
+        }
+        else
+        {
+            //Content-Lengthが見つからないasync通信
+            //終了条件は暗示的にtransfer_all() = 読めるだけ読み込む
+            boost::asio::async_read(socket,
+                read_buf_,
+                boost::bind(&reader::async_read_all<Socket>,this,
+                    boost::ref(socket),
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred,
+                    handler));
+        }
     }
-                
+
     return;
 }
     
@@ -386,6 +392,15 @@ void reader::async_read_end(Socket& socket,const error_code &ec,const std::size_
 {
     handler(ec);
     return; //空なら終わりだ
+}
+
+boost::optional<std::string> reader::get_headers_value(const std::string& key) const
+{
+    for(const std::pair<std::string, std::string>& p : response_->header)
+    {
+        if(boost::algorithm::iequals(p.first, key)) return p.second;
+    }
+    return boost::none;
 }
 
 } // namespace connection_type

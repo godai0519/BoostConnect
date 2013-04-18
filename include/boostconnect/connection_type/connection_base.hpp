@@ -11,6 +11,7 @@
 #include <future>
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/optional/optional.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include "../application_layer/socket_base.hpp"
 #include "../response.hpp"
@@ -81,6 +82,8 @@ protected:
 	void async_read_end(Socket& socket,const error_code &ec,const std::size_t,EndHandler handler);
 	
 private:
+    boost::optional<std::string> get_headers_value(const std::string& key) const;
+
 	boost::asio::streambuf read_buf_;
 	response_type response_;
 };

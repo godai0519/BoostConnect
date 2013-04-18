@@ -30,13 +30,12 @@ public:
 
 private:
     boost::scoped_ptr<boost::asio::ip::tcp::resolver> resolver_;
-    boost::shared_ptr<boost::asio::streambuf> buf_;
     EndHandler end_handler_;
 
     void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator, const boost::system::error_code& ec, ConnectionHandler handler);
 
     void handle_connect(const boost::system::error_code& ec, ConnectionHandler handler);
-    void handle_write(const boost::shared_ptr<std::promise<response_type>> p, const boost::system::error_code& ec, ChunkHandler chunk_handler);
+    void handle_write(const boost::shared_ptr<std::promise<response_type>> p, boost::shared_ptr<boost::asio::streambuf> buf, const boost::system::error_code& ec, ChunkHandler chunk_handler);
 
     void handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec);
 };
