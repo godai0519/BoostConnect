@@ -371,8 +371,12 @@ void reader::async_read_chunk_body(Socket& socket,const std::size_t chunk,const 
         response_->body.append(boost::asio::buffer_cast<const char*>(read_buf_.data()),chunk);
         read_buf_.consume(chunk+2); //流す
 
-        if(!chunk_handler(response_,ec)) return;
-                
+        if(!chunk_handler(response_,ec))
+        {
+            //socket_.
+            return;
+        }
+
         //chunk取得にもどるよ
         boost::asio::async_read_until(socket,
             read_buf_,
