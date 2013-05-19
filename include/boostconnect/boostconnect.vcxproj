@@ -39,7 +39,6 @@
     <ClInclude Include="server.hpp" />
     <ClInclude Include="session\http_session.hpp" />
     <ClInclude Include="session\session_base.hpp" />
-    <ClInclude Include="system\error_code.hpp" />
     <ClInclude Include="utility\percent_encoder.hpp" />
     <ClInclude Include="utility\radix.hpp" />
     <ClInclude Include="utility\syntax.hpp" />
@@ -62,7 +61,6 @@
     <None Include="impl\server.ipp" />
     <None Include="session\impl\http_session.ipp" />
     <None Include="session\impl\session_base.ipp" />
-    <None Include="system\impl\error_code.ipp" />
     <None Include="utility\impl\percent_encoder.ipp" />
     <None Include="utility\impl\radix.ipp" />
     <None Include="utility\impl\syntax.ipp" />

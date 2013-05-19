@@ -19,9 +19,6 @@
     <Filter Include="ヘッダー ファイル\connection_type">
       <UniqueIdentifier>{d36f7781-c3cc-47ed-81c6-ddfc5f0bafe5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\system">
-      <UniqueIdentifier>{f73b34bc-de0c-4344-af9b-f7f2c42c5eba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\session">
       <UniqueIdentifier>{4825fe2d-122b-4aae-8e46-8c179cded422}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\session\impl">
       <UniqueIdentifier>{81f07182-5f84-4ba6-8e0e-c70202b036a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\system\impl">
-      <UniqueIdentifier>{118706a9-3620-4df4-a872-5d87c567438f}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\impl">
       <UniqueIdentifier>{99f9dd33-2b07-4f5f-b547-ce79ec4e7ef9}</UniqueIdentifier>
@@ -89,9 +83,6 @@
     </ClInclude>
     <ClInclude Include="session\session_base.hpp">
       <Filter>ヘッダー ファイル\session</Filter>
-    </ClInclude>
-    <ClInclude Include="system\error_code.hpp">
-      <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
     <ClInclude Include="config.hpp">
       <Filter>ヘッダー ファイル</Filter>
@@ -151,9 +142,6 @@
     </None>
     <None Include="session\impl\session_base.ipp">
       <Filter>ヘッダー ファイル\session\impl</Filter>
-    </None>
-    <None Include="system\impl\error_code.ipp">
-      <Filter>ヘッダー ファイル\system\impl</Filter>
     </None>
     <None Include="impl\client.ipp">
       <Filter>ヘッダー ファイル\impl</Filter>

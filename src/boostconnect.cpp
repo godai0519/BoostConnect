@@ -34,7 +34,5 @@
 #include <boostconnect/session/impl/session_base.ipp>
 #include <boostconnect/session/impl/http_session.ipp>
 
-#include <boostconnect/system/impl/error_code.ipp>
-
 #include <boostconnect/impl/client.ipp>
 #include <boostconnect/impl/server.ipp>
