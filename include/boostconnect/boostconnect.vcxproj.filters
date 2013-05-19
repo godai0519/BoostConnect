@@ -60,9 +60,6 @@
     <ClInclude Include="application_layer\socket_base.hpp">
       <Filter>ヘッダー ファイル\application_layer</Filter>
     </ClInclude>
-    <ClInclude Include="manager.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="request.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -157,9 +154,6 @@
     </None>
     <None Include="system\impl\error_code.ipp">
       <Filter>ヘッダー ファイル\system\impl</Filter>
-    </None>
-    <None Include="impl\manager.ipp">
-      <Filter>ヘッダー ファイル\impl</Filter>
     </None>
     <None Include="impl\client.ipp">
       <Filter>ヘッダー ファイル\impl</Filter>

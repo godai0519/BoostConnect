@@ -16,7 +16,7 @@
 namespace bstcon{
 namespace application_layer{
     
-ssl_socket::ssl_socket(io_service& io_service,context_type& ctx) : my_base(io_service,ctx)
+ssl_socket::ssl_socket(io_service& io_service, context_type& ctx) : my_base(io_service, ctx)
 {
 }
 ssl_socket::~ssl_socket()
@@ -29,14 +29,14 @@ const std::string ssl_socket::service_protocol() const
 }
 
 //SSL通信のコネクション確立(TCPレイヤーでコネクションを行う)
-ssl_socket::error_code& ssl_socket::connect(endpoint_type& begin,error_code& ec)
+ssl_socket::error_code& ssl_socket::connect(endpoint_type& begin, error_code& ec)
 {
-    ec = socket_.lowest_layer().connect(begin,ec);
+    ec = socket_.lowest_layer().connect(begin, ec);
     return ec;
 }
-void ssl_socket::async_connect(endpoint_type& begin,ConnectHandler handler)
+void ssl_socket::async_connect(endpoint_type& begin, ConnectHandler handler)
 {
-    socket_.lowest_layer().async_connect(begin,handler);
+    socket_.lowest_layer().async_connect(begin, handler);
     return;
 }
     
@@ -45,9 +45,9 @@ void ssl_socket::handshake(handshake_type type)
     socket_.handshake(type);
     return;
 }
-void ssl_socket::async_handshake(handshake_type type,HandshakeHandler handler)
+void ssl_socket::async_handshake(handshake_type type, HandshakeHandler handler)
 {
-    socket_.async_handshake(type,handler);
+    socket_.async_handshake(type, handler);
     return;
 }
     

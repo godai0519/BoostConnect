@@ -24,13 +24,13 @@ public:
     const std::string service_protocol() const;
 
     //TCP通信のコネクション確立
-    error_code& connect(endpoint_type& begin,error_code& ec);
-    void async_connect(endpoint_type& begin,ConnectHandler handler);
+    error_code& connect(endpoint_type& begin, error_code& ec);
+    void async_connect(endpoint_type& begin, ConnectHandler handler);
     
 #ifdef USE_SSL_BOOSTCONNECT
     //TCP通信ではHandshakeを行わない -> Handlerを直接呼び出す
     void handshake(handshake_type);
-    void async_handshake(handshake_type,HandshakeHandler handler);
+    void async_handshake(handshake_type, HandshakeHandler handler);
 #else
     void handshake();
     void async_handshake(HandshakeHandler handler);

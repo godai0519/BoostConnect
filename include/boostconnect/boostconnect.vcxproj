@@ -34,7 +34,6 @@
     <ClInclude Include="content\multipart_mixed.hpp" />
     <ClInclude Include="content\text.hpp" />
     <ClInclude Include="content\urlencoded.hpp" />
-    <ClInclude Include="manager.hpp" />
     <ClInclude Include="request.hpp" />
     <ClInclude Include="response.hpp" />
     <ClInclude Include="server.hpp" />
@@ -60,7 +59,6 @@
     <None Include="content\impl\text.ipp" />
     <None Include="content\impl\urlencoded.ipp" />
     <None Include="impl\client.ipp" />
-    <None Include="impl\manager.ipp" />
     <None Include="impl\server.ipp" />
     <None Include="session\impl\http_session.ipp" />
     <None Include="session\impl\session_base.ipp" />

@@ -56,6 +56,13 @@ int main()
     );
 
     // Make: request header and body
+    bstcon::request request_keep;
+    request_keep.method = "GET";
+    request_keep.http_version = "1.1";
+    request_keep.path = "/";
+    request_keep.header["Connection"] = "Keep-Alive";
+
+    /*
     boost::shared_ptr<boost::asio::streambuf> request_keep(new boost::asio::streambuf());
     {
         std::ostream os(request_keep.get());
@@ -63,7 +70,7 @@ int main()
         os << "Host: www.google.co.jp\r\n";
         os << "Connection: Keep-Alive\r\n";
         os << "\r\n";
-    }
+    }*/
     boost::shared_ptr<boost::asio::streambuf> request_close(new boost::asio::streambuf());
     {
         std::ostream os(request_close.get());

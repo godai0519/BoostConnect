@@ -13,7 +13,7 @@
 namespace bstcon{
 
 //TCP
-client::client(io_service &io_service,const connection_type::connection_type& connection_type)
+client::client(io_service &io_service, const connection_type::connection_type& connection_type)
     : connection_type_(connection_type), io_service_(io_service)
 #ifdef USE_SSL_BOOSTCONNECT
     , ctx_(nullptr)
@@ -24,7 +24,7 @@ client::client(io_service &io_service,const connection_type::connection_type& co
 #ifdef USE_SSL_BOOSTCONNECT
 //SSL
 typedef boost::asio::ssl::context context;
-client::client(io_service &io_service,context &ctx,const connection_type::connection_type& connection_type)
+client::client(io_service &io_service, context &ctx, const connection_type::connection_type& connection_type)
     : io_service_(io_service), connection_type_(connection_type), ctx_(&ctx)
 {
 }
@@ -56,9 +56,10 @@ const std::string client::service_protocol() const
 void client::set_connection_type(const connection_type::connection_type& connection_type)
 {
     connection_type_ = connection_type;
+    return;
 }
 
-inline client::socket_ptr client::create_socket()
+inline client::socket_ptr client::create_socket() const
 {
     socket_ptr socket;
 
@@ -71,7 +72,7 @@ else
 
     return socket;
 }
-inline const client::connection_ptr client::crerate_connection()
+inline client::connection_ptr client::crerate_connection() const
 {
     connection_ptr connection;
 

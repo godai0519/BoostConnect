@@ -11,7 +11,6 @@
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "manager.hpp"
 #include "application_layer/socket_base.hpp"
 #include "application_layer/tcp_socket.hpp"
 #include "application_layer/ssl_socket.hpp"
@@ -24,9 +23,9 @@ namespace bstcon{
 //複数の通信を同時に要求した際の保証はしない
 class client : boost::noncopyable{
 public:
-    typedef boost::asio::io_service io_service;
-    typedef boost::system::error_code error_code;
-    typedef boost::asio::ip::tcp::endpoint endpoint_type;
+    typedef boost::asio::io_service             io_service;
+    typedef boost::system::error_code           error_code;
+    typedef boost::asio::ip::tcp::endpoint      endpoint_type;
     typedef boost::shared_ptr<bstcon::response> response_type;
 
     typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
@@ -34,12 +33,12 @@ public:
     typedef bstcon::connection_type::connection_base::ConnectionHandler ConnectionHandler;
    
     //TCP
-    client(io_service &io_service,const connection_type::connection_type& connection_type=connection_type::sync);
+    client(io_service &io_service, const connection_type::connection_type& connection_type = connection_type::sync);
     
 #ifdef USE_SSL_BOOSTCONNECT
     //SSL
     typedef boost::asio::ssl::context context;
-    client(io_service &io_service,context &ctx,const connection_type::connection_type& connection_type=connection_type::sync);
+    client(io_service &io_service, context &ctx, const connection_type::connection_type& connection_type = connection_type::sync);
 #endif
     
     template<typename T>
@@ -52,8 +51,8 @@ public:
     void set_connection_type(const connection_type::connection_type& connection_type);
 
 protected:
-    inline socket_ptr create_socket();
-    inline const connection_ptr crerate_connection();
+    inline socket_ptr     create_socket()      const;
+    inline connection_ptr crerate_connection() const;
 
 private:
 #ifdef USE_SSL_BOOSTCONNECT

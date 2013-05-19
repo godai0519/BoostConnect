@@ -25,14 +25,14 @@ const std::string tcp_socket::service_protocol() const
 }
 
 //TCP通信のコネクション確立
-tcp_socket::error_code& tcp_socket::connect(endpoint_type& begin,error_code& ec)
+tcp_socket::error_code& tcp_socket::connect(endpoint_type& begin, error_code& ec)
 {
-    ec = socket_.connect(begin,ec);
+    ec = socket_.connect(begin, ec);
     return ec;
 }
-void tcp_socket::async_connect(endpoint_type& begin,ConnectHandler handler)
+void tcp_socket::async_connect(endpoint_type& begin, ConnectHandler handler)
 {
-    socket_.async_connect(begin,handler);
+    socket_.async_connect(begin, handler);
     return;
 }
     
@@ -42,7 +42,7 @@ void tcp_socket::handshake(handshake_type)
 {
     return;
 }
-void tcp_socket::async_handshake(handshake_type,HandshakeHandler handler)
+void tcp_socket::async_handshake(handshake_type, HandshakeHandler handler)
 {
     handler(error_code());
     return;

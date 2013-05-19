@@ -26,7 +26,7 @@ socket_common<Socket>::socket_common(io_service& io_service) : socket_(io_servic
 
 #ifdef USE_SSL_BOOSTCONNECT
 template<class Socket>
-socket_common<Socket>::socket_common(io_service& io_service,context_type& ctx) : socket_(io_service,ctx)
+socket_common<Socket>::socket_common(io_service& io_service, context_type& ctx) : socket_(io_service, ctx)
 {
 }
 #endif
@@ -46,36 +46,36 @@ typename socket_common<Socket>::io_service& socket_common<Socket>::get_io_servic
 }
 
 template<class Socket>
-std::size_t socket_common<Socket>::read_some(const mutable_buffer& buf,error_code& ec)
+std::size_t socket_common<Socket>::read_some(const mutable_buffer& buf, error_code& ec)
 {
-    return socket_.read_some(buf,ec);
+    return socket_.read_some(buf, ec);
 }
 template<class Socket>
-std::size_t socket_common<Socket>::write_some(const const_buffer& buf,error_code& ec)
+std::size_t socket_common<Socket>::write_some(const const_buffer& buf, error_code& ec)
 {
-    return socket_.write_some(buf,ec);
+    return socket_.write_some(buf, ec);
 }
 template<class Socket>
-std::size_t socket_common<Socket>::write_some(const consuming_buffer& buf,error_code& ec)
+std::size_t socket_common<Socket>::write_some(const consuming_buffer& buf, error_code& ec)
 {
-    return socket_.write_some(buf,ec);
+    return socket_.write_some(buf, ec);
 }
 template<class Socket>
-void socket_common<Socket>::async_read_some(const mutable_buffer& buf,ReadHandler handler)
+void socket_common<Socket>::async_read_some(const mutable_buffer& buf, ReadHandler handler)
 {
-    socket_.async_read_some(buf,handler);
+    socket_.async_read_some(buf, handler);
     return;
 }
 template<class Socket>
-void socket_common<Socket>::async_write_some(const const_buffer& buf,WriteHandler handler)
+void socket_common<Socket>::async_write_some(const const_buffer& buf, WriteHandler handler)
 {
-    socket_.async_write_some(buf,handler);
+    socket_.async_write_some(buf, handler);
     return;
 }
 template<class Socket>
-void socket_common<Socket>::async_write_some(const consuming_buffer& buf,WriteHandler handler)
+void socket_common<Socket>::async_write_some(const consuming_buffer& buf, WriteHandler handler)
 {
-    socket_.async_write_some(buf,handler);
+    socket_.async_write_some(buf, handler);
     return;
 }
 

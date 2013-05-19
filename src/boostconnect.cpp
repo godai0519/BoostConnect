@@ -36,6 +36,5 @@
 
 #include <boostconnect/system/impl/error_code.ipp>
 
-#include <boostconnect/impl/manager.ipp>
 #include <boostconnect/impl/client.ipp>
 #include <boostconnect/impl/server.ipp>

@@ -17,17 +17,16 @@ namespace connection_type{
 
 class sync_connection : public connection_common<sync_connection>{
 public:
-    sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket);
+    explicit sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket);
     virtual ~sync_connection();
     
     connection_ptr connect(const std::string& host,ConnectionHandler handler);
     connection_ptr connect(const endpoint_type& ep,ConnectionHandler handler);
 
-    std::future<response_type> send(boost::shared_ptr<boost::asio::streambuf>, EndHandler end_handler, ChunkHandler chunk_handler);
+    std::future<response_type> send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler);
 
 private:
-    EndHandler end_handler_;
-    void handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec);
+    void handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec, EndHandler end_handler);
 };
 
 } // namespace connection_type

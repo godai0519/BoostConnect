@@ -8,12 +8,13 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
 #define BOOSTCONNECT_CONNECTTYPE_CONNECTION_BASE_IPP
 
+#include <boost/make_shared.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boostconnect/connection_type/connection_base.hpp>
+#include "../connection_base.hpp"
 
 namespace bstcon{
 namespace connection_type{
@@ -24,6 +25,23 @@ connection_base::connection_base()
 }
 connection_base::~connection_base()
 {
+}
+
+auto connection_base::send(const request_type& request, EndHandler end_handler, ChunkHandler chunk_handler) -> std::future<response_type>
+{
+    auto buffer = boost::make_shared<boost::asio::streambuf>();
+    {
+        std::ostream os(buffer.get());
+        os << request.method << " " << request.path << " HTTP/" << request.http_version << "\r\n";
+        os << "Host: " << host_ << "\r\n";
+
+        for(const std::pair<std::string, std::string> param : request.header)
+            os << param.first << ": " << param.second << "\r\n";
+
+        os << "\r\n" << request.body;
+    }
+
+    return this->send(buffer, end_handler, chunk_handler);
 }
 
 void connection_base::close()

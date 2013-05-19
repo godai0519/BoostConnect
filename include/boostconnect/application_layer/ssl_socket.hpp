@@ -21,17 +21,17 @@ class ssl_socket : public socket_common<socket_base::ssl_socket_type>
     typedef socket_common<socket_base::ssl_socket_type> my_base;
 
 public:
-    ssl_socket(io_service& io_service,context_type& ctx);
+    ssl_socket(io_service& io_service, context_type& ctx);
     virtual ~ssl_socket();
 
     const std::string service_protocol() const;
 
     //SSL通信のコネクション確立(TCPレイヤーでコネクションを行う)
-    error_code& connect(endpoint_type& begin,error_code& ec);
-    void async_connect(endpoint_type& begin,ConnectHandler handler);
+    error_code& connect(endpoint_type& begin, error_code& ec);
+    void async_connect(endpoint_type& begin, ConnectHandler handler);
     
     void handshake(handshake_type type);
-    void async_handshake(handshake_type type,HandshakeHandler handler);
+    void async_handshake(handshake_type type, HandshakeHandler handler);
     
     //[(SSLレイヤーの処理 ->] TCPレイヤーの処理
     void close();

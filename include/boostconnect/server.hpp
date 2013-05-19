@@ -11,7 +11,6 @@
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
-#include "manager.hpp"
 #include "session/session_base.hpp"
 #include "session/http_session.hpp"
 
