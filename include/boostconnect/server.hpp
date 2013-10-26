@@ -23,12 +23,15 @@ public:
     typedef session::http_session::RequestHandler RequestHandler;
     typedef session::http_session::CloseHandler   CloseHandler;
 
-    server(boost::asio::io_service& io_service,unsigned short port);
+    server(boost::asio::io_service& io_service, unsigned short port, unsigned int timeout_second = 30);
 
 #ifdef USE_SSL_BOOSTCONNECT
     typedef boost::asio::ssl::context context;
-    server(boost::asio::io_service& io_service,context &ctx,unsigned short port);
+    server(boost::asio::io_service& io_service,context &ctx,unsigned short port, unsigned int timeout_second = 30);
 #endif
+
+    void set_timeout(unsigned int second);
+    unsigned int timeout();
 
     void start(RequestHandler handler);
 private:
@@ -42,6 +45,8 @@ private:
 #ifdef USE_SSL_BOOSTCONNECT
     context *ctx_;
 #endif
+
+    unsigned int timeout_second_;
 };
 
 } // namespace bstcon

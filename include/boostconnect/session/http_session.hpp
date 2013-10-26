@@ -22,14 +22,17 @@ public:
     typedef boost::asio::io_service io_service;
     typedef boost::system::error_code error_code;
 
-    bstcon::application_layer::socket_base::lowest_layer_type& lowest_layer();    
-    http_session(io_service& io_service, const int deadline_second = 5);
+    bstcon::application_layer::socket_base::lowest_layer_type& lowest_layer();
+    http_session(io_service& io_service, unsigned int timeout_second);
 
 #ifdef USE_SSL_BOOSTCONNECT
     typedef boost::asio::ssl::context context;
-    http_session(io_service& io_service, context& ctx, const int deadline_second = 5);
+    http_session(io_service& io_service, context& ctx, unsigned int timeout_second);
 #endif
     virtual ~http_session();
+
+    void set_timeout(unsigned int second);
+    unsigned int timeout();
 
     void start(RequestHandler handler,CloseHandler c_handler);
     void end(CloseHandler c_handler);
@@ -54,7 +57,7 @@ private:
 
     boost::scoped_ptr<bstcon::application_layer::socket_base> socket_;
     boost::asio::deadline_timer read_timer_;
-    const int deadline_second_;
+    unsigned int timeout_second_;
 
     RequestHandler handler_;
     CloseHandler c_handler_;

@@ -26,19 +26,28 @@ bstcon::application_layer::socket_base::lowest_layer_type& http_session::lowest_
     return socket_->lowest_layer();
 }
     
-http_session::http_session(io_service& io_service, const int deadline_second)
-    : read_timer_(io_service), socket_(new bstcon::application_layer::tcp_socket(io_service)), deadline_second_(deadline_second)
+http_session::http_session(io_service& io_service, unsigned int timeout_second)
+    : read_timer_(io_service), socket_(new bstcon::application_layer::tcp_socket(io_service)), timeout_second_(timeout_second)
 {
 }
 #ifdef USE_SSL_BOOSTCONNECT
 typedef boost::asio::ssl::context context;
-http_session::http_session(io_service& io_service, context& ctx, const int deadline_second)
-    : read_timer_(io_service), socket_(new bstcon::application_layer::ssl_socket(io_service,ctx)), deadline_second_(deadline_second)
+http_session::http_session(io_service& io_service, context& ctx, unsigned int timeout_second)
+    : read_timer_(io_service), socket_(new bstcon::application_layer::ssl_socket(io_service,ctx)), timeout_second_(timeout_second)
 {
 }
 #endif
 
 http_session::~http_session(){} // = default;
+
+void http_session::set_timeout(unsigned int second)
+{
+    this->timeout_second_ = second;
+}
+unsigned int http_session::timeout()
+{
+    return this->timeout_second_;
+}
 
 void http_session::start(RequestHandler handler,CloseHandler c_handler)
 {
@@ -90,6 +99,10 @@ std::future<void> http_session::set_headers(int status_code, const std::string& 
         boost::bind(&http_session::handle_write, shared_from_this(),
             p, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, write_buf));
 
+    read_timer_.expires_from_now(boost::posix_time::seconds(timeout_second_));
+    read_timer_.async_wait(
+        boost::bind(&http_session::read_timeout, shared_from_this(), boost::asio::placeholders::error));
+
     return p->get_future();
 }
 
@@ -103,6 +116,10 @@ std::future<void> http_session::set_body(const std::string& body)
     boost::asio::async_write(*socket_, *write_buf,
         boost::bind(&http_session::handle_end, shared_from_this(),
             p, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, write_buf));
+
+    read_timer_.expires_from_now(boost::posix_time::seconds(timeout_second_));
+    read_timer_.async_wait(
+        boost::bind(&http_session::read_timeout, shared_from_this(), boost::asio::placeholders::error));
 
     return p->get_future();
 }
@@ -127,6 +144,10 @@ std::future<void> http_session::set_chunk(const std::string& size, const std::st
             boost::bind(&http_session::handle_write, shared_from_this(),
                 p, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, write_buf));
     }
+
+    read_timer_.expires_from_now(boost::posix_time::seconds(timeout_second_));
+    read_timer_.async_wait(
+        boost::bind(&http_session::read_timeout, shared_from_this(), boost::asio::placeholders::error));
 
     return p->get_future();
 }
@@ -177,7 +198,7 @@ void http_session::handle_handshake(const error_code& ec)
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
 
-        read_timer_.expires_from_now(boost::posix_time::seconds(deadline_second_));
+        read_timer_.expires_from_now(boost::posix_time::seconds(timeout_second_));
         read_timer_.async_wait(
             boost::bind(&http_session::read_timeout, shared_from_this(), boost::asio::placeholders::error));
 
@@ -272,6 +293,7 @@ void http_session::handle_end(const boost::shared_ptr<std::promise<void>> p, con
 
 void http_session::read_timeout(const error_code& ec)
 {
+    this->socket_->close();
     this->end(c_handler_);
     return;
 }

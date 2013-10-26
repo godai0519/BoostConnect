@@ -24,9 +24,6 @@ struct response : boost::noncopyable
     string_type status_message;
     header_type header;
     string_type body;
-
-    response() : status_code(0){}
-
 };
 
 } // namespace bstcon

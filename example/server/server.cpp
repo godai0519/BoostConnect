@@ -29,19 +29,33 @@ int main()
             disp += "\nBody: " + req->body + "\n";
             disp += "--- Request End ---\n\n";
             std::cout << disp << std::endl;
-
-            std::map<std::string,std::string> param;
-            param["Transfer-Encoding"] = "chunked";
-
-            auto f1 = session->set_headers(200, "OK", "1.1", param);
-            while(!f1.valid()) io_service.run_one();
-
-            std::string body = "<html><body><i><b>Hello!</b></i></body></html>";
-
-            auto f2 = session->set_chunk(body.size(), body);
-            while(!f2.valid()) io_service.run_one();
             
-            session->set_chunk(0);
+            std::string body = "<html><body><i><b>Hello!</b></i></body></html>";
+            std::map<std::string,std::string> param;
+
+            /*{
+                param["Content-Length"] = std::to_string(body.length());
+
+                auto f1 = session->set_headers(200, "OK", "1.1", param);
+                while(!f1.valid()) io_service.run_one();
+
+                auto f2 = session->set_body(body);
+                while(!f2.valid()) io_service.run_one();
+            }*/
+            
+            {
+                param["Transfer-Encoding"] = "chunked";
+                //param["Connection"] = "Keep-Alive";
+
+                auto f1 = session->set_headers(200, "OK", "1.1", param);
+                while(!f1.valid()) io_service.run_one();
+
+
+                auto f2 = session->set_chunk(body.size(), body);
+                while(!f2.valid()) io_service.run_one();
+            
+                session->set_chunk(0);
+            }
 
             return;
         }

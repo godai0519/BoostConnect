@@ -86,5 +86,8 @@ int main()
     // Run the above
     io_service.run();
 
+    // Socket Close
+    connection->close();
+
     return 0;
 }
