@@ -48,11 +48,11 @@ int main()
                 //param["Connection"] = "Keep-Alive";
 
                 auto f1 = session->set_headers(200, "OK", "1.1", param);
-                while(!f1.valid()) io_service.run_one();
+                //while(!f1.valid()) io_service.run_one();
 
 
                 auto f2 = session->set_chunk(body.size(), body);
-                while(!f2.valid()) io_service.run_one();
+                //while(!f2.valid()) io_service.run_one();
             
                 session->set_chunk(0);
             }

@@ -45,11 +45,9 @@ public:
     const int request_header_parser(const std::string& request_str, const boost::shared_ptr<bstcon::request>& request_containar) const;
 
 private:
-    void handle_handshake(const error_code& ec);
-    void handle_header_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const error_code& ec, const std::size_t sz);
-    void handle_body_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const boost::shared_ptr<bstcon::request> request, const error_code& ec, const std::size_t sz);
-    void handle_request_read_complete(const boost::shared_ptr<bstcon::request> request);
-
+    void do_read();
+    void handle_read(const boost::shared_ptr<boost::asio::streambuf> read_buf, const boost::shared_ptr<bstcon::request> request);
+    
     void handle_write(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf);
     void handle_end(const boost::shared_ptr<std::promise<void>> p, const error_code& ec, const std::size_t sz, const boost::shared_ptr<boost::asio::streambuf> buf);
 
