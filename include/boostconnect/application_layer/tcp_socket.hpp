@@ -16,12 +16,11 @@ namespace application_layer{
     
 class tcp_socket : public socket_common<socket_base::tcp_socket_type>
 {
-    typedef socket_common<socket_base::tcp_socket_type> my_base;
 public:
     tcp_socket(io_service& io_service);
     virtual ~tcp_socket();
     
-    const std::string service_protocol() const;
+    std::string service_protocol() const;
 
     //TCP通信のコネクション確立
     error_code& connect(endpoint_type& begin, error_code& ec);
@@ -38,7 +37,7 @@ public:
 
     //TCPレイヤーの処理
     void close();
-    void shutdown(shutdown_type what);
+	void shutdown(shutdown_type const what);
 };
 
 } // namespace application_layer

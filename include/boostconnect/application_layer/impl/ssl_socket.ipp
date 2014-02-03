@@ -16,14 +16,14 @@
 namespace bstcon{
 namespace application_layer{
     
-ssl_socket::ssl_socket(io_service& io_service, context_type& ctx) : my_base(io_service, ctx)
+ssl_socket::ssl_socket(io_service& io_service, context_type& ctx) : socket_common(io_service, ctx)
 {
 }
 ssl_socket::~ssl_socket()
 {
 }
 
-const std::string ssl_socket::service_protocol() const
+std::string ssl_socket::service_protocol() const
 {
     return "443";
 }

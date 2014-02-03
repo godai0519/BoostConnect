@@ -37,17 +37,17 @@ struct socket_base : boost::noncopyable{
     typedef boost::asio::const_buffers_1   const_buffer;
     typedef boost::asio::detail::consuming_buffers<boost::asio::const_buffer,boost::asio::basic_streambuf<>::const_buffers_type> consuming_buffer;
 
-    typedef boost::function<void(const error_code&)>              ConnectHandler;
-    typedef boost::function<void(const error_code&)>              HandshakeHandler;
-    typedef boost::function<void(const error_code&, std::size_t)> ReadHandler;
-    typedef boost::function<void(const error_code&, std::size_t)> WriteHandler;
+	typedef boost::function<void(error_code const&)>              ConnectHandler;
+	typedef boost::function<void(error_code const&)>              HandshakeHandler;
+	typedef boost::function<void(error_code const&, std::size_t const)> ReadHandler;
+	typedef boost::function<void(error_code const&, std::size_t const)> WriteHandler;
 
     socket_base();
     virtual ~socket_base();
 
     virtual io_service& get_io_service() = 0;
     virtual lowest_layer_type& lowest_layer() = 0;
-    virtual const std::string service_protocol() const = 0;
+    virtual std::string service_protocol() const = 0;
 
     virtual error_code& connect(endpoint_type&, error_code&) = 0;
     virtual void async_connect(endpoint_type&, ConnectHandler) = 0;
@@ -60,16 +60,16 @@ struct socket_base : boost::noncopyable{
     virtual void async_handshake(HandshakeHandler) = 0;
 #endif
 
-    virtual std::size_t read_some(const mutable_buffer&, error_code&) = 0;
-    virtual std::size_t write_some(const const_buffer&, error_code&) = 0;
-    virtual std::size_t write_some(const consuming_buffer&, error_code&) = 0;
+	virtual std::size_t read_some(mutable_buffer const&, error_code&) = 0;
+	virtual std::size_t write_some(const_buffer const&, error_code&) = 0;
+	virtual std::size_t write_some(consuming_buffer const&, error_code&) = 0;
 
-    virtual void async_read_some(const mutable_buffer&, ReadHandler) = 0;
-    virtual void async_write_some(const const_buffer&, WriteHandler) = 0;
-    virtual void async_write_some(const consuming_buffer&, WriteHandler) = 0;
+	virtual void async_read_some(mutable_buffer const&, ReadHandler) = 0;
+	virtual void async_write_some(const_buffer const&, WriteHandler) = 0;
+	virtual void async_write_some(consuming_buffer const&, WriteHandler) = 0;
 
     virtual void close() = 0;
-    virtual void shutdown(shutdown_type what) = 0;
+	virtual void shutdown(shutdown_type const what) = 0;
 };
 
 // TCP・SSLに共通の設定
@@ -79,7 +79,7 @@ public:
     socket_common(io_service& io_service);
     
 #ifdef USE_SSL_BOOSTCONNECT
-    socket_common(io_service& io_service,context_type& ctx);
+    socket_common(io_service& io_service, context_type& ctx);
 #endif
 
     virtual ~socket_common();
@@ -87,12 +87,12 @@ public:
     lowest_layer_type& lowest_layer();
     io_service& get_io_service();
 
-    std::size_t read_some(const mutable_buffer& buf, error_code& ec);
-    std::size_t write_some(const const_buffer& buf, error_code& ec);
-    std::size_t write_some(const consuming_buffer& buf, error_code& ec);
-    void async_read_some(const mutable_buffer& buf, ReadHandler handler);
-    void async_write_some(const const_buffer& buf, WriteHandler handler);
-    void async_write_some(const consuming_buffer& buf, WriteHandler handler);
+	std::size_t read_some(mutable_buffer const& buf, error_code& ec);
+	std::size_t write_some(const_buffer const& buf, error_code& ec);
+	std::size_t write_some(consuming_buffer const& buf, error_code& ec);
+	void async_read_some(mutable_buffer const& buf, ReadHandler handler);
+	void async_write_some(const_buffer const& buf, WriteHandler handler);
+	void async_write_some(consuming_buffer const& buf, WriteHandler handler);
 
 protected:
     Socket socket_;

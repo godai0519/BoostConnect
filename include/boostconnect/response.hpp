@@ -11,21 +11,25 @@
 #include <string>
 #include <map>
 #include <boost/noncopyable.hpp>
+#include <boost/fusion/sequence/io/out.hpp>
 
 namespace bstcon{
 
-struct response : boost::noncopyable
+struct response
 {
     typedef std::string string_type;
     typedef std::map<string_type,string_type> header_type;
+    
+    response(){ end_flag_ = 0; }
 
-    int status_code;
     string_type http_version;
-    string_type status_message;
+    int status_code;
+    string_type reason_phrase;
     header_type header;
     string_type body;
-};
 
+    int end_flag_;
+};
 } // namespace bstcon
 
 #endif

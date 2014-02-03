@@ -9,19 +9,18 @@
 #define BOOSTCONNECT_CLIENT_HPP
 
 #include <boost/asio.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "application_layer/socket_base.hpp"
-#include "application_layer/tcp_socket.hpp"
-#include "application_layer/ssl_socket.hpp"
 #include "connection_type/connection_base.hpp"
-#include "connection_type/async_connection.hpp"
-#include "connection_type/sync_connection.hpp"
 
 namespace bstcon{
 
-//複数の通信を同時に要求した際の保証はしない
-class client : boost::noncopyable{
+template<typename Socket, typename Connection, typename Protocol>
+class client : boost::noncopyable, public boost::enable_shared_from_this<client<Socket, Connection, Protocol>>{
 public:
     typedef boost::asio::io_service             io_service;
     typedef boost::system::error_code           error_code;
@@ -29,37 +28,71 @@ public:
     typedef boost::shared_ptr<bstcon::response> response_type;
 
     typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
-    typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
-    typedef bstcon::connection_type::connection_base::ConnectionHandler ConnectionHandler;
-   
-    //TCP
-    client(io_service &io_service, const connection_type::connection_type& connection_type = connection_type::sync);
-    
+	typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
+	typedef boost::shared_ptr<Protocol>                                 protocol_ptr;
+
+	typedef boost::function<void(protocol_ptr const&, error_code const&)> ConnectionHandler;
+	//typedef bstcon::connection_type::connection_base::ConnectionHandler ConnectionHandler;
+
 #ifdef USE_SSL_BOOSTCONNECT
-    //SSL
-    typedef boost::asio::ssl::context context;
-    client(io_service &io_service, context &ctx, const connection_type::connection_type& connection_type = connection_type::sync);
+	typedef boost::asio::ssl::context context;
+	client(io_service &io_service, context &ctx)
+		: io_service_(io_service), ctx_(&ctx)
+	{
+	}
+
+	client(io_service &io_service)
+		: io_service_(io_service), ctx_(boost::none)
+	{
+	}
+#else
+	client(io_service &io_service)
+		: io_service_(io_service)
+	{
+	}
 #endif
-    
-    template<typename T>
-    connection_ptr operator() (
-        const T& host,
-        ConnectionHandler handler
-        );
 
-    const std::string service_protocol() const;
-    void set_connection_type(const connection_type::connection_type& connection_type);
+	virtual ~client() = default;
+        
+    //template<typename T>
+	//std::future<protocol_ptr> operator() (T const& host, ConnectionHandler const& handler)
+	std::future<protocol_ptr> operator() (std::string const& host, ConnectionHandler const& handler = ConnectionHandler())
+	{
+		const auto p = boost::make_shared<std::promise<protocol_ptr>>();
+		auto self = shared_from_this();
+		create_connection()->connect(
+			host, 
+			[self, p, handler](connection_ptr const& connection, error_code const& ec)
+			{
+                auto protocol = boost::make_shared<Protocol>(connection);
+                if(handler) handler(protocol, ec);
+				p->set_value(std::move(protocol));
+				return;
+			});
 
-protected:
-    inline socket_ptr     create_socket()      const;
-    inline connection_ptr crerate_connection() const;
+		return p->get_future();
+	}
 
 private:
+    inline socket_ptr create_socket() const
+	{
 #ifdef USE_SSL_BOOSTCONNECT
-    context *ctx_;
+		if(ctx_)
+			return boost::make_shared<Socket>(io_sevice_, **ctx_);
+		else
+#endif
+			return boost::make_shared<Socket>(io_service_);
+	}
+	
+    inline connection_ptr create_connection() const
+	{
+		return boost::make_shared<Connection>(create_socket());
+	}
+
+#ifdef USE_SSL_BOOSTCONNECT
+    boost::optional<context*> ctx_;
 #endif
     boost::asio::io_service& io_service_;
-    connection_type::connection_type connection_type_;
 };
 
 } // namespace bstcon

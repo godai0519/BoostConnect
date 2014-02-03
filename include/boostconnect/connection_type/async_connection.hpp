@@ -21,20 +21,19 @@ public:
     explicit async_connection(const boost::shared_ptr<application_layer::socket_base>& socket);
     virtual ~async_connection();
 
-    void close();
-    
-    connection_ptr connect(const std::string& host, ConnectionHandler handler);
-    connection_ptr connect(const endpoint_type& ep, ConnectionHandler handler);
+	connection_ptr connect(const std::string&, ConnectionHandler);
+	connection_ptr connect(const endpoint_type&, ConnectionHandler);
 
-    std::future<response_type> send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler);
+	std::future<std::string> read(ReadHandler handler = ReadHandler());
+	std::future<std::string> read_size(const std::size_t size, ReadHandler handler = ReadHandler());
+	std::future<std::string> read_until(const std::string& until, ReadHandler handler = ReadHandler());
+	
+	std::future<std::size_t> write(const boost::shared_ptr<boost::asio::streambuf>& buf, WriteHandler handler = WriteHandler());
 
 private:
-    void handle_resolve(boost::asio::ip::tcp::resolver::iterator ep_iterator, const boost::system::error_code& ec, boost::shared_ptr<boost::asio::ip::tcp::resolver>, ConnectionHandler handler);
+	void handle_connect(const error_code& ec, ConnectionHandler handler);
 
-    void handle_connect(const boost::system::error_code& ec, ConnectionHandler handler);
-    void handle_write(const boost::shared_ptr<std::promise<response_type>> p, boost::shared_ptr<boost::asio::streambuf> buf, const boost::system::error_code& ec, EndHandler end_handler, ChunkHandler chunk_handler);
-
-    void handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec, EndHandler end_handler);
+	boost::shared_ptr<boost::asio::streambuf> read_buf_;
 };
 
 } // namespace connection_type

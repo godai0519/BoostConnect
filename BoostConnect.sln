@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boostconnect", "include\boostconnect\boostconnect.vcxproj", "{16641C79-954C-4833-80D4-64FDC908700B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "example\server\server.vcxproj", "{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}"
@@ -49,7 +51,6 @@ Global
 		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Debug|Win32.Build.0 = Debug|Win32
 		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Debug|x64.ActiveCfg = Debug|x64
-		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Debug|x64.Build.0 = Debug|x64
 		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Release|Win32.ActiveCfg = Release|Win32
 		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Release|Win32.Build.0 = Release|Win32
 		{CEE6A21B-6C95-4FF8-9A6D-281DFE42AA2B}.Release|x64.ActiveCfg = Release|x64
@@ -73,7 +74,6 @@ Global
 		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Debug|Win32.Build.0 = Debug|Win32
 		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Debug|x64.ActiveCfg = Debug|x64
-		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Debug|x64.Build.0 = Debug|x64
 		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Release|Win32.ActiveCfg = Release|Win32
 		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Release|Win32.Build.0 = Release|Win32
 		{BB6E1E29-8C8E-49EB-BBDA-3F6AB663CC9B}.Release|x64.ActiveCfg = Release|x64
@@ -81,7 +81,6 @@ Global
 		{E0F901D6-7D50-458C-93BD-70DD5B4E5D6A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{E0F901D6-7D50-458C-93BD-70DD5B4E5D6A}.Debug|Win32.Build.0 = Debug|Win32
 		{E0F901D6-7D50-458C-93BD-70DD5B4E5D6A}.Debug|x64.ActiveCfg = Debug|x64
-		{E0F901D6-7D50-458C-93BD-70DD5B4E5D6A}.Debug|x64.Build.0 = Debug|x64
 		{E0F901D6-7D50-458C-93BD-70DD5B4E5D6A}.Release|Win32.ActiveCfg = Release|Win32
 		{E0F901D6-7D50-458C-93BD-70DD5B4E5D6A}.Release|Win32.Build.0 = Release|Win32
 		{E0F901D6-7D50-458C-93BD-70DD5B4E5D6A}.Release|x64.ActiveCfg = Release|x64

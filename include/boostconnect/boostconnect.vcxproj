@@ -27,21 +27,8 @@
     <ClInclude Include="connection_type\async_connection.hpp" />
     <ClInclude Include="connection_type\connection_base.hpp" />
     <ClInclude Include="connection_type\sync_connection.hpp" />
-    <ClInclude Include="content\binary.hpp" />
-    <ClInclude Include="content\content_base.hpp" />
-    <ClInclude Include="content\multipart.hpp" />
-    <ClInclude Include="content\multipart_form_data.hpp" />
-    <ClInclude Include="content\multipart_mixed.hpp" />
-    <ClInclude Include="content\text.hpp" />
-    <ClInclude Include="content\urlencoded.hpp" />
-    <ClInclude Include="request.hpp" />
-    <ClInclude Include="response.hpp" />
-    <ClInclude Include="server.hpp" />
-    <ClInclude Include="session\http_session.hpp" />
-    <ClInclude Include="session\session_base.hpp" />
-    <ClInclude Include="utility\percent_encoder.hpp" />
-    <ClInclude Include="utility\radix.hpp" />
-    <ClInclude Include="utility\syntax.hpp" />
+    <ClInclude Include="protocol_type\http.hpp" />
+    <ClInclude Include="protocol_type\protocol_base.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="application_layer\impl\socket_base.ipp" />
@@ -50,20 +37,8 @@
     <None Include="connection_type\impl\async_connection.ipp" />
     <None Include="connection_type\impl\connection_base.ipp" />
     <None Include="connection_type\impl\sync_connection.ipp" />
-    <None Include="content\impl\binary.ipp" />
-    <None Include="content\impl\content_base.ipp" />
-    <None Include="content\impl\multipart.ipp" />
-    <None Include="content\impl\multipart_form_data.ipp" />
-    <None Include="content\impl\multipart_mixed.ipp" />
-    <None Include="content\impl\text.ipp" />
-    <None Include="content\impl\urlencoded.ipp" />
     <None Include="impl\client.ipp" />
-    <None Include="impl\server.ipp" />
-    <None Include="session\impl\http_session.ipp" />
-    <None Include="session\impl\session_base.ipp" />
-    <None Include="utility\impl\percent_encoder.ipp" />
-    <None Include="utility\impl\radix.ipp" />
-    <None Include="utility\impl\syntax.ipp" />
+    <None Include="protocol_type\impl\protocol_base.ipp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\boostconnect.cpp" />
@@ -83,7 +58,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>CTP_Nov2013</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -118,7 +93,7 @@
     <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_54;C:\openssl\build\debug\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_53;C:\openssl\build\debug\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_55;C:\openssl\build\debug\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>C:\boost\lib;C:\openssl\build\debug\lib;$(LibraryPath)</LibraryPath>

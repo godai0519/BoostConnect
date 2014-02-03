@@ -8,12 +8,7 @@
 #ifndef BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
 #define BOOSTCONNECT_CONNECTTYPE_SYNC_CONNECTION_IPP
 
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include "../sync_connection.hpp"
 
 namespace bstcon{
@@ -21,81 +16,189 @@ namespace connection_type{
 
 sync_connection::sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
 {
-    socket_ = socket;
+	socket_ = socket;
+	read_buf_ = boost::make_shared<boost::asio::streambuf>();
+	return;
 }
 
 sync_connection::~sync_connection()
 {
 }
-    
+
 sync_connection::connection_ptr sync_connection::connect(const std::string& host, ConnectionHandler handler)
 {
-    host_ = host;
-    boost::asio::ip::tcp::resolver resolver(socket_->get_io_service());
-    boost::asio::ip::tcp::resolver::query query(host, socket_->service_protocol());
-        
-    // Connect Start
-    error_code ec;
-    boost::asio::ip::tcp::resolver::iterator ep_iterator = resolver.resolve(query, ec);
-    boost::asio::connect(socket_->lowest_layer(), ep_iterator, ec);
+	boost::asio::ip::tcp::resolver resolver(socket_->get_io_service());
+	boost::asio::ip::tcp::resolver::query query(host, socket_->service_protocol());
+
+	// Connect Start
+	error_code ec;
+	boost::asio::ip::tcp::resolver::iterator ep_iterator = resolver.resolve(query, ec);
+	boost::asio::connect(socket_->lowest_layer(), ep_iterator, ec);
 
 #ifdef USE_SSL_BOOSTCONNECT
-    socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
+	socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
 #else
-    socket_->handshake();
+	socket_->handshake();
 #endif
 
-    handler(shared_from_this(), ec);
-    return this->shared_from_this();
+	handler(shared_from_this(), ec);
+	return this->shared_from_this();
 }
 
 sync_connection::connection_ptr sync_connection::connect(const endpoint_type& ep, ConnectionHandler handler)
 {
-    host_ = ep.address().to_string();
-
-    // Connect Start
-    error_code ec;
-    socket_->lowest_layer().connect(ep, ec);
+	// Connect Start
+	error_code ec;
+	socket_->lowest_layer().connect(ep, ec);
 #ifdef USE_SSL_BOOSTCONNECT
-    socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
+	socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
 #else
-    socket_->handshake();
+	socket_->handshake();
 #endif
 
-    handler(shared_from_this(), ec);
-    return this->shared_from_this();
+	handler(shared_from_this(), ec);
+	return this->shared_from_this();
 }
 
-auto sync_connection::send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler) -> std::future<response_type>
+std::future<std::size_t> sync_connection::write(const boost::shared_ptr<boost::asio::streambuf>& buf, WriteHandler handler)
 {
-    const auto p = boost::make_shared<std::promise<response_type>>();
+	error_code ec;
+	const std::size_t wrote_size = boost::asio::write(*socket_, *buf, ec);
 
-    // TODO: 要検討コード
-    reader_.reset(new reader());
-    // TODO END
+	if (handler) handler(wrote_size);
 
-    error_code ec;
-    boost::asio::write(*socket_, *buf, ec);
-
-    if(!ec)
-    {
-        reader_->read_starter(
-            *socket_,
-            boost::bind(&sync_connection::handle_read, shared_from_this(), p, boost::asio::placeholders::error, end_handler),
-            chunk_handler);
-    }
-
-    return p->get_future();
+	std::promise<std::size_t> p;
+	p.set_value(wrote_size);
+	return p.get_future();
 }
 
-void sync_connection::handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec, EndHandler end_handler)
+std::future<std::string> sync_connection::read(ReadHandler handler)
 {
-    // Event notification to std::future made by std::promise
-    end_handler(reader_->get_response(), ec);
-    p->set_value(reader_->get_response());
-    reader_.reset();
-    return;
+	error_code ec;
+	const std::size_t read_size = boost::asio::read(*socket_, *read_buf_, ec);
+
+	const boost::asio::streambuf::const_buffers_type buf = read_buf_->data();
+	const std::string received(boost::asio::buffers_begin(buf), boost::asio::buffers_begin(buf) + read_size);
+	read_buf_->consume(read_size);
+
+	if (handler) handler(received);
+
+	std::promise<std::string> p;
+	p.set_value(received);
+	return p.get_future();
 }
+
+std::future<std::string> sync_connection::read_size(const std::size_t size, ReadHandler handler)
+{
+	error_code ec;
+
+    if(read_buf_->size() < size)
+        boost::asio::read(*socket_, *read_buf_, boost::asio::transfer_exactly(size - read_buf_->size()), ec);
+
+	const boost::asio::streambuf::const_buffers_type buf = read_buf_->data();
+	const std::string received(boost::asio::buffers_begin(buf), boost::asio::buffers_begin(buf) + size);
+	read_buf_->consume(size);
+
+	if (handler) handler(received);
+
+	std::promise<std::string> p;
+	p.set_value(received);
+	return p.get_future();
+}
+
+std::future<std::string> sync_connection::read_until(const std::string& until, ReadHandler handler)
+{
+	error_code ec;
+	const std::size_t read_size = boost::asio::read_until(*socket_, *read_buf_, until, ec);
+
+	const boost::asio::streambuf::const_buffers_type buf = read_buf_->data();
+	const std::string received(boost::asio::buffers_begin(buf), boost::asio::buffers_begin(buf) + read_size);
+	read_buf_->consume(read_size);
+
+	if (handler) handler(received);
+
+	std::promise<std::string> p;
+	p.set_value(received);
+	return p.get_future();
+}
+
+//sync_connection::sync_connection(const boost::shared_ptr<application_layer::socket_base>& socket)
+//{
+//    socket_ = socket;
+//}
+//
+//sync_connection::~sync_connection()
+//{
+//}
+//    
+//sync_connection::connection_ptr sync_connection::connect(const std::string& host, ConnectionHandler handler)
+//{
+//    host_ = host;
+//    boost::asio::ip::tcp::resolver resolver(socket_->get_io_service());
+//    boost::asio::ip::tcp::resolver::query query(host, socket_->service_protocol());
+//        
+//    // Connect Start
+//    error_code ec;
+//    boost::asio::ip::tcp::resolver::iterator ep_iterator = resolver.resolve(query, ec);
+//    boost::asio::connect(socket_->lowest_layer(), ep_iterator, ec);
+//
+//#ifdef USE_SSL_BOOSTCONNECT
+//    socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
+//#else
+//    socket_->handshake();
+//#endif
+//
+//    handler(shared_from_this(), ec);
+//    return this->shared_from_this();
+//}
+//
+//sync_connection::connection_ptr sync_connection::connect(const endpoint_type& ep, ConnectionHandler handler)
+//{
+//    host_ = ep.address().to_string();
+//
+//    // Connect Start
+//    error_code ec;
+//    socket_->lowest_layer().connect(ep, ec);
+//#ifdef USE_SSL_BOOSTCONNECT
+//    socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
+//#else
+//    socket_->handshake();
+//#endif
+//
+//    handler(shared_from_this(), ec);
+//    return this->shared_from_this();
+//}
+//
+//auto sync_connection::send(boost::shared_ptr<boost::asio::streambuf> buf, EndHandler end_handler, ChunkHandler chunk_handler) -> std::future<response_type>
+//{
+//    const auto p = boost::make_shared<std::promise<response_type>>();
+//
+//    // TODO: 要検討コード
+//    reader_.reset(new reader());
+//    // TODO END
+//
+//    error_code ec;
+//    boost::asio::write(*socket_, *buf, ec);
+//
+//    if(!ec)
+//    {
+//        reader_->read_starter(
+//            *socket_,
+//            boost::bind(&sync_connection::handle_read, shared_from_this(), p, boost::asio::placeholders::error, end_handler),
+//            chunk_handler);
+//    }
+//
+//    return p->get_future();
+//}
+//
+//void sync_connection::handle_read(const boost::shared_ptr<std::promise<response_type>> p, const error_code& ec, EndHandler end_handler)
+//{
+//    // Event notification to std::future made by std::promise
+//    end_handler(reader_->get_response(), ec);
+//    p->set_value(reader_->get_response());
+//    reader_.reset();
+//    return;
+//}
 
 } // namespace connection_type
 } // namespace bstcon

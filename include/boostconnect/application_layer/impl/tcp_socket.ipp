@@ -14,12 +14,12 @@
 namespace bstcon{
 namespace application_layer{
     
-tcp_socket::tcp_socket(io_service& io_service) : my_base(io_service)
+tcp_socket::tcp_socket(io_service& io_service) : socket_common(io_service)
 {
 }
 tcp_socket::~tcp_socket(){}
    
-const std::string tcp_socket::service_protocol() const
+std::string tcp_socket::service_protocol() const
 {
     return "80";
 }
