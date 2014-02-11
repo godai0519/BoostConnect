@@ -85,12 +85,12 @@ std::future<std::string> async_connection::read(ReadHandler handler)
 	const auto p = boost::make_shared<std::promise<std::string>>();
 	const auto self = shared_from_this();
     
-	boost::asio::async_read(*socket_, *read_buf_,
-		[this, self, p, handler](const error_code& ec, const std::size_t sz)
+	boost::asio::async_read(*socket_, *read_buf_, boost::asio::transfer_all(),
+		[this, self, p, handler](const error_code& ec, const std::size_t)
 		{
 			const boost::asio::streambuf::const_buffers_type buf = read_buf_->data();
-			const std::string received(boost::asio::buffers_begin(buf), boost::asio::buffers_begin(buf) + sz);
-			read_buf_->consume(sz);
+			const std::string received(boost::asio::buffers_begin(buf), boost::asio::buffers_end(buf));
+			read_buf_->consume(received.size());
 
 			if (handler) handler(received);
 			p->set_value(received);

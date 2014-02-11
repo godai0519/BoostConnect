@@ -75,11 +75,11 @@ std::future<std::size_t> sync_connection::write(const boost::shared_ptr<boost::a
 std::future<std::string> sync_connection::read(ReadHandler handler)
 {
 	error_code ec;
-	const std::size_t read_size = boost::asio::read(*socket_, *read_buf_, ec);
+	boost::asio::read(*socket_, *read_buf_, boost::asio::transfer_all(), ec);
 
 	const boost::asio::streambuf::const_buffers_type buf = read_buf_->data();
-	const std::string received(boost::asio::buffers_begin(buf), boost::asio::buffers_begin(buf) + read_size);
-	read_buf_->consume(read_size);
+	const std::string received(boost::asio::buffers_begin(buf), boost::asio::buffers_end(buf));
+	read_buf_->consume(received.size());
 
 	if (handler) handler(received);
 

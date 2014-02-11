@@ -180,16 +180,31 @@ private:
         }
 
         auto self = shared_from_this();
-        connection_->read_size(
-            body_size,
-            [self, promise, response, handler](std::string const& body)
-            {
-                response->body = body;
-                if(handler) handler(response);
-                promise->set_value(*response);
-                return;
-            }
-        );
+        if(body_size > 0)
+        {
+            connection_->read_size(
+                body_size,
+                [self, promise, response, handler](std::string const& body)
+                {
+                    response->body = body;
+                    if(handler) handler(response);
+                    promise->set_value(*response);
+                    return;
+                }
+            );
+        }
+        else
+        {
+            connection_->read(
+                [self, promise, response, handler](std::string const& body)
+                {
+                    response->body = body;
+                    if(handler) handler(response);
+                    promise->set_value(*response);
+                    return;
+                }
+            );
+        }
 
         return;
     }
@@ -210,17 +225,23 @@ private:
 
     void read_chunk(boost::shared_ptr<std::promise<bstcon::response>> const& promise, boost::shared_ptr<bstcon::response> const& response, std::size_t const sz, RequestHandler handler)
     {
+        auto self = shared_from_this();
         if(sz == 0)
         {
-            if(handler) handler(response);
-            promise->set_value(*response);
+            connection_->read_size(
+                2,
+                [self, promise, response, handler](std::string const&)
+                {
+                    if(handler) handler(response);
+                    promise->set_value(*response);
 
-            connection_->read_line();
+                    return;
+                }
+            );
 
             return;
         }
 
-        auto self = shared_from_this();
         connection_->read_size(
             sz+2,
             [self, promise, response, handler](std::string const& body)
