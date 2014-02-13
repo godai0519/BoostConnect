@@ -12,12 +12,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "example\server\se
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{085DB4C9-B43F-4A7E-9713-011DD89BE532}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "async_client", "example\client\async_client\async_client.vcxproj", "{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "async_client", "example\async_client\async_client.vcxproj", "{57EBC71B-77DA-4FF5-B98E-2DDF2F737D14}"
 	ProjectSection(ProjectDependencies) = postProject
 		{16641C79-954C-4833-80D4-64FDC908700B} = {16641C79-954C-4833-80D4-64FDC908700B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sync_client", "example\client\sync_client\sync_client.vcxproj", "{F5E52272-9867-4F53-A4DF-AA0AE2C91198}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sync_client", "example\sync_client\sync_client.vcxproj", "{F5E52272-9867-4F53-A4DF-AA0AE2C91198}"
 	ProjectSection(ProjectDependencies) = postProject
 		{16641C79-954C-4833-80D4-64FDC908700B} = {16641C79-954C-4833-80D4-64FDC908700B}
 	EndProjectSection
