@@ -78,7 +78,7 @@ private:
 	{
 #ifdef USE_SSL_BOOSTCONNECT
 		if(ctx_)
-			return boost::make_shared<Socket>(io_sevice_, **ctx_);
+			return boost::make_shared<Socket>(io_service_, **ctx_);
 		else
 #endif
 			return boost::make_shared<Socket>(io_service_);
