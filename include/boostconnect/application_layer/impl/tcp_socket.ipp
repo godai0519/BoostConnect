@@ -47,16 +47,6 @@ void tcp_socket::async_handshake(handshake_type, HandshakeHandler handler)
     handler(error_code());
     return;
 }
-#else
-void tcp_socket::handshake()
-{
-    return;
-}
-void tcp_socket::async_handshake(HandshakeHandler handler)
-{
-    handler(error_code());
-    return;
-}
 #endif
 
 //TCPレイヤーの処理

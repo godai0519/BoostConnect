@@ -55,9 +55,6 @@ struct socket_base : boost::noncopyable{
 #ifdef USE_SSL_BOOSTCONNECT
     virtual void handshake(handshake_type) = 0;
     virtual void async_handshake(handshake_type, HandshakeHandler) = 0;
-#else
-    virtual void handshake() = 0;
-    virtual void async_handshake(HandshakeHandler) = 0;
 #endif
 
 	virtual std::size_t read_some(mutable_buffer const&, error_code&) = 0;

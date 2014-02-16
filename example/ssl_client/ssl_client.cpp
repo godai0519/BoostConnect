@@ -1,75 +1,53 @@
 ﻿#define USE_SSL_BOOSTCONNECT
-#include <iostream>
-#include <boostconnect/connection_type/async_connection.hpp>
 #include <boostconnect/client.hpp>
+#include <boostconnect/connection_type/async_connection.hpp>
+#include <boostconnect/application_layer/ssl_socket.hpp>
+#include <boostconnect/protocol_type/http.hpp>
 
 int main()
 {
-    typedef boost::system::error_code error_code;
-    typedef bstcon::client::response_type response_type; // = boost::shared_ptr<bstcon::response>
-    typedef bstcon::client::connection_ptr connection_ptr;
+    bstcon::request request;
+    request.method = "GET";
+    request.path = "/";
+    request.http_version = "1.1";
+    request.header["Host"] = "www.google.co.jp";
+    request.header["Connection"] = "Keep-Alive";
+    request.body = "";
     
-    // Make: request header and body
-    boost::shared_ptr<boost::asio::streambuf> request_keep(new boost::asio::streambuf());
-    {
-        std::ostream os(request_keep.get());
-        os << "GET / HTTP/1.1\r\n";
-        os << "Host: www.google.co.jp\r\n";
-        os << "Connection: Keep-Alive\r\n";
-        os << "\r\n";
-    }
-    boost::shared_ptr<boost::asio::streambuf> request_close(new boost::asio::streambuf());
-    {
-        std::ostream os(request_close.get());
-        os << "GET / HTTP/1.1\r\n";
-        os << "Host: www.google.co.jp\r\n";
-        os << "Connection: close\r\n";
-        os << "\r\n";
-    }
-
-    // Make: client using sync and SSL
     // ~~~ Difference is Just this! ~~~
+    typedef bstcon::client<bstcon::application_layer::ssl_socket, bstcon::connection_type::async_connection, bstcon::protocol_type::http> client_type;
     boost::asio::io_service io_service;
-    boost::asio::ssl::context ctx(io_service, boost::asio::ssl::context_base::sslv3_client);
-    bstcon::client client(
-        io_service,
-        ctx,
-        bstcon::connection_type::sync // important!
-        );
+    boost::asio::ssl::context ctx(io_service, boost::asio::ssl::context_base::sslv3_client); //SSL3
+    auto client = boost::make_shared<client_type>(io_service, ctx); // Use context ref
     // ~~~ Difference end ~~~
-    
-    // Challenge SSL connection establishment
-    connection_ptr connection = client(
-        std::string("www.google.co.jp"),
-        [](bstcon::client::connection_ptr connection_inner, boost::system::error_code ec)->void
+
+    (*client)(
+        "www.google.co.jp",
+        [&request](boost::shared_ptr<bstcon::protocol_type::http> const& service, boost::system::error_code const& ec)
         {
-            if(ec) throw;  // Bad connection
-        }
-    );
+            service->request(
+                request,
+                [&request, service](boost::shared_ptr<bstcon::response> const& response1)
+                {
+                    std::cout << response1->body << std::endl;
 
-    {
-        // Send First request
-        std::future<response_type> f = connection->send(request_keep);
-        const response_type response = f.get();
+                    request.header["Connection"] = "close";
+                    service->request(
+                        request,
+                        [](boost::shared_ptr<bstcon::response> const& response2)
+                        {
+                            std::cout << response2->body << std::endl;
+                            return;
+                        });
 
-        // Show first response
-        std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
-        std::cout << response->body + "\n\n" <<std::endl;
-    }
+                    return;
+                });
 
-    //
-    // --- Connection Keeping ---
-    //
+            return;
+        });
 
-    {
-        // Send Second request (Continue request)
-        std::future<response_type> f = connection->send(request_close);
-        const response_type response = f.get();
-                    
-        // Show second response
-        std::cout << "Status Code: " << response->status_code << " " << response->status_message << std::endl;
-        std::cout << response->body + "\n\n" << std::endl;
-    }
+    io_service.run();
     
     return 0;
 }
+

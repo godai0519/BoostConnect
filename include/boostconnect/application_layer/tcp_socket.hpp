@@ -30,9 +30,6 @@ public:
     //TCP通信ではHandshakeを行わない -> Handlerを直接呼び出す
     void handshake(handshake_type);
     void async_handshake(handshake_type, HandshakeHandler handler);
-#else
-    void handshake();
-    void async_handshake(HandshakeHandler handler);
 #endif
 
     //TCPレイヤーの処理
