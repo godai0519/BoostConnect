@@ -37,7 +37,6 @@
     <None Include="connection_type\impl\async_connection.ipp" />
     <None Include="connection_type\impl\connection_base.ipp" />
     <None Include="connection_type\impl\sync_connection.ipp" />
-    <None Include="impl\client.ipp" />
     <None Include="protocol_type\impl\protocol_base.ipp" />
   </ItemGroup>
   <ItemGroup>

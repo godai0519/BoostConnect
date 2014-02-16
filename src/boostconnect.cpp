@@ -8,9 +8,6 @@
 
 #include <boostconnect/config.hpp>
 
-//#include <boostconnect/request.hpp>
-//#include <boostconnect/response.hpp>
-//
 //#include <boostconnect/utility/impl/radix.ipp>
 //#include <boostconnect/utility/impl/percent_encoder.ipp>
 //#include <boostconnect/utility/impl/syntax.ipp>
@@ -37,10 +34,4 @@
 //#include <boostconnect/session/impl/session_base.ipp>
 //#include <boostconnect/session/impl/http_session.ipp>
 //
-#include <boostconnect/client.hpp>
-
-typedef bstcon::client<bstcon::application_layer::tcp_socket, bstcon::connection_type::sync_connection, bstcon::protocol_type::http> general_client;
-boost::asio::io_service io;
-general_client gc(io);
-
 //#include <boostconnect/impl/server.ipp>

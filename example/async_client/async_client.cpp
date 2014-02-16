@@ -6,7 +6,7 @@
 
 int main()
 {
-    typedef bstcon::client<bstcon::application_layer::tcp_socket, bstcon::connection_type::sync_connection, bstcon::protocol_type::http> client_type;
+    typedef bstcon::client<bstcon::connection_type::sync_connection, bstcon::protocol_type::http> client_type;
     
     bstcon::request request;
     request.method = "GET";
@@ -16,7 +16,7 @@ int main()
     request.header["Connection"] = "Keep-Alive";
     request.body = "";
     
-    boost::asio::io_service io_service;
+    auto io_service = boost::make_shared<boost::asio::io_service>();
     auto client = boost::make_shared<client_type>(io_service);
     (*client)(
         "www.google.co.jp",
@@ -38,12 +38,14 @@ int main()
                         });
 
                     return;
-                });
+                }
+			);
 
             return;
-        });
+        }
+	);
 
-    io_service.run();
+    io_service->run();
     
     return 0;
 }

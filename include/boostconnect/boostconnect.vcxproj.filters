@@ -31,9 +31,6 @@
     <Filter Include="ヘッダー ファイル\protocol_type\impl">
       <UniqueIdentifier>{b7cefe8b-7e91-4eb1-b1c7-9e6c130fea47}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\impl">
-      <UniqueIdentifier>{21fdb41c-6026-45fc-9635-f7494ba12ca8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application_layer\socket_base.hpp">
@@ -88,9 +85,6 @@
     </None>
     <None Include="protocol_type\impl\protocol_base.ipp">
       <Filter>ヘッダー ファイル\protocol_type\impl</Filter>
-    </None>
-    <None Include="impl\client.ipp">
-      <Filter>ヘッダー ファイル\impl</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

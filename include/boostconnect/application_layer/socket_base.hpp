@@ -37,8 +37,8 @@ struct socket_base : boost::noncopyable{
     typedef boost::asio::const_buffers_1   const_buffer;
     typedef boost::asio::detail::consuming_buffers<boost::asio::const_buffer,boost::asio::basic_streambuf<>::const_buffers_type> consuming_buffer;
 
-	typedef boost::function<void(error_code const&)>              ConnectHandler;
-	typedef boost::function<void(error_code const&)>              HandshakeHandler;
+	typedef boost::function<void(error_code const&)>                    ConnectHandler;
+	typedef boost::function<void(error_code const&)>                    HandshakeHandler;
 	typedef boost::function<void(error_code const&, std::size_t const)> ReadHandler;
 	typedef boost::function<void(error_code const&, std::size_t const)> WriteHandler;
 
