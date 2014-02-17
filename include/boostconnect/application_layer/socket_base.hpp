@@ -42,8 +42,8 @@ struct socket_base : boost::noncopyable{
 	typedef boost::function<void(error_code const&, std::size_t const)> ReadHandler;
 	typedef boost::function<void(error_code const&, std::size_t const)> WriteHandler;
 
-    socket_base();
-    virtual ~socket_base();
+    socket_base() = default;
+    virtual ~socket_base() = default;
 
     virtual io_service& get_io_service() = 0;
     virtual lowest_layer_type& lowest_layer() = 0;
@@ -73,23 +73,23 @@ struct socket_base : boost::noncopyable{
 template<class Socket>
 class socket_common : public socket_base{
 public:
-    socket_common(io_service& io_service);
+	socket_common(io_service& io_service) : socket_(io_service){}
     
 #ifdef USE_SSL_BOOSTCONNECT
-    socket_common(io_service& io_service, context_type& ctx);
+	socket_common(io_service& io_service, context_type& ctx) : socket_(io_service, ctx){}
 #endif
 
-    virtual ~socket_common();
+    virtual ~socket_common() = default;
     
-    lowest_layer_type& lowest_layer();
-    io_service& get_io_service();
+    lowest_layer_type& lowest_layer(){ return socket_.lowest_layer(); }
+    io_service& get_io_service() { return socket_.get_io_service(); }
 
-	std::size_t read_some(mutable_buffer const& buf, error_code& ec);
-	std::size_t write_some(const_buffer const& buf, error_code& ec);
-	std::size_t write_some(consuming_buffer const& buf, error_code& ec);
-	void async_read_some(mutable_buffer const& buf, ReadHandler handler);
-	void async_write_some(const_buffer const& buf, WriteHandler handler);
-	void async_write_some(consuming_buffer const& buf, WriteHandler handler);
+	std::size_t read_some(mutable_buffer const& buf, error_code& ec)   { return socket_.read_some(buf, ec);  }
+	std::size_t write_some(const_buffer const& buf, error_code& ec)    { return socket_.write_some(buf, ec); }
+	std::size_t write_some(consuming_buffer const& buf, error_code& ec){ return socket_.write_some(buf, ec); }
+	void async_read_some(mutable_buffer const& buf, ReadHandler handler)    { socket_.async_read_some(buf, handler); }
+	void async_write_some(const_buffer const& buf, WriteHandler handler)    { socket_.async_write_some(buf, handler); }
+	void async_write_some(consuming_buffer const& buf, WriteHandler handler){ socket_.async_write_some(buf, handler); }
 
 protected:
     Socket socket_;
@@ -97,9 +97,5 @@ protected:
 
 } // namespace application_layer
 } // namespace bstcon
-
-#ifdef BOOSTCONNECT_LIB_BUILD
-#include "impl/socket_base.ipp"
-#endif
 
 #endif

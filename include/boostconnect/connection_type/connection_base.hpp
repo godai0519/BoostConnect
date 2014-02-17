@@ -32,8 +32,8 @@ public:
     typedef boost::function<void(const std::size_t)> WriteHandler;
     typedef boost::function<void(const std::string&)> ReadHandler;
 
-    connection_base();
-    virtual ~connection_base();
+    connection_base() = default;
+    virtual ~connection_base() = default;
 
     virtual connection_ptr connect(const std::string&, ConnectionHandler) = 0;
     virtual connection_ptr connect(const endpoint_type&, ConnectionHandler) = 0;
@@ -64,9 +64,5 @@ class connection_common : public connection_base, public boost::enable_shared_fr
 
 } // namespace connection_type
 } // namespace bstcon
-
-#ifdef BOOSTCONNECT_LIB_BUILD
-#include "impl/connection_base.ipp"
-#endif
 
 #endif

@@ -71,20 +71,11 @@
     <None Include="application_layer\impl\tcp_socket.ipp">
       <Filter>ヘッダー ファイル\application_layer\impl</Filter>
     </None>
-    <None Include="application_layer\impl\socket_base.ipp">
-      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
-    </None>
     <None Include="connection_type\impl\async_connection.ipp">
       <Filter>ヘッダー ファイル\connection_type\impl</Filter>
     </None>
     <None Include="connection_type\impl\sync_connection.ipp">
       <Filter>ヘッダー ファイル\connection_type\impl</Filter>
-    </None>
-    <None Include="connection_type\impl\connection_base.ipp">
-      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
-    </None>
-    <None Include="protocol_type\impl\protocol_base.ipp">
-      <Filter>ヘッダー ファイル\protocol_type\impl</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

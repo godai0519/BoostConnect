@@ -20,8 +20,8 @@ class protocol_base : boost::noncopyable{
 public:
 	typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
-    protocol_base() {};
-    virtual ~protocol_base() {};
+    protocol_base() = default;
+    virtual ~protocol_base() = default;
 
 	connection_ptr raw_connection(){ return connection_; }
 
@@ -34,9 +34,5 @@ class protocol_common : public protocol_base, public boost::enable_shared_from_t
 
 } // namespace protocol_type
 } // namespace bstcon
-
-#ifdef BOOSTCONNECT_LIB_BUILD
-#include "impl/protocol_base.ipp"
-#endif
 
 #endif

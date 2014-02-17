@@ -20,15 +20,12 @@
 //#include <boostconnect/content/impl/multipart_mixed.ipp>
 //#include <boostconnect/content/impl/multipart_form_data.ipp>
 
-#include <boostconnect/application_layer/impl/socket_base.ipp>
 #include <boostconnect/application_layer/impl/tcp_socket.ipp>
 #include <boostconnect/application_layer/impl/ssl_socket.ipp>
 
-#include <boostconnect/connection_type/impl/connection_base.ipp>
 #include <boostconnect/connection_type/impl/async_connection.ipp>
 #include <boostconnect/connection_type/impl/sync_connection.ipp>
 
-#include <boostconnect/protocol_type/impl/protocol_base.ipp>
 #include <boostconnect/protocol_type/http.hpp>
 
 //#include <boostconnect/session/impl/session_base.ipp>

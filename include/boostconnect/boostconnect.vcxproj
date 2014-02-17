@@ -31,13 +31,10 @@
     <ClInclude Include="protocol_type\protocol_base.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="application_layer\impl\socket_base.ipp" />
     <None Include="application_layer\impl\ssl_socket.ipp" />
     <None Include="application_layer\impl\tcp_socket.ipp" />
     <None Include="connection_type\impl\async_connection.ipp" />
-    <None Include="connection_type\impl\connection_base.ipp" />
     <None Include="connection_type\impl\sync_connection.ipp" />
-    <None Include="protocol_type\impl\protocol_base.ipp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\boostconnect.cpp" />
