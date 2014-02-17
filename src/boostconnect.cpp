@@ -26,7 +26,7 @@
 #include <boostconnect/connection_type/impl/async_connection.ipp>
 #include <boostconnect/connection_type/impl/sync_connection.ipp>
 
-#include <boostconnect/protocol_type/http.hpp>
+#include <boostconnect/protocol_type/impl/http.ipp>
 
 //#include <boostconnect/session/impl/session_base.ipp>
 //#include <boostconnect/session/impl/http_session.ipp>

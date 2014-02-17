@@ -77,6 +77,9 @@
     <None Include="connection_type\impl\sync_connection.ipp">
       <Filter>ヘッダー ファイル\connection_type\impl</Filter>
     </None>
+    <None Include="protocol_type\impl\http.ipp">
+      <Filter>ヘッダー ファイル\protocol_type\impl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\boostconnect.cpp">

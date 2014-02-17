@@ -35,6 +35,7 @@
     <None Include="application_layer\impl\tcp_socket.ipp" />
     <None Include="connection_type\impl\async_connection.ipp" />
     <None Include="connection_type\impl\sync_connection.ipp" />
+    <None Include="protocol_type\impl\http.ipp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\boostconnect.cpp" />
