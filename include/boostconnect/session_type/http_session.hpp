@@ -12,8 +12,9 @@
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
-#include "session_base.hpp"
+#include <boostconnect/session_type/session_base.hpp>
 #include <boostconnect/connection_type/connection_base.hpp>
+#include <boostconnect/utility/http.hpp>
 
 namespace bstcon{
 namespace session{
@@ -25,6 +26,9 @@ public:
     typedef boost::shared_ptr<boost::asio::io_service> io_service_ptr;
     typedef boost::shared_ptr<http_session> session_ptr;
     typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
+
+    typedef bstcon::utility::http_parser    http_parser;
+    typedef bstcon::utility::http_generator http_generator;
 
     typedef boost::function<void(boost::shared_ptr<bstcon::request> const&, session_ptr const&)> RequestHandler;
     typedef boost::function<void(session_ptr const&)>                                            WriteHandler;
@@ -48,11 +52,13 @@ private:
 
     //boost::asio::deadline_timer timer_;
 
-    unsigned int   const timeout_second_;
     io_service_ptr const io_service_;
     connection_ptr const connection_;
     RequestHandler const request_handler_;
     CloseHandler   const close_handler_;
+    unsigned int   const timeout_second_;
+    http_parser    const parser_;
+    http_generator const generator_;
 };
 
 } // namespace session

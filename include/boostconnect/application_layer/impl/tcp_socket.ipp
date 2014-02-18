@@ -9,16 +9,14 @@
 #define BOOSTCONNECT_APPLAYER_TCP_SOCKET_IPP
 
 #include <boost/asio.hpp>
-#include "../tcp_socket.hpp"
+#include <boostconnect/application_layer/tcp_socket.hpp>
 
 namespace bstcon{
 namespace application_layer{
-    
-tcp_socket::tcp_socket(io_service& io_service) : socket_common(io_service)
-{
-}
+
+tcp_socket::tcp_socket(io_service& io_service) : socket_common(io_service){}
 tcp_socket::~tcp_socket(){}
-   
+
 std::string tcp_socket::service_protocol() const
 {
     return "80";
@@ -30,12 +28,13 @@ tcp_socket::error_code& tcp_socket::connect(endpoint_type& begin, error_code& ec
     ec = socket_.connect(begin, ec);
     return ec;
 }
+
 void tcp_socket::async_connect(endpoint_type& begin, ConnectHandler handler)
 {
     socket_.async_connect(begin, handler);
     return;
 }
-    
+
 #ifdef USE_SSL_BOOSTCONNECT
 //TCP通信ではHandshakeを行わない -> Handlerを直接呼び出す
 void tcp_socket::handshake(handshake_type)

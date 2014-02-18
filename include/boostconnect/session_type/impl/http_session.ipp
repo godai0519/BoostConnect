@@ -8,98 +8,21 @@
 #ifndef BOOSTCONNECT_SESSION_HTTP_IPP
 #define BOOSTCONNECT_SESSION_HTTP_IPP
 
+#include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
-
-
 #include <boost/make_shared.hpp>
-#include <boost/asio.hpp>
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/karma.hpp>
-#include <boost/fusion/include/std_pair.hpp>
-
-#include "../http_session.hpp"
-#include "../../application_layer/tcp_socket.hpp"
-#include "../../application_layer/ssl_socket.hpp"
+#include <boostconnect/session_type/http_session.hpp>
+#include <boostconnect/application_layer/tcp_socket.hpp>
+#include <boostconnect/application_layer/ssl_socket.hpp>
 
 namespace bstcon{
 namespace session{
-    
-struct http_parser
-{
-    static bool parse_request_header(bstcon::request& out, std::string const& raw)
-    {
-        namespace qi = boost::spirit::qi;
-
-        auto it = raw.cbegin();
-
-        qi::parse(
-            it, raw.cend(),
-            +(qi::char_-' ') >> ' ' >> +(qi::char_-' ') >> ' ' >> +(qi::char_-"\r\n") >> "\r\n",
-            out.method, out.path, out.http_version
-            );
-
-        qi::parse(
-            it, raw.cend(),
-            *( +(qi::char_-':') >> ": " >> +(qi::char_-"\r\n") >> "\r\n" ) >> "\r\n",
-            out.header
-            );
-
-        return true;
-    }
-};
-
-struct generate
-{
-    static bool generate_response_header(std::ostream& out, bstcon::response const& source)
-    {
-        out.write("HTTP/", 5);
-        out.write(source.http_version.c_str(), source.http_version.size());
-        out.write(" ", 1);
-        out.write(std::to_string(source.status_code).c_str(), 3);
-        out.write(" ", 1);
-        out.write(source.reason_phrase.c_str(), source.reason_phrase.size());
-        out.write("\r\n", 2);
-
-        for(auto const& pair : source.header)
-        {
-            out.write(pair.first.c_str(), pair.first.size());
-            out.write(": ", 2);
-            out.write(pair.second.c_str(), pair.second.size());
-            out.write("\r\n", 2);
-        }
-        out.write("\r\n", 2);
-        return true;
-    }
-};
-
 
 http_session::http_session(io_service_ptr const& io_service, connection_ptr const& connection, unsigned int const timeout_second, RequestHandler const request_handler, CloseHandler const close_handler)
-    : io_service_(io_service), connection_(connection), timeout_second_(timeout_second), request_handler_(request_handler), close_handler_(close_handler)
+    : io_service_(io_service), connection_(connection), timeout_second_(timeout_second), request_handler_(request_handler), close_handler_(close_handler), parser_(), generator_()
 {
 }
-
-//
-//    
-//http_session::http_session(io_service& io_service, unsigned int timeout_second)
-//    : read_timer_(io_service), socket_(new bstcon::application_layer::tcp_socket(io_service)), timeout_second_(timeout_second)
-//{
-//}
-//#ifdef USE_SSL_BOOSTCONNECT
-//typedef boost::asio::ssl::context context;
-//http_session::http_session(io_service& io_service, context& ctx, unsigned int timeout_second)
-//    : read_timer_(io_service), socket_(new bstcon::application_layer::ssl_socket(io_service,ctx)), timeout_second_(timeout_second)
-//{
-//}
-//#endif
-
-//void http_session::end(CloseHandler c_handler)
-//{
-//    socket_->close();
-//
-//    c_handler(static_cast<boost::shared_ptr<session_base>>(shared_from_this()));
-//    return;
-//}
 
 void http_session::read()
 {
@@ -111,7 +34,7 @@ void http_session::read()
             //timer_.cancel();
 
             auto const request = boost::make_shared<bstcon::request>();
-            http_parser::parse_request_header(*request, header_string);
+            parser_.parse_request(*request, header_string);
 
             std::size_t size = 0;
             bool keep_alive = false;
@@ -179,7 +102,7 @@ std::future<void> http_session::set_all(boost::shared_ptr<bstcon::response> cons
 {
     auto buffer = boost::make_shared<boost::asio::streambuf>();
     std::ostream buffer_stream(buffer.get());
-    generate::generate_response_header(buffer_stream, *header);
+    generator_.generate_response(buffer_stream, *header);
     buffer_stream.write(header->body.c_str(), header->body.size());
 
     return write_buffer(buffer, handler);
@@ -189,7 +112,7 @@ std::future<void> http_session::set_headers(boost::shared_ptr<bstcon::response> 
 {
     auto buffer = boost::make_shared<boost::asio::streambuf>();
     std::ostream buffer_stream(buffer.get());
-    generate::generate_response_header(buffer_stream, *header);
+    generator_.generate_response(buffer_stream, *header);
     
     return write_buffer(buffer, handler);
 }

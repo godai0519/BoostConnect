@@ -14,14 +14,9 @@
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "application_layer/socket_base.hpp"
-#include "application_layer/tcp_socket.hpp"
-
-#ifdef USE_SSL_BOOSTCONNECT
-#include "application_layer/ssl_socket.hpp"
-#endif
-
-#include "connection_type/connection_base.hpp"
+#include <boostconnect/application_layer/tcp_socket.hpp>
+#include <boostconnect/application_layer/ssl_socket.hpp>
+#include <boostconnect/connection_type/connection_base.hpp>
 
 namespace bstcon{
 

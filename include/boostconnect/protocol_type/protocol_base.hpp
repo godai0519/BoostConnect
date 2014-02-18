@@ -11,22 +11,22 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include "../connection_type/connection_base.hpp"
+#include <boostconnect/connection_type/connection_base.hpp>
 
 namespace bstcon{
 namespace protocol_type{
 
 class protocol_base : boost::noncopyable{
 public:
-	typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
+    typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
     protocol_base() = default;
     virtual ~protocol_base() = default;
 
-	connection_ptr raw_connection(){ return connection_; }
+    connection_ptr raw_connection(){ return connection_; }
 
 protected:
-	connection_ptr connection_;
+    connection_ptr connection_;
 };
 
 template <class Devide>

@@ -32,6 +32,7 @@
     <ClInclude Include="server.hpp" />
     <ClInclude Include="session_type\http_session.hpp" />
     <ClInclude Include="session_type\session_base.hpp" />
+    <ClInclude Include="utility\http.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="application_layer\impl\ssl_socket.ipp" />
@@ -40,7 +41,7 @@
     <None Include="connection_type\impl\sync_connection.ipp" />
     <None Include="protocol_type\impl\http.ipp" />
     <None Include="session_type\impl\http_session.ipp" />
-    <None Include="session_type\impl\session_base.ipp" />
+    <None Include="utility\impl\http.ipp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\boostconnect.cpp" />

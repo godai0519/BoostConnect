@@ -14,33 +14,31 @@
 #include <boostconnect/request.hpp>
 #include <boostconnect/response.hpp>
 #include <boostconnect/protocol_type/protocol_base.hpp>
+#include <boostconnect/utility/http.hpp>
 
 namespace bstcon{
 namespace protocol_type{
-
-struct http_parser
-{
-    bool parse_status_line(bstcon::response& out, std::string const& raw) const;
-    bool parse_header(bstcon::response& out, std::string const& raw) const;
-};
 
 class http : public protocol_common<http>
 {
 public:
     typedef boost::function<void(boost::shared_ptr<bstcon::response> const&)> RequestHandler;
+    typedef bstcon::utility::http_parser    http_parser;
+    typedef bstcon::utility::http_generator http_generator;
 
-	http(connection_ptr const& connection);
-	virtual ~http() = default;
+    http(connection_ptr const& connection);
+    virtual ~http() = default;
 
-	std::future<bstcon::response> request(bstcon::request const& request, RequestHandler handler = RequestHandler());
+    std::future<bstcon::response> request(bstcon::request const& request, RequestHandler handler = RequestHandler());
 
 private:
-	void read(boost::shared_ptr<std::promise<bstcon::response>> const& promise, RequestHandler handler);    
+    void read(boost::shared_ptr<std::promise<bstcon::response>> const& promise, RequestHandler handler);    
     void read_standard(boost::shared_ptr<std::promise<bstcon::response>> const& promise, boost::shared_ptr<bstcon::response> const& response, RequestHandler handler);    
     void read_chunk_size(boost::shared_ptr<std::promise<bstcon::response>> const& promise, boost::shared_ptr<bstcon::response> const& response, RequestHandler handler);
     void read_chunk(boost::shared_ptr<std::promise<bstcon::response>> const& promise, boost::shared_ptr<bstcon::response> const& response, std::size_t const sz, RequestHandler handler);
 
-    http_parser parser_;
+    http_parser    parser_;
+    http_generator generator_;
 };
 
 } // namespace protocol_type

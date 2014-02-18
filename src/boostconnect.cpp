@@ -29,5 +29,6 @@
 #include <boostconnect/protocol_type/impl/http.ipp>
 
 #include <boostconnect/session_type/impl/http_session.ipp>
+#include <boostconnect/utility/impl/http.ipp>
 //
 //#include <boostconnect/impl/server.ipp>

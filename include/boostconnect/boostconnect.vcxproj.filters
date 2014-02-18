@@ -37,6 +37,12 @@
     <Filter Include="ヘッダー ファイル\session_type\impl">
       <UniqueIdentifier>{b9fd4d9a-b2dc-4568-abb3-69aa0d400454}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\utility">
+      <UniqueIdentifier>{576940f7-55db-40ca-89a5-c00918d28ce3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\utility\impl">
+      <UniqueIdentifier>{89bbdaab-9e33-4683-bdd2-e878c697cef0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application_layer\socket_base.hpp">
@@ -78,6 +84,9 @@
     <ClInclude Include="server.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="utility\http.hpp">
+      <Filter>ヘッダー ファイル\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_layer\impl\ssl_socket.ipp">
@@ -98,8 +107,8 @@
     <None Include="session_type\impl\http_session.ipp">
       <Filter>ヘッダー ファイル\session_type\impl</Filter>
     </None>
-    <None Include="session_type\impl\session_base.ipp">
-      <Filter>ヘッダー ファイル\session_type\impl</Filter>
+    <None Include="utility\impl\http.ipp">
+      <Filter>ヘッダー ファイル\utility\impl</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

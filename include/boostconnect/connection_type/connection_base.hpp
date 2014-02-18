@@ -13,13 +13,13 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/optional/optional.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include "../application_layer/socket_base.hpp"
-#include "../request.hpp"
-#include "../response.hpp"
+#include <boostconnect/application_layer/socket_base.hpp>
+#include <boostconnect/request.hpp>
+#include <boostconnect/response.hpp>
 
 namespace bstcon{
 namespace connection_type{
-	
+
 class connection_base : boost::noncopyable{
 public:
     typedef boost::system::error_code           error_code;
@@ -40,22 +40,22 @@ public:
 
     virtual connection_ptr accepted(ConnectionHandler) = 0;
     
-	inline virtual void close()
-	{
-		socket_->close();
-		return;
-	}
+    inline virtual void close()
+    {
+        socket_->close();
+        return;
+    }
 
-	virtual std::future<std::string> read(ReadHandler handler = ReadHandler()) = 0;
-	virtual std::future<std::string> read_size(const std::size_t size, ReadHandler handler = ReadHandler()) = 0;
-	virtual std::future<std::string> read_until(const std::string& until, ReadHandler handler = ReadHandler()) = 0;
+    virtual std::future<std::string> read(ReadHandler handler = ReadHandler()) = 0;
+    virtual std::future<std::string> read_size(const std::size_t size, ReadHandler handler = ReadHandler()) = 0;
+    virtual std::future<std::string> read_until(const std::string& until, ReadHandler handler = ReadHandler()) = 0;
 
-	inline virtual std::future<std::string> read_line(ReadHandler handler = ReadHandler())
-	{
-		return read_until("\n", handler);
-	}
+    inline virtual std::future<std::string> read_line(ReadHandler handler = ReadHandler())
+    {
+        return read_until("\n", handler);
+    }
 
-	virtual std::future<std::size_t> write(const boost::shared_ptr<boost::asio::streambuf>& buf, WriteHandler handler = WriteHandler()) = 0;
+    virtual std::future<std::size_t> write(const boost::shared_ptr<boost::asio::streambuf>& buf, WriteHandler handler = WriteHandler()) = 0;
 
 protected:
     boost::shared_ptr<application_layer::socket_base> socket_;

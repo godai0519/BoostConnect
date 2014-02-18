@@ -18,26 +18,21 @@ namespace session{
 
 class session_base : boost::noncopyable{
 public:
-	typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
+    typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
     session_base() = default;
     virtual ~session_base() = default;
 
-	connection_ptr raw_connection(){ return connection_; }
+    connection_ptr raw_connection(){ return connection_; }
 
 protected:
-	connection_ptr connection_;
+    connection_ptr connection_;
 };
 
 template <class Devide>
-class session_common : public session_base, public boost::enable_shared_from_this<Devide>{};
+struct session_common : public session_base, public boost::enable_shared_from_this<Devide>{};
 
 } // namespace session
 } // namespace bstcon
-
-
-#ifdef BOOSTCONNECT_LIB_BUILD
-#include "impl/session_base.ipp"
-#endif
 
 #endif

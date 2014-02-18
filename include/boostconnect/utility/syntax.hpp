@@ -13,7 +13,7 @@
 #include "percent_encoder.hpp"
 
 namespace bstcon{
-namespace utility{    
+namespace utility{
 
 class generator
 {
