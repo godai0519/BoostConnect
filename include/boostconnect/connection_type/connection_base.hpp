@@ -28,7 +28,7 @@ public:
 
     typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
 
-	typedef boost::function<void(connection_ptr, error_code)> ConnectionHandler;	
+    typedef boost::function<void(connection_ptr, error_code)> ConnectionHandler;
     typedef boost::function<void(const std::size_t)> WriteHandler;
     typedef boost::function<void(const std::string&)> ReadHandler;
 
@@ -37,6 +37,8 @@ public:
 
     virtual connection_ptr connect(const std::string&, ConnectionHandler) = 0;
     virtual connection_ptr connect(const endpoint_type&, ConnectionHandler) = 0;
+
+    virtual connection_ptr accepted(ConnectionHandler) = 0;
     
 	inline virtual void close()
 	{

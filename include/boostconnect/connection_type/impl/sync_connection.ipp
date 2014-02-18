@@ -36,7 +36,7 @@ sync_connection::connection_ptr sync_connection::connect(const std::string& host
 	boost::asio::connect(socket_->lowest_layer(), ep_iterator, ec);
 
 #ifdef USE_SSL_BOOSTCONNECT
-	socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
+	socket_->handshake(application_layer::socket_base::ssl_socket_type::handshake_type::client);
 #endif
 
 	handler(shared_from_this(), ec);
@@ -49,11 +49,21 @@ sync_connection::connection_ptr sync_connection::connect(const endpoint_type& ep
 	error_code ec;
 	socket_->lowest_layer().connect(ep, ec);
 #ifdef USE_SSL_BOOSTCONNECT
-	socket_->handshake(application_layer::socket_base::ssl_socket_type::client);
+	socket_->handshake(application_layer::socket_base::ssl_socket_type::handshake_type::client);
 #endif
 
 	handler(shared_from_this(), ec);
 	return this->shared_from_this();
+}
+
+sync_connection::connection_ptr sync_connection::accepted(ConnectionHandler handler)
+{
+#ifdef USE_SSL_BOOSTCONNECT
+	socket_->handshake(application_layer::socket_base::ssl_socket_type::handshake_type::server);
+#endif
+
+	handler(shared_from_this(), error_code());
+	return shared_from_this();
 }
 
 std::future<std::size_t> sync_connection::write(const boost::shared_ptr<boost::asio::streambuf>& buf, WriteHandler handler)

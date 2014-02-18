@@ -63,6 +63,20 @@ async_connection::connection_ptr async_connection::connect(const endpoint_type& 
 	return shared_from_this();
 }
 
+async_connection::connection_ptr async_connection::accepted(ConnectionHandler handler)
+{
+#ifdef USE_SSL_BOOSTCONNECT
+    socket_->async_handshake(
+        application_layer::socket_base::ssl_socket_type::handshake_type::server,
+        boost::bind(handler, shared_from_this(), boost::asio::placeholders::error)
+        );
+#else
+    if(handler) handler(shared_from_this(), error_code());
+#endif
+
+    return shared_from_this();
+}
+
 std::future<std::size_t> async_connection::write(const boost::shared_ptr<boost::asio::streambuf>& buf, WriteHandler handler)
 {
 	const auto p = boost::make_shared<std::promise<std::size_t>>();
@@ -153,7 +167,7 @@ void async_connection::handle_connect(const error_code& ec, ConnectionHandler ha
 	{
 #ifdef USE_SSL_BOOSTCONNECT
 		socket_->async_handshake(
-			application_layer::socket_base::ssl_socket_type::client,
+			application_layer::socket_base::ssl_socket_type::handshake_type::client,
 			boost::bind(handler, shared_from_this(), boost::asio::placeholders::error)
 			);
 #else

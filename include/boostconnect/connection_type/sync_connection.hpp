@@ -23,6 +23,8 @@ public:
 	connection_ptr connect(const std::string&, ConnectionHandler);
 	connection_ptr connect(const endpoint_type&, ConnectionHandler);
 
+    connection_ptr accepted(ConnectionHandler);
+
 	std::future<std::string> read(ReadHandler handler = ReadHandler());
 	std::future<std::string> read_size(const std::size_t size, ReadHandler handler = ReadHandler());
 	std::future<std::string> read_until(const std::string& until, ReadHandler handler = ReadHandler());

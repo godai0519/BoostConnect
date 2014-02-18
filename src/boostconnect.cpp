@@ -28,7 +28,6 @@
 
 #include <boostconnect/protocol_type/impl/http.ipp>
 
-//#include <boostconnect/session/impl/session_base.ipp>
-//#include <boostconnect/session/impl/http_session.ipp>
+#include <boostconnect/session_type/impl/http_session.ipp>
 //
 //#include <boostconnect/impl/server.ipp>

@@ -31,6 +31,12 @@
     <Filter Include="ヘッダー ファイル\protocol_type\impl">
       <UniqueIdentifier>{b7cefe8b-7e91-4eb1-b1c7-9e6c130fea47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\session_type">
+      <UniqueIdentifier>{f1ea8fab-be04-4da7-a002-31167e9709c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\session_type\impl">
+      <UniqueIdentifier>{b9fd4d9a-b2dc-4568-abb3-69aa0d400454}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application_layer\socket_base.hpp">
@@ -63,6 +69,15 @@
     <ClInclude Include="client.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="session_type\http_session.hpp">
+      <Filter>ヘッダー ファイル\session_type</Filter>
+    </ClInclude>
+    <ClInclude Include="session_type\session_base.hpp">
+      <Filter>ヘッダー ファイル\session_type</Filter>
+    </ClInclude>
+    <ClInclude Include="server.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_layer\impl\ssl_socket.ipp">
@@ -79,6 +94,12 @@
     </None>
     <None Include="protocol_type\impl\http.ipp">
       <Filter>ヘッダー ファイル\protocol_type\impl</Filter>
+    </None>
+    <None Include="session_type\impl\http_session.ipp">
+      <Filter>ヘッダー ファイル\session_type\impl</Filter>
+    </None>
+    <None Include="session_type\impl\session_base.ipp">
+      <Filter>ヘッダー ファイル\session_type\impl</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

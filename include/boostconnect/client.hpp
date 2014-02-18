@@ -33,56 +33,56 @@ public:
     typedef boost::asio::ip::tcp::endpoint      endpoint_type;
     typedef boost::shared_ptr<bstcon::response> response_type;
 
-	typedef boost::shared_ptr<io_service>                               io_service_ptr;
+    typedef boost::shared_ptr<io_service>                               io_service_ptr;
     typedef boost::shared_ptr<bstcon::application_layer::socket_base>   socket_ptr;
-	typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
-	typedef boost::shared_ptr<Protocol>                                 protocol_ptr;
+    typedef boost::shared_ptr<bstcon::connection_type::connection_base> connection_ptr;
+    typedef boost::shared_ptr<Protocol>                                 protocol_ptr;
 
-	typedef boost::function<void(protocol_ptr const&, error_code const&)> ConnectionHandler;
+    typedef boost::function<void(protocol_ptr const&, error_code const&)> ConnectionHandler;
 
-	client() : io_service_(boost::make_shared<io_service>()){}
-	client(io_service_ptr const& io_service) : io_service_(io_service){}
-	virtual ~client() = default;
+    client() : io_service_(boost::make_shared<io_service>()){}
+    client(io_service_ptr const& io_service) : io_service_(io_service){}
+    virtual ~client() = default;
 
-	io_service_ptr get_io_service() const { return io_service_; }
+    io_service_ptr get_io_service() const { return io_service_; }
         
-	std::future<protocol_ptr> operator() (std::string const& host, ConnectionHandler const& handler = ConnectionHandler())
-	{
-		auto const socket = boost::make_shared<bstcon::application_layer::tcp_socket>(*io_service_);
-		return connect_socket(socket, host, handler);
-	}
-	
+    std::future<protocol_ptr> operator() (std::string const& host, ConnectionHandler const& handler = ConnectionHandler())
+    {
+        auto const socket = boost::make_shared<bstcon::application_layer::tcp_socket>(*io_service_);
+        return connect_socket(socket, host, handler);
+    }
+
 #ifdef USE_SSL_BOOSTCONNECT
-	typedef boost::asio::ssl::context context_type;
-	std::future<protocol_ptr> operator() (std::string const& host, context_type& ctx, ConnectionHandler const& handler = ConnectionHandler())
-	{
-		auto const socket = boost::make_shared<bstcon::application_layer::ssl_socket>(*io_service_, ctx);
-		return connect_socket(socket, host, handler);
-	}
+    typedef boost::asio::ssl::context context_type;
+    std::future<protocol_ptr> operator() (std::string const& host, context_type& ctx, ConnectionHandler const& handler = ConnectionHandler())
+    {
+        auto const socket = boost::make_shared<bstcon::application_layer::ssl_socket>(*io_service_, ctx);
+        return connect_socket(socket, host, handler);
+    }
 #endif
 
 private:
-	std::future<protocol_ptr> connect_socket(socket_ptr const& socket, std::string const& host, ConnectionHandler const& handler)
-	{
-		auto const self = shared_from_this();
-		auto const promise = boost::make_shared<std::promise<protocol_ptr>>();
-		auto const connection = boost::make_shared<Connection>(socket);
-		connection->connect(
-			host, 
-			[self, promise, handler](connection_ptr const& connection, error_code const& ec)
-			{
-				auto const protocol = boost::make_shared<Protocol>(connection);
+    std::future<protocol_ptr> connect_socket(socket_ptr const& socket, std::string const& host, ConnectionHandler const& handler)
+    {
+        auto const self = shared_from_this();
+        auto const promise = boost::make_shared<std::promise<protocol_ptr>>();
+        auto const connection = boost::make_shared<Connection>(socket);
+        connection->connect(
+            host, 
+            [self, promise, handler](connection_ptr const& connection, error_code const& ec)
+            {
+                auto const protocol = boost::make_shared<Protocol>(connection);
 
-				if(handler) handler(protocol, ec);
-				promise->set_value(protocol);
+                if(handler) handler(protocol, ec);
+                promise->set_value(protocol);
 
-				return;
-			}
-		);
-		return promise->get_future();
-	}
+                return;
+            }
+        );
+        return promise->get_future();
+    }
 
-	boost::shared_ptr<io_service> const io_service_;
+    io_service_ptr const io_service_;
 };
 
 } // namespace bstcon
