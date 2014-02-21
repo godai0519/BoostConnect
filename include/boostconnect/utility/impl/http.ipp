@@ -111,7 +111,7 @@ bool http_parser::parse_response_header(bstcon::response& out, std::string const
 
     map_type parsed;
     bool const result = qi::phrase_parse(raw.cbegin(), raw.cend(), header, qi::space, parsed);
-    if(result) std::swap(out.header, std::move(parsed));
+    if(result) std::swap(out.header, parsed);
 
     return result;
 }

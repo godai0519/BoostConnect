@@ -59,7 +59,7 @@ public:
 private:
     std::future<protocol_ptr> connect_socket(socket_ptr const& socket, std::string const& host, ConnectionHandler const& handler)
     {
-        auto const self = shared_from_this();
+        auto self = this->shared_from_this();
         auto const promise = boost::make_shared<std::promise<protocol_ptr>>();
         auto const connection = boost::make_shared<Connection>(socket);
         connection->connect(
