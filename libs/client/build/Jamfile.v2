@@ -1,0 +1,9 @@
+project boostconnect/client
+    : source-location ../src
+    : requirements <threading>multi
+    ;
+
+lib bstcon_client : boostconnect.cpp : <link>static ;
+
+echo "TESTTESTTEST" ;
+
