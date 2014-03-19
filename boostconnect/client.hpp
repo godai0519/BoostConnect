@@ -39,7 +39,7 @@ public:
     client(io_service_ptr const& io_service) : io_service_(io_service){}
     virtual ~client() = default;
 
-    io_service_ptr get_io_service() const { return io_service_; }
+    io_service_ptr service() const { return io_service_; }
         
     std::future<protocol_ptr> operator() (std::string const& host, ConnectionHandler const& handler = ConnectionHandler())
     {
