@@ -5,5 +5,3 @@ project boostconnect/client
 
 lib bstcon_client : boostconnect.cpp : <link>static ;
 
-echo "TESTTESTTEST" ;
-
