@@ -3,6 +3,7 @@ import path ;
 project boostconnect/client
     : source-location ../src
     : requirements <threading>multi
+      <define>BOOSTCONNECT_LIB_BUILD
     ;
 
 local headers = [ path.glob-tree boostconnect : *.hpp *.ipp *.h *.ipp ] ;

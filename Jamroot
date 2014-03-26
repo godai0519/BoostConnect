@@ -8,10 +8,10 @@ import link ;
 import os ;
 
 local BOOST_ROOT = [ os.environ BOOST_ROOT ] ;
+use-project /boost : $(BOOST_ROOT) ;
 
 project boostconnect
     : requirements <include>.
-      <define>BOOSTCONNECT_LIB_BUILD
       <toolset>gcc:<cxxflags>-std=gnu++11
       <toolset>clang:<cxxflags>-std=c++11
     : usage-requirements <include>.
