@@ -26,7 +26,6 @@ all-libraries = [ MATCH .*libs/(.*)/build/.* : [ glob libs/*/build/Jamfile.v2 ] 
 #all-libraries = [ set.difference $(all-libraries) : function_types ] ;
 
 local libraries = $(all-libraries) ;
-local headers = [ path.glob-tree boostconnect : *.hpp *.ipp *.h *.ipp ] ;
 
 #
 # Data show options process
@@ -59,17 +58,4 @@ for local l in $(all-libraries)
     use-project /boostconnect/$(l) : libs/$(l)/build ;
     build-project libs/$(l)/build ;
 }
-
-#
-# Install
-#
-install pre-headers  
-    : $(headers)
-    : <location>stage/include <install-source-root>./
-    ;
-
-install build-libs  
-    : libs/client/build//bstcon_client
-    : <location>stage/lib
-    ;
 

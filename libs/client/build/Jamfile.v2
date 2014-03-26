@@ -1,7 +1,25 @@
+import path ;
+
 project boostconnect/client
     : source-location ../src
     : requirements <threading>multi
     ;
 
-lib bstcon_client : boostconnect.cpp : <link>static ;
+local headers = [ path.glob-tree boostconnect : *.hpp *.ipp *.h *.ipp ] ;
+
+lib bstcon_clientd : boostconnect.cpp : <link>static <variant>debug ;
+lib bstcon_client : boostconnect.cpp : <link>static <variant>release ;
+
+#
+# Install
+#
+install install-headers
+    : ../../../$(headers)
+    : <location>../../../stage/include <install-source-root>../../../
+    ;
+
+install build-libs
+    : bstcon_client bstcon_clientd
+    : <location>../../../stage/lib
+    ;
 

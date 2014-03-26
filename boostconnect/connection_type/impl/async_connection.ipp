@@ -35,7 +35,7 @@ async_connection::connection_ptr async_connection::connect(const std::string& ho
         {
             if (ec)
             {
-                std::cout << "Error Resolve: " << ec.message() << std::endl;
+//               std::cout << "Error Resolve: " << ec.message() << std::endl;
                 return;
             }
 
@@ -172,7 +172,7 @@ void async_connection::handle_connect(const error_code& ec, ConnectionHandler ha
         if(handler) handler(shared_from_this(), error_code());
 #endif
     }
-    else std::cout << "Error Connect!?" << std::endl;
+//    else std::cout << "Error Connect!?" << std::endl;
 
     return;
 }
