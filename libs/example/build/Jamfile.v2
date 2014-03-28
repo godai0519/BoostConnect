@@ -3,10 +3,25 @@ project boostconnect/example
     : requirements <threading>multi <library>../../client/build//bstcon_client
     ;
 
-lib ssl crypto ;
-
-exe aync-client
-    : async_client/async_client.cpp
-    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread <library>ssl <library>crypto
-    ;
-
+#lib ssl crypto ;
+#
+#exe async-client
+#    : async_client/async_client.cpp
+#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
+#    ;
+#
+#exe sync-client
+#    : sync_client/sync_client.cpp
+#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
+#    ;
+#
+#exe server
+#    : server/server.cpp
+#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
+#    ;
+#
+#exe ssl-client
+#    : ssl_client/ssl_client.cpp
+#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread <library>ssl <library>crypto
+#    ;
+#
