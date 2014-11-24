@@ -1,4 +1,5 @@
 ﻿#define USE_SSL_BOOSTCONNECT
+#include <iostream>
 #include <boostconnect/client.hpp>
 #include <boostconnect/connection_type/async_connection.hpp>
 #include <boostconnect/application_layer/ssl_socket.hpp>

@@ -3,25 +3,45 @@ project boostconnect/example
     : requirements <threading>multi <library>../../client/build//bstcon_client
     ;
 
-#lib ssl crypto ;
 #
-#exe async-client
-#    : async_client/async_client.cpp
-#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
-#    ;
+# Analize argument
 #
-#exe sync-client
-#    : sync_client/sync_client.cpp
-#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
-#    ;
+local enable_ssl ;
+if --disable-ssl in [ modules.peek : ARGV ]
+{
+    enable_ssl = false ;
+    lib ssl crypto ;
+    alias openssl : ssl crypto ;
+}
+else
+{
+    enable_ssl = enable ;
+    alias openssl : ;
+}
+
 #
-#exe server
-#    : server/server.cpp
-#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
-#    ;
+# Sample programs
 #
-#exe ssl-client
-#    : ssl_client/ssl_client.cpp
-#    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread <library>ssl <library>crypto
-#    ;
-#
+exe async-client
+    : async_client/async_client.cpp openssl
+    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
+    ;
+
+exe sync-client
+    : sync_client/sync_client.cpp openssl
+    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
+    ;
+
+exe server
+    : server/server.cpp openssl
+    : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
+    ;
+
+if ( enable_ssl = true )
+{
+    exe ssl-client
+        : ssl_client/ssl_client.cpp openssl
+        : <library>/boost/system//boost_system <library>/boost/thread//boost_thread
+        ;
+}
+

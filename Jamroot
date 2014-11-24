@@ -10,10 +10,23 @@ import os ;
 local BOOST_ROOT = [ os.environ BOOST_ROOT ] ;
 use-project /boost : $(BOOST_ROOT) ;
 
+local cxxflags = -std=c++14 ;
+
+if --enable-ssl in [ modules.peek : ARGV ]
+{
+    cxxflags += -DBOOSTCONNECT_ENABLE_SSL=1 ;
+}
+else
+{
+    cxxflags += -DBOOSTCONNECT_ENABLE_SSL=0 ;
+}
+
+local aaaaa = "aiueo" ;
+
 project boostconnect
     : requirements <include>.
-      <toolset>gcc:<cxxflags>-std=gnu++11
-      <toolset>clang:<cxxflags>-std=c++11
+      <toolset>gcc:<cxxflags>$(cxxflags)
+      <toolset>clang:<cxxflags>$(cxxflags)
     : usage-requirements <include>.
     : build-dir bin.v2
     ;
