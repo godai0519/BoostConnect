@@ -19,43 +19,67 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application_layer\socket_base.hpp" />
-    <ClInclude Include="application_layer\ssl_socket.hpp" />
-    <ClInclude Include="application_layer\tcp_socket.hpp" />
-    <ClInclude Include="client.hpp" />
-    <ClInclude Include="config.hpp" />
-    <ClInclude Include="connection_type\async_connection.hpp" />
-    <ClInclude Include="connection_type\connection_base.hpp" />
-    <ClInclude Include="connection_type\sync_connection.hpp" />
-    <ClInclude Include="protocol_type\http.hpp" />
-    <ClInclude Include="protocol_type\protocol_base.hpp" />
-    <ClInclude Include="server.hpp" />
-    <ClInclude Include="session_type\http_session.hpp" />
-    <ClInclude Include="session_type\session_base.hpp" />
-    <ClInclude Include="utility\http.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\application_layer\socket_base.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\application_layer\ssl_socket.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\application_layer\tcp_socket.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\client.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\config.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\connection_type\async_connection.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\connection_type\connection_base.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\connection_type\sync_connection.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\content\binary.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\content\content_base.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\content\multipart.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\content\multipart_form_data.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\content\multipart_mixed.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\content\text.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\content\urlencoded.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\http\client.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\http\connection.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\protocol_type\http.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\protocol_type\protocol_base.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\request.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\response.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\server.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\session_type\http_session.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\session_type\session_base.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\utility\http.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\utility\percent_encoder.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\utility\radix.hpp" />
+    <ClInclude Include="..\..\..\boostconnect\utility\syntax.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="application_layer\impl\ssl_socket.ipp" />
-    <None Include="application_layer\impl\tcp_socket.ipp" />
-    <None Include="connection_type\impl\async_connection.ipp" />
-    <None Include="connection_type\impl\sync_connection.ipp" />
-    <None Include="protocol_type\impl\http.ipp" />
-    <None Include="session_type\impl\http_session.ipp" />
-    <None Include="utility\impl\http.ipp" />
+    <None Include="..\..\..\boostconnect\application_layer\impl\ssl_socket.ipp" />
+    <None Include="..\..\..\boostconnect\application_layer\impl\tcp_socket.ipp" />
+    <None Include="..\..\..\boostconnect\connection_type\impl\async_connection.ipp" />
+    <None Include="..\..\..\boostconnect\connection_type\impl\sync_connection.ipp" />
+    <None Include="..\..\..\boostconnect\content\impl\binary.ipp" />
+    <None Include="..\..\..\boostconnect\content\impl\content_base.ipp" />
+    <None Include="..\..\..\boostconnect\content\impl\multipart.ipp" />
+    <None Include="..\..\..\boostconnect\content\impl\multipart_form_data.ipp" />
+    <None Include="..\..\..\boostconnect\content\impl\multipart_mixed.ipp" />
+    <None Include="..\..\..\boostconnect\content\impl\text.ipp" />
+    <None Include="..\..\..\boostconnect\content\impl\urlencoded.ipp" />
+    <None Include="..\..\..\boostconnect\protocol_type\impl\http.ipp" />
+    <None Include="..\..\..\boostconnect\session_type\impl\http_session.ipp" />
+    <None Include="..\..\..\boostconnect\utility\impl\http.ipp" />
+    <None Include="..\..\..\boostconnect\utility\impl\percent_encoder.ipp" />
+    <None Include="..\..\..\boostconnect\utility\impl\radix.ipp" />
+    <None Include="..\..\..\boostconnect\utility\impl\syntax.ipp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\boostconnect.cpp" />
+    <ClCompile Include="..\src\boostconnect.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{16641C79-954C-4833-80D4-64FDC908700B}</ProjectGuid>
-    <RootNamespace>BoostConnect</RootNamespace>
+    <ProjectGuid>{186A58A5-4448-4D73-B793-B5293F097543}</ProjectGuid>
+    <RootNamespace>Samples</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>CTP_Nov2013</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -68,13 +92,14 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>CTP_Nov2013</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>CTP_Nov2013</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -93,49 +118,49 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_54;C:\openssl\build\debug\include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_55;C:\openssl\build\debug\include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\boost\lib;C:\openssl\build\debug\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(INCLUDE);$(IncludePath)</IncludePath>
+    <LibraryPath>$(LIB);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)lib\</OutDir>
-    <TargetName>lib$(ProjectName)_d</TargetName>
+    <TargetName>bstcon_$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>libbstcond</TargetName>
-    <LibraryPath>C:\boost\lib;C:\openssl\build\debug\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\lib</OutDir>
+    <IncludePath>$(SolutionDir);$(INCLUDE);$(IncludePath)</IncludePath>
+    <LibraryPath>$(LIB);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <TargetName>bstcon_$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_52;C:\openssl\build\release\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\boost\lib;C:\openssl\build\release\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(INCLUDE);$(IncludePath)</IncludePath>
+    <LibraryPath>$(LIB);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)lib\</OutDir>
-    <TargetName>lib$(ProjectName)</TargetName>
+    <TargetName>bstcon_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>libbstcon</TargetName>
-    <IncludePath>$(ProjectDir)..\..\include;C:\boost\include\boost-1_53;C:\openssl\build\release\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\boost\lib;C:\openssl\build\release\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\lib</OutDir>
+    <IncludePath>$(SolutionDir);$(INCLUDE);$(IncludePath)</IncludePath>
+    <LibraryPath>$(LIB);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <TargetName>bstcon_$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ssleay32.lib;libeay32.lib;libboostconnect_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ssleay32.lib;libeay32.lib;libbstcond.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -149,6 +174,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,6 +188,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ssleay32.lib;libeay32.lib;libbstcon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

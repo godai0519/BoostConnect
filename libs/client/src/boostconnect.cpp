@@ -12,13 +12,13 @@
 #include <boostconnect/utility/impl/percent_encoder.ipp>
 #include <boostconnect/utility/impl/syntax.ipp>
 
-#include <boostconnect/content/impl/content_base.ipp>
-#include <boostconnect/content/impl/text.ipp>
-#include <boostconnect/content/impl/binary.ipp>
-#include <boostconnect/content/impl/urlencoded.ipp>
-#include <boostconnect/content/impl/multipart.ipp>
-#include <boostconnect/content/impl/multipart_mixed.ipp>
-#include <boostconnect/content/impl/multipart_form_data.ipp>
+//#include <boostconnect/content/impl/content_base.ipp>
+//#include <boostconnect/content/impl/text.ipp>
+//#include <boostconnect/content/impl/binary.ipp>
+//#include <boostconnect/content/impl/urlencoded.ipp>
+//#include <boostconnect/content/impl/multipart.ipp>
+//#include <boostconnect/content/impl/multipart_mixed.ipp>
+//#include <boostconnect/content/impl/multipart_form_data.ipp>
 
 #include <boostconnect/application_layer/impl/tcp_socket.ipp>
 #include <boostconnect/application_layer/impl/ssl_socket.ipp>
@@ -30,5 +30,5 @@
 
 #include <boostconnect/session_type/impl/http_session.ipp>
 #include <boostconnect/utility/impl/http.ipp>
-//
+
 //#include <boostconnect/impl/server.ipp>
