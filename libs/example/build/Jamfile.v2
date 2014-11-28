@@ -13,7 +13,7 @@ if --disable-ssl in [ modules.peek : ARGV ]
 }
 else
 {
-    enable_ssl = enable ;
+    enable_ssl = true ;
     lib crypto : : <name>libeay32 <toolset>msvc ;
     lib crypto : : <name>crypto ;
     lib ssl : : <name>ssleay32 <toolset>msvc ;
@@ -53,7 +53,7 @@ exe sync-client
 #      <variant>release
 #    ;
 
-if ( enable_ssl = true )
+if ( $(enable_ssl) = true )
 {
     exe ssl-client
         : ssl_client/ssl_client.cpp openssl
