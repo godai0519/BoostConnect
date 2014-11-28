@@ -23,7 +23,7 @@ else
 
 lib pthread ;
 alias posix_libs : : <library>pthread : : <library>pthread ;
-alias boost_libs : /boost/system//boost_system /boost/thread//boost_thread ;
+alias boost_libs : /boost/system//boost_system/<link>static /boost/thread//boost_thread/<link>static ;
 alias bstcon_client : ../../client/build//bstcon_client ;
 
 #
