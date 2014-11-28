@@ -23,7 +23,6 @@
     <ClInclude Include="..\..\..\boostconnect\application_layer\ssl_socket.hpp" />
     <ClInclude Include="..\..\..\boostconnect\application_layer\tcp_socket.hpp" />
     <ClInclude Include="..\..\..\boostconnect\client.hpp" />
-    <ClInclude Include="..\..\..\boostconnect\config.hpp" />
     <ClInclude Include="..\..\..\boostconnect\connection_type\async_connection.hpp" />
     <ClInclude Include="..\..\..\boostconnect\connection_type\connection_base.hpp" />
     <ClInclude Include="..\..\..\boostconnect\connection_type\sync_connection.hpp" />
@@ -68,7 +67,7 @@
     <None Include="..\..\..\boostconnect\utility\impl\syntax.ipp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\boostconnect.cpp" />
+    <ClCompile Include="..\src\client.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{186A58A5-4448-4D73-B793-B5293F097543}</ProjectGuid>

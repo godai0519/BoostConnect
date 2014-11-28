@@ -1,12 +1,12 @@
 ﻿//
-// boostconnect.cpp
+// client.cpp
 // ~~~~~~~~~~
 //
 // Library(.so or .lib) Build Source File
 // boost/config.hpp is Setting file. You can set USE SSL.
 //
 
-#include <boostconnect/config.hpp>
+#define USE_SSL_BOOSTCONNECT
 
 #include <boostconnect/utility/impl/radix.ipp>
 #include <boostconnect/utility/impl/percent_encoder.ipp>

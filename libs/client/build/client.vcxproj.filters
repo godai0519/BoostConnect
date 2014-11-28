@@ -54,9 +54,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\boostconnect\config.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\boostconnect\request.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -193,7 +190,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\boostconnect.cpp">
+    <ClCompile Include="..\src\client.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
