@@ -21,10 +21,9 @@ else
     cxxflags += -DBOOSTCONNECT_ENABLE_SSL=0 ;
 }
 
-local aaaaa = "aiueo" ;
-
 project boostconnect
-    : requirements <include>.
+    : requirements 
+      <include>.
       <toolset>gcc:<cxxflags>$(cxxflags)
       <toolset>clang:<cxxflags>$(cxxflags)
     : usage-requirements <include>.
