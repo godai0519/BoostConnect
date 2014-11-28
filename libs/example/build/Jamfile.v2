@@ -21,6 +21,8 @@ else
     alias openssl : crypto ssl ;
 }
 
+lib pthread ;
+alias posix_libs : : <library>pthread : : <library>pthread ;
 alias boost_libs : /boost/system//boost_system /boost/thread//boost_thread ;
 alias bstcon_client : ../../client/build//bstcon_client ;
 
@@ -31,6 +33,7 @@ exe async-client
     : async_client/async_client.cpp openssl
     : <library>boost_libs
       <library>bstcon_client
+      <toolset>gcc:<library>posix_libs
       <variant>release
     ;
 
@@ -38,6 +41,7 @@ exe sync-client
     : sync_client/sync_client.cpp openssl
     : <library>boost_libs
       <library>bstcon_client
+      <toolset>gcc:<library>posix_libs
       <variant>release
     ;
 
@@ -45,6 +49,7 @@ exe sync-client
 #    : server/server.cpp openssl
 #    : <library>boost_libs
 #      <library>bstcon_server
+#      <toolset>gcc:<library>posix_libs
 #      <variant>release
 #    ;
 
@@ -54,6 +59,7 @@ if ( enable_ssl = true )
         : ssl_client/ssl_client.cpp openssl
         : <library>boost_libs
           <library>bstcon_client
+          <toolset>gcc:<library>posix_libs
           <variant>release
         ;
 }
