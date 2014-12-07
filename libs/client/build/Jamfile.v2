@@ -1,5 +1,11 @@
 import path ;
 
+install-dir = [ MATCH "^--prefix=(.*)" : [ modules.peek : ARGV ] ] ;
+if ( ! $(install-dir) )
+{
+    install-dir = stage ;
+}
+
 project boostconnect/client
     : source-location ../src
     : requirements
@@ -16,11 +22,11 @@ lib bstcon_client : client.cpp : <link>static <variant>release ;
 #
 install install-headers
     : ../../../$(headers)
-    : <location>../../../stage/include <install-source-root>../../../
+    : <location>../../../$(install-dir)/include <install-source-root>../../../
     ;
 
 install build-libs
     : bstcon_client bstcon_clientd
-    : <location>../../../stage/lib
+    : <location>../../../$(install-dir)/lib
     ;
 
