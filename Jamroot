@@ -10,7 +10,7 @@ import os ;
 local BOOST_ROOT = [ os.environ BOOST_ROOT ] ;
 use-project /boost : $(BOOST_ROOT) ;
 
-local cxxflags = -std=c++14 ;
+local gcc_cxxflags = -std=c++14 ;
 
 if ! ( --disable-ssl in [ modules.peek : ARGV ] )
 {
@@ -20,8 +20,9 @@ if ! ( --disable-ssl in [ modules.peek : ARGV ] )
 project boostconnect
     : requirements 
       <include>.
-      <toolset>gcc:<cxxflags>$(cxxflags)
-      <toolset>clang:<cxxflags>$(cxxflags)
+      <cxxflags>$(cxxflags)
+      <toolset>gcc:<cxxflags>$(gcc_cxxflags)
+      <toolset>clang:<cxxflags>$(gcc_cxxflags)
     : usage-requirements <include>.
     : build-dir bin.v2
     ;
