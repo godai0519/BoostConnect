@@ -1,4 +1,5 @@
-﻿#include <boostconnect/client.hpp>
+﻿#include <iostream>
+#include <boostconnect/client.hpp>
 #include <boostconnect/connection_type/sync_connection.hpp>
 #include <boostconnect/application_layer/tcp_socket.hpp>
 #include <boostconnect/protocol_type/http.hpp>

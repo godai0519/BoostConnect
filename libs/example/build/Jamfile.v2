@@ -1,0 +1,66 @@
+project boostconnect/example
+    : source-location ../../../example
+    ;
+
+#
+# Analize argument
+#
+local enable_ssl ;
+if --disable-ssl in [ modules.peek : ARGV ]
+{
+    enable_ssl = false ;
+    alias openssl : ;
+}
+else
+{
+    enable_ssl = true ;
+    lib crypto : : <name>libeay32 <toolset>msvc ;
+    lib crypto : : <name>crypto ;
+    lib ssl : : <name>ssleay32 <toolset>msvc ;
+    lib ssl : : <name>ssl ;
+    alias openssl : crypto ssl ;
+}
+
+lib pthread ;
+alias posix_libs : : <library>pthread : : <library>pthread ;
+alias boost_libs : /boost/system//boost_system/<link>static /boost/thread//boost_thread/<link>static ;
+alias bstcon_client : ../../client/build//bstcon_client ;
+
+#
+# Sample programs
+#
+exe async-client
+    : async_client/async_client.cpp openssl
+    : <library>boost_libs
+      <library>bstcon_client
+      <toolset>gcc:<library>posix_libs
+      <variant>release
+    ;
+
+exe sync-client
+    : sync_client/sync_client.cpp openssl
+    : <library>boost_libs
+      <library>bstcon_client
+      <toolset>gcc:<library>posix_libs
+      <variant>release
+    ;
+
+#exe simple-server
+#    : server/server.cpp openssl
+#    : <library>boost_libs
+#      <library>bstcon_server
+#      <toolset>gcc:<library>posix_libs
+#      <variant>release
+#    ;
+
+if ( $(enable_ssl) = true )
+{
+    exe ssl-client
+        : ssl_client/ssl_client.cpp openssl
+        : <library>boost_libs
+          <library>bstcon_client
+          <toolset>gcc:<library>posix_libs
+          <variant>release
+        ;
+}
+

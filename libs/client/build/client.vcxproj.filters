@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\utility">
+      <UniqueIdentifier>{741d7429-853c-49e1-905d-54163c1a7a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\utility\impl">
+      <UniqueIdentifier>{35e5d0da-ef8e-4462-ae38-2dcf0877fb90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\session_type">
+      <UniqueIdentifier>{612f6744-1f53-43f5-b32d-a8c2df9bdd0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\session_type\impl">
+      <UniqueIdentifier>{d778b19a-1746-48b1-8ea1-b6a363d43032}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\protocol_type">
+      <UniqueIdentifier>{18f7a5a5-57ef-491d-a231-805d075bd308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\protocol_type\impl">
+      <UniqueIdentifier>{6a328e88-631f-4808-801a-e60ba6ae0a7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\http">
+      <UniqueIdentifier>{8dfb9f9a-c4be-43c9-97bb-7df6f9344cdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\content">
+      <UniqueIdentifier>{5b571cba-2d15-437e-9581-d54646b2c7df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\content\impl">
+      <UniqueIdentifier>{4a24e839-0d65-42c9-9bb2-49996355e53d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\connection_type">
+      <UniqueIdentifier>{d881d2d8-382a-46d1-b9d6-7e9fcc1b4c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\connection_type\impl">
+      <UniqueIdentifier>{7a618d85-751f-4f88-b010-cbc1225d1aa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application_layer">
+      <UniqueIdentifier>{a7f0c347-bcb7-4bc5-8825-4bed051a613b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application_layer\impl">
+      <UniqueIdentifier>{d829a765-72c6-4c46-b625-a64b5784b1d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\boostconnect\request.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\response.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\server.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\client.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\utility\http.hpp">
+      <Filter>ヘッダー ファイル\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\utility\percent_encoder.hpp">
+      <Filter>ヘッダー ファイル\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\utility\radix.hpp">
+      <Filter>ヘッダー ファイル\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\utility\syntax.hpp">
+      <Filter>ヘッダー ファイル\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\session_type\http_session.hpp">
+      <Filter>ヘッダー ファイル\session_type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\session_type\session_base.hpp">
+      <Filter>ヘッダー ファイル\session_type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\protocol_type\http.hpp">
+      <Filter>ヘッダー ファイル\protocol_type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\protocol_type\protocol_base.hpp">
+      <Filter>ヘッダー ファイル\protocol_type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\http\client.hpp">
+      <Filter>ヘッダー ファイル\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\http\connection.hpp">
+      <Filter>ヘッダー ファイル\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\content\multipart.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\content\multipart_form_data.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\content\multipart_mixed.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\content\text.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\content\urlencoded.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\content\binary.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\content\content_base.hpp">
+      <Filter>ヘッダー ファイル\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\connection_type\async_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\connection_type\connection_base.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\connection_type\sync_connection.hpp">
+      <Filter>ヘッダー ファイル\connection_type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\application_layer\socket_base.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\application_layer\ssl_socket.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\boostconnect\application_layer\tcp_socket.hpp">
+      <Filter>ヘッダー ファイル\application_layer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\boostconnect\utility\impl\percent_encoder.ipp">
+      <Filter>ヘッダー ファイル\utility\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\utility\impl\radix.ipp">
+      <Filter>ヘッダー ファイル\utility\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\utility\impl\syntax.ipp">
+      <Filter>ヘッダー ファイル\utility\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\utility\impl\http.ipp">
+      <Filter>ヘッダー ファイル\utility\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\session_type\impl\http_session.ipp">
+      <Filter>ヘッダー ファイル\session_type\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\protocol_type\impl\http.ipp">
+      <Filter>ヘッダー ファイル\protocol_type\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\content\impl\text.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\content\impl\urlencoded.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\content\impl\binary.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\content\impl\content_base.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\content\impl\multipart.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\content\impl\multipart_form_data.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\content\impl\multipart_mixed.ipp">
+      <Filter>ヘッダー ファイル\content\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\connection_type\impl\sync_connection.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\connection_type\impl\async_connection.ipp">
+      <Filter>ヘッダー ファイル\connection_type\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\application_layer\impl\ssl_socket.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+    <None Include="..\..\..\boostconnect\application_layer\impl\tcp_socket.ipp">
+      <Filter>ヘッダー ファイル\application_layer\impl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\client.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

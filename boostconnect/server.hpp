@@ -59,6 +59,8 @@ public:
     void set_timeout(unsigned int second){ if(second > 0) this->timeout_second_ = second; }
     unsigned int timeout(){ return this->timeout_second_; }
 
+    io_service_ptr service() const { return io_service_; }
+
     void start(RequestHandler handler)
     {
         acceptor_.reset(new acceptor(*io_service_, endpoint_type(boost::asio::ip::tcp::v4(), *port_))); // TODO

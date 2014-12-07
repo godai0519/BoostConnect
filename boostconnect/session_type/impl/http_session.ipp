@@ -20,7 +20,7 @@ namespace bstcon{
 namespace session{
 
 http_session::http_session(io_service_ptr const& io_service, connection_ptr const& connection, unsigned int const timeout_second, RequestHandler const request_handler, CloseHandler const close_handler)
-    : io_service_(io_service), connection_(connection), timeout_second_(timeout_second), request_handler_(request_handler), close_handler_(close_handler), parser_(), generator_()
+    : io_service_(io_service), connection_(connection), request_handler_(request_handler), close_handler_(close_handler), timeout_second_(timeout_second), parser_(), generator_()
 {
 }
 
