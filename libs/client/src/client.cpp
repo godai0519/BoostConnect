@@ -6,8 +6,6 @@
 // boost/config.hpp is Setting file. You can set USE SSL.
 //
 
-#define USE_SSL_BOOSTCONNECT
-
 #include <boostconnect/utility/impl/radix.ipp>
 #include <boostconnect/utility/impl/percent_encoder.ipp>
 #include <boostconnect/utility/impl/syntax.ipp>

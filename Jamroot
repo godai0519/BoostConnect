@@ -12,13 +12,9 @@ use-project /boost : $(BOOST_ROOT) ;
 
 local cxxflags = -std=c++14 ;
 
-if --enable-ssl in [ modules.peek : ARGV ]
+if ! ( --disable-ssl in [ modules.peek : ARGV ] )
 {
-    cxxflags += -DBOOSTCONNECT_ENABLE_SSL=1 ;
-}
-else
-{
-    cxxflags += -DBOOSTCONNECT_ENABLE_SSL=0 ;
+    cxxflags += -DUSE_SSL_BOOSTCONNECT ;
 }
 
 project boostconnect
