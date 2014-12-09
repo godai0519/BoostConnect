@@ -1,0 +1,70 @@
+import package ;
+
+import sequence ;
+import xsltproc ;
+import set ;
+import path ;
+import link ;
+import os ;
+
+local BOOST_ROOT = [ os.environ BOOST_ROOT ] ;
+use-project /boost : $(BOOST_ROOT) ;
+
+local gcc_cxxflags = -std=c++14 ;
+
+if ! ( --disable-ssl in [ modules.peek : ARGV ] )
+{
+    cxxflags += -DUSE_SSL_BOOSTCONNECT ;
+}
+
+project boostconnect
+    : requirements 
+      <include>.
+      <cxxflags>$(cxxflags)
+      <toolset>gcc:<cxxflags>$(gcc_cxxflags)
+      <toolset>clang:<cxxflags>$(gcc_cxxflags)
+    : usage-requirements <include>.
+    : build-dir bin.v2
+    ;
+
+#
+# Collect build information
+#
+all-libraries = [ MATCH .*libs/(.*)/build/.* : [ glob libs/*/build/Jamfile.v2 ] [ glob libs/*/build/Jamfile ] ] ;
+#all-libraries = [ sequence.unique $(all-libraries) ] ;
+#all-libraries = [ set.difference $(all-libraries) : function_types ] ;
+
+local libraries = $(all-libraries) ;
+
+#
+# Data show options process
+#
+if --show-all-libraries in [ modules.peek : ARGV ]
+{
+    echo "Following libraries are exist:" ;
+    for local l in $(all-libraries)
+    {
+        echo "     - $(l)" ;
+    }
+    exit ;
+}
+
+if --show-libraries in [ modules.peek : ARGV ]
+{
+    echo "Following libraries are building target:" ;
+    for local l in $(libraries)
+    {
+        echo "     - $(l)" ;
+    }
+    exit ;
+}
+
+#
+# Build
+#
+for local l in $(all-libraries)
+{
+    use-project /boostconnect/$(l) : libs/$(l)/build ;
+    build-project libs/$(l)/build ;
+}
+

@@ -1,20 +1,23 @@
-﻿#include <iostream>
-#include <boostconnect/config.hpp>
+﻿#define USE_SSL_BOOSTCONNECT
+#include <iostream>
 #include <boostconnect/server.hpp>
+#include <boostconnect/session_type/http_session.hpp>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
 
 int main()
 {    
+    typedef bstcon::server<bstcon::session::http_session> http_server;
+
     typedef bstcon::request request_type;
-    typedef boost::shared_ptr<bstcon::session::session_base> session_ptr;
+    typedef boost::shared_ptr<bstcon::session::http_session> session_ptr;
 
     // make server(http://127.0.0.1:5600/)
-    boost::asio::io_service io_service;
-    bstcon::server service(io_service, 5600);
+    auto const io_service = boost::make_shared<boost::asio::io_service>();
+    http_server server(io_service, 5600);
 
     // start server
-    service.start(
+    server.start(
         [&](const boost::shared_ptr<request_type> req, session_ptr session) -> void
         {
             //View Request
@@ -30,38 +33,39 @@ int main()
             disp += "--- Request End ---\n\n";
             std::cout << disp << std::endl;
             
-            std::string body = "<html><body><i><b>Hello!</b></i></body></html>";
-            std::map<std::string,std::string> param;
-
-            /*{
-                param["Content-Length"] = std::to_string(body.length());
-
-                auto f1 = session->set_headers(200, "OK", "1.1", param);
-                while(!f1.valid()) io_service.run_one();
-
-                auto f2 = session->set_body(body);
-                while(!f2.valid()) io_service.run_one();
-            }*/
+            auto response = boost::make_shared<bstcon::response>();
+            response->http_version = "1.1";
+            response->status_code = 200;
+            response->reason_phrase = "OK";
             
-            {
-                param["Transfer-Encoding"] = "chunked";
-                //param["Connection"] = "Keep-Alive";
+#if 0
+            response->body = "<html><body><i><b>Hello World</b></i></body></html>";
+            response->header["Content-Length"] = std::to_string(response->body.length());
+            session->set_all(response);
+#endif
 
-                auto f1 = session->set_headers(200, "OK", "1.1", param);
-                //while(!f1.valid()) io_service.run_one();
-
-
-                auto f2 = session->set_chunk(body.size(), body);
-                //while(!f2.valid()) io_service.run_one();
-            
-                session->set_chunk(0);
-            }
+#if 1
+            response->header["Transfer-Encoding"] = "chunked";
+            session->set_headers(
+                response,
+                [](session_ptr session)
+                {
+                    session->set_chunk(
+                        "<html><body><i><b>Hello World</b></i></body></html>", // chunk message
+                        [](session_ptr session)
+                        {
+                            session->set_chunk(); // END chunk message
+                        }
+                    );
+                }
+            );
+#endif
 
             return;
         }
     );
 
-    io_service.run();
+    io_service->run();
 
     return 0;
 }
