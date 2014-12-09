@@ -1,6 +1,5 @@
 ﻿#define USE_SSL_BOOSTCONNECT
 #include <iostream>
-#include <boostconnect/config.hpp>
 #include <boostconnect/server.hpp>
 #include <boostconnect/session_type/http_session.hpp>
 #include <boost/format.hpp>
