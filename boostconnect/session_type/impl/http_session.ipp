@@ -38,17 +38,18 @@ void http_session::read()
 
             std::size_t size = 0;
             bool keep_alive = false;
+
             for(auto const& p : request->header)
             {
                 if(boost::iequals(p.first, "Content-Length"))
                 {
                     size = std::stoi(p.second);
-                    break;
+                    continue;
                 }
                 if(boost::iequals(p.first, "Connection") || boost::iequals(p.first, "Proxy-Connection"))
                 {
                     if(!boost::iequals(p.second, "close")) keep_alive = true;
-                    break;
+                    continue;
                 }
             }
 

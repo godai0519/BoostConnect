@@ -77,8 +77,6 @@ public:
             socket->lowest_layer(),
             [this, socket, handler](error_code const& ec)
             {
-                this->start(handler);
-
                 if(ec)
                 {
                     socket->close();
